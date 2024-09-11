@@ -10,6 +10,9 @@ from PySide6.QtCore import QStandardPaths
 # load_dotenv()
 
 
+APPLICATION_NAME = "Kudan"
+
+
 def contents_directory_path() -> Path:
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         return Path(sys._MEIPASS).resolve()
@@ -23,7 +26,9 @@ GENERIC_DATA_LOCATION_PATH = Path(
 
 
 def application_data_location_path() -> Path:
-    APPLICATION_DATA_LOCATION_PATH = GENERIC_DATA_LOCATION_PATH.joinpath("")
+    APPLICATION_DATA_LOCATION_PATH = GENERIC_DATA_LOCATION_PATH.joinpath(
+        APPLICATION_NAME
+    )
     APPLICATION_DATA_LOCATION_PATH.mkdir(parents=True, exist_ok=True)
     return APPLICATION_DATA_LOCATION_PATH
 
