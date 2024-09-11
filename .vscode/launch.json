@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "main",
+            "type": "debugpy",
+            "request": "launch",
+            "env": {
+                "PYTHONPYCACHEPREFIX": "${workspaceFolder}/__pycache__"
+            },
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

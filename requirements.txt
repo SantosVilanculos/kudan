@@ -1,0 +1,5 @@
+more-itertools=10.5.0
+numpy==2.1.1
+psutil==6.0.0
+pyinstaller==6.10.0
+PySide6==6.7.2

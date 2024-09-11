@@ -1,0 +1,9 @@
+* text=auto eol=lf
+
+*.md diff=markdown
+*.py diff=python
+
+*.ttf binary
+
+/.github/ export-ignore
+/CHANGELOG.md export-ignore
