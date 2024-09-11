@@ -10,6 +10,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from license import License
 from network_interface_card import NetworkInterfaceCard
 from socket_connections import SocketConnections
 
@@ -56,6 +57,7 @@ class CW(QWidget):
 
         self.q_stacked_widget = QStackedWidget()
         q_splitter.addWidget(self.q_stacked_widget)
+        self.q_stacked_widget.addWidget(License())
 
         self.b("Socket connections", SocketConnections())
         self.b("Network Interface Cards", NetworkInterfaceCard())
