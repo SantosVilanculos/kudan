@@ -11,11 +11,17 @@ def main() -> None:
     cdp = contents_directory_path()
 
     application = QApplication(sys.argv)
+
     QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Regular.ttf")))
     QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Medium.ttf")))
     QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Bold.ttf")))
     QFontDatabase.addApplicationFont(str(cdp.joinpath("JetBrainsMono-Regular.ttf")))
-    application.setFont(QFont("Inter", int(14 / (96 / 72)), 400))
+
+    font = QFont("Inter")
+    font.setPixelSize(14)
+    font.setWeight(QFont.Weight.Normal)
+    font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
+    application.setFont(font)
 
     window = Window()
     window.show()
