@@ -10,23 +10,23 @@ from window import Window
 def main() -> None:
     cdp = contents_directory_path()
 
-    application = QApplication(sys.argv)
+    q_application = QApplication(sys.argv)
 
     QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Regular.ttf")))
     QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Medium.ttf")))
     QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Bold.ttf")))
     QFontDatabase.addApplicationFont(str(cdp.joinpath("JetBrainsMono-Regular.ttf")))
 
-    font = QFont("Inter")
-    font.setPixelSize(14)
-    font.setWeight(QFont.Weight.Normal)
-    font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
-    application.setFont(font)
+    q_font = QFont("Inter")
+    q_font.setPixelSize(14)
+    q_font.setWeight(QFont.Weight.Normal)
+    q_font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
+    q_application.setFont(q_font)
 
     window = Window()
     window.show()
 
-    sys.exit(application.exec())
+    sys.exit(q_application.exec())
 
 
 if __name__ == "__main__":
