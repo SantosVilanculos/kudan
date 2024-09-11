@@ -1,4 +1,4 @@
-<!-- ![](./screenshot.png) -->
+![](./screenshot.png)
 
 ```sh
 python -m venv "./.venv"
