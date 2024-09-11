@@ -33,6 +33,14 @@ def application_data_location_path() -> Path:
     return APPLICATION_DATA_LOCATION_PATH
 
 
+def application_temp_location_path() -> Path:
+    APPLICATION_TEMP_LOCATION_PATH = Path(
+        QStandardPaths.writableLocation(QStandardPaths.StandardLocation.TempLocation)
+    ).joinpath(APPLICATION_NAME)
+    APPLICATION_TEMP_LOCATION_PATH.mkdir(parents=True, exist_ok=True)
+    return APPLICATION_TEMP_LOCATION_PATH
+
+
 def logger() -> Logger:
     rotating_file_handler = RotatingFileHandler(
         filename=application_data_location_path().joinpath(".log"),
