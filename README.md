@@ -2,7 +2,7 @@
     <img src="./icon.ico" />
 </p>
 
-![X (Formerly Twitter)](https://img.shields.io/twitter/url?url=https%3A%2F%2Fx.com%2F%40westernqoul&label=Follow)
+![X (Formerly Twitter)](https://img.shields.io/twitter/follow/westernqoul)
 ![LICENSE](https://img.shields.io/github/license/westernqoul/kudan)
 
 ```sh
