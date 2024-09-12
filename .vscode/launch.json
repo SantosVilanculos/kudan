@@ -6,10 +6,21 @@
             "type": "debugpy",
             "request": "launch",
             "env": {
-                "PYTHONPYCACHEPREFIX": "${workspaceFolder}/__pycache__"
+                "PYTHONPYCACHEPREFIX": "${workspaceFolder}/__pycache__",
             },
             "program": "${workspaceFolder}/src/main.py",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "main [PSUTIL_DEBUG]",
+            "type": "debugpy",
+            "request": "launch",
+            "env": {
+                "PYTHONPYCACHEPREFIX": "${workspaceFolder}/__pycache__",
+                "PSUTIL_DEBUG": "1"
+            },
+            "program": "${workspaceFolder}/src/main.py",
+            "console": "externalTerminal"
         }
     ]
 }
