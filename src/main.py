@@ -12,10 +12,12 @@ def main() -> None:
 
     q_application = QApplication(sys.argv)
 
-    QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Regular.ttf")))
-    QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Medium.ttf")))
-    QFontDatabase.addApplicationFont(str(cdp.joinpath("Inter-Bold.ttf")))
-    QFontDatabase.addApplicationFont(str(cdp.joinpath("JetBrainsMono-Regular.ttf")))
+    QFontDatabase.addApplicationFont(str(cdp.joinpath("res/font/Inter-Regular.ttf")))
+    QFontDatabase.addApplicationFont(str(cdp.joinpath("res/font/Inter-Medium.ttf")))
+    QFontDatabase.addApplicationFont(str(cdp.joinpath("res/font/Inter-Bold.ttf")))
+    QFontDatabase.addApplicationFont(
+        str(cdp.joinpath("res/font/JetBrainsMono-Regular.ttf"))
+    )
 
     q_font = QFont("Inter")
     q_font.setPixelSize(14)
