@@ -3,20 +3,20 @@ import sys
 from PySide6.QtGui import QFont, QFontDatabase
 from PySide6.QtWidgets import QApplication
 
-from env import contents_directory_path
+from env import contents_path
 from window import Window
 
 
 def main() -> None:
-    cdp = contents_directory_path()
+    cp = contents_path()
 
     q_application = QApplication(sys.argv)
 
-    QFontDatabase.addApplicationFont(str(cdp.joinpath("res/font/Inter-Regular.ttf")))
-    QFontDatabase.addApplicationFont(str(cdp.joinpath("res/font/Inter-Medium.ttf")))
-    QFontDatabase.addApplicationFont(str(cdp.joinpath("res/font/Inter-Bold.ttf")))
+    QFontDatabase.addApplicationFont(str(cp.joinpath("res/font/Inter-Regular.ttf")))
+    QFontDatabase.addApplicationFont(str(cp.joinpath("res/font/Inter-Medium.ttf")))
+    QFontDatabase.addApplicationFont(str(cp.joinpath("res/font/Inter-Bold.ttf")))
     QFontDatabase.addApplicationFont(
-        str(cdp.joinpath("res/font/JetBrainsMono-Regular.ttf"))
+        str(cp.joinpath("res/font/JetBrainsMono-Regular.ttf"))
     )
 
     q_font = QFont("Inter")

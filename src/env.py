@@ -13,37 +13,35 @@ from PySide6.QtCore import QStandardPaths
 APPLICATION_NAME = "Kudan"
 
 
-def contents_directory_path() -> Path:
+def contents_path() -> Path:
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         return Path(sys._MEIPASS).resolve()
     else:
         return Path(".").resolve()
 
 
-GENERIC_DATA_LOCATION_PATH = Path(
+GENERIC_DATA_PATH = Path(
     QStandardPaths.writableLocation(QStandardPaths.StandardLocation.GenericDataLocation)
 )
 
 
-def application_data_location_path() -> Path:
-    APPLICATION_DATA_LOCATION_PATH = GENERIC_DATA_LOCATION_PATH.joinpath(
-        APPLICATION_NAME
-    )
-    APPLICATION_DATA_LOCATION_PATH.mkdir(parents=True, exist_ok=True)
-    return APPLICATION_DATA_LOCATION_PATH
+def application_data_path() -> Path:
+    application_data_path = GENERIC_DATA_PATH.joinpath(APPLICATION_NAME)
+    application_data_path.mkdir(parents=True, exist_ok=True)
+    return application_data_path
 
 
-def application_temp_location_path() -> Path:
-    APPLICATION_TEMP_LOCATION_PATH = Path(
+def application_temp_path() -> Path:
+    application_temp_path = Path(
         QStandardPaths.writableLocation(QStandardPaths.StandardLocation.TempLocation)
     ).joinpath(APPLICATION_NAME)
-    APPLICATION_TEMP_LOCATION_PATH.mkdir(parents=True, exist_ok=True)
-    return APPLICATION_TEMP_LOCATION_PATH
+    application_temp_path.mkdir(parents=True, exist_ok=True)
+    return application_temp_path
 
 
 def logger() -> Logger:
     rotating_file_handler = RotatingFileHandler(
-        filename=application_data_location_path().joinpath(".log"),
+        filename=application_data_path().joinpath(".log"),
         maxBytes=512,
         backupCount=2,
     )

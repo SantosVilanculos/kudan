@@ -2,7 +2,7 @@ from PySide6.QtCore import QFile, QTextStream, QUrl
 from PySide6.QtGui import QDesktopServices, QTextDocument
 from PySide6.QtWidgets import QTextBrowser
 
-from env import contents_directory_path
+from env import contents_path
 
 
 class License(QTextBrowser):
@@ -13,7 +13,7 @@ class License(QTextBrowser):
         self.setOpenExternalLinks(False)
         self.anchorClicked.connect(self.anchor_clicked)
 
-        PATH = contents_directory_path()
+        PATH = contents_path()
 
         q_text_document = QTextDocument()
         q_file = QFile(str(PATH.joinpath("LICENSE")))
