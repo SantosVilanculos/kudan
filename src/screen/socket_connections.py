@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from env import logger
+from environment import logger
 
 
 class SocketConnections(QWidget):

@@ -2,7 +2,7 @@ from PySide6.QtCore import QFile, QTextStream, QUrl
 from PySide6.QtGui import QDesktopServices, QTextDocument
 from PySide6.QtWidgets import QTextBrowser
 
-from env import contents_path
+from environment import contents_path
 
 
 class License(QTextBrowser):

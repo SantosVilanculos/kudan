@@ -2,7 +2,7 @@ from PySide6.QtCore import QSize
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QMainWindow
 
-from env import APPLICATION_NAME, contents_path
+from environment import APPLICATION_NAME, contents_path
 from root import Root
 
 

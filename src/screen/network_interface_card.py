@@ -3,7 +3,7 @@ from PySide6.QtCore import QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent, QTextDocument
 from PySide6.QtWidgets import QTabWidget, QTextBrowser, QVBoxLayout, QWidget
 
-from env import logger
+from environment import logger
 
 
 class Widget(QWidget):
