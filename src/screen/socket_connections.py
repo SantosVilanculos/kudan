@@ -34,7 +34,7 @@ class SocketConnections(QWidget):
         # q_v_box_layout.addWidget(h)
 
         self.q_table_widget = QTableWidget()
-        # self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
+        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(9)
         self.q_table_widget.setHorizontalHeaderLabels(
             [
@@ -65,7 +65,8 @@ class SocketConnections(QWidget):
         self.q_table_widget.setContextMenuPolicy(
             Qt.ContextMenuPolicy.ActionsContextMenu
         )
-        self.q_table_widget.addAction("Kill process", self.process_kill)
+        self.q_table_widget.addAction("SIGKILL", self.process_kill)
+        self.q_table_widget.addAction("SIGTERM", self.process_terminate)
 
         for index, sconn in enumerate(net_connections()):
             self.q_table_widget_insert_row(index, sconn)
@@ -81,6 +82,7 @@ class SocketConnections(QWidget):
 
     def q_table_widget_insert_row(self, row: int, sconn: _common.sconn) -> None:
         self.q_table_widget.setSortingEnabled(False)
+
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
 
@@ -193,3 +195,20 @@ class SocketConnections(QWidget):
                     process.kill()
                 except Exception as exception:
                     self.logger.log(WARNING, f"Unable to kill process (pid={pid})")
+
+    def process_terminate(self) -> None:
+        q_table_widget_selected_items = self.q_table_widget.selectedItems()
+        if len(q_table_widget_selected_items) > 0:
+            row_list = list(
+                unique(
+                    self.q_table_widget.row(x)
+                    for x in self.q_table_widget.selectedItems()
+                )
+            )
+            for row in row_list:
+                pid = int(self.q_table_widget.item(row, 0).text())
+                try:
+                    process = Process(pid)
+                    process.terminate()
+                except Exception as exception:
+                    self.logger.log(WARNING, f"Unable to terminate process (pid={pid})")
