@@ -34,7 +34,7 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build with pyinstaller for ${{ matrix.config.os }}
-        run: pyinstaller "./src/main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./icon.ico" --add-data="./icon.ico:./" --add-data="./res:./" --windowed
+        run: pyinstaller "./main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./favicon.ico" --add-data="./favicon.ico:./" --add-data="./inter:./" --windowed
 
       - name: Rename builded app
         run: mv ./dist ./dist-${{ matrix.config.os }}
