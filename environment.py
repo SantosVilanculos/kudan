@@ -1,16 +1,12 @@
 import sys
 from logging import DEBUG, INFO, Logger, StreamHandler, basicConfig, getLogger
 from logging.handlers import RotatingFileHandler
-
-# from os import getenv
 from pathlib import Path
 
 from dotenv import load_dotenv
 from PySide6.QtCore import QStandardPaths
 
 load_dotenv()
-
-GITHUB_REPOSITORY_URL = "https://github.com/quollouq/kudan"
 
 APPLICATION_NAME = "Kudan"
 

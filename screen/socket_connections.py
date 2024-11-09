@@ -153,6 +153,7 @@ class SocketConnections(QWidget):
 
     def q_timer_timeout(self) -> None:
         sconn_list = net_connections()
+        # FIXME: dont use library, throws an error
         sconn_unique_pid_list = list(unique(sconn.pid for sconn in sconn_list))
 
         index = 0

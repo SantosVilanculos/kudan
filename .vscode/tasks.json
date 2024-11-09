@@ -5,8 +5,11 @@
             "label": "pyinstaller",
             "type": "shell",
             "group": "build",
+            "linux": {
+                "command": "source \"./.venv/bin/activate\" && pyinstaller \"./main.py\" --noconfirm --clean --onefile --name=\"Kudan\" --icon=\"./favicon.ico\" --add-data=\"./favicon.ico:./\" --add-data=\"./inter:./\" --windowed",
+            },
             "windows": {
-                "command": "source \"./.venv/Scripts/activate\" && pyinstaller \"./src/main.py\" --noconfirm --clean --onefile --name=\"Kudan\" --icon=\"./icon.ico\" --add-data=\"./icon.ico:./\" --add-data=\"./res:./\" --windowed",
+                "command": "source \"./.venv/Scripts/activate\" && pyinstaller \"./main.py\" --noconfirm --clean --onefile --name=\"Kudan\" --icon=\"./favicon.ico\" --add-data=\"./favicon.ico:./\" --add-data=\"./inter:./\" --windowed",
             },
         }
     ]

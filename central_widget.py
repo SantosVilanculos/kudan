@@ -74,7 +74,7 @@ class HStack(QWidget):
         self.q_h_box_layout.setSpacing(spacing)
 
 
-class Root(QWidget):
+class CentralWidget(QWidget):
     def __init__(self):
         super().__init__()
         q_v_box_layout = QVBoxLayout()
@@ -88,15 +88,8 @@ class Root(QWidget):
         q_splitter.setHandleWidth(1)
         q_splitter.setStyleSheet("QSplitter::handle{background-color:#E0E0E0}")
 
-        navigation = VStack()
-        navigation.setFixedWidth(256)
-        header = QWidget()
-        header.setStyleSheet(
-            "QWidget{border-bottom:1px solid #E0E0E0;background-color:#FAFAFA}"
-        )
-        header.setFixedHeight(44)
-        navigation.addWidget(header)
         self.q_list_widget = QListWidget()
+        self.q_list_widget.setFixedWidth(256)
         self.q_list_widget.setStyleSheet("QListWidget{border:0}")
         self.q_list_widget.currentRowChanged.connect(
             self.q_list_widget_current_row_changed
@@ -120,33 +113,10 @@ class Root(QWidget):
         self.q_list_widget_add_item("disk_partitions", q_stacked_widget_index)
         q_stacked_widget_index = self.q_stacked_widget.addWidget(QWidget())
         self.q_list_widget_add_item("disk_io_counters", q_stacked_widget_index)
-        navigation.addWidget(self.q_list_widget)
-        q_splitter.addWidget(navigation)
+        q_splitter.addWidget(self.q_list_widget)
 
-        m = VStack()
-        header = QWidget()
-        header.setFixedHeight(44)
-        header.setObjectName("7343655b1bc1")
-        header.setStyleSheet(
-            "QWidget#7343655b1bc1{border-bottom:1px solid #E0E0E0;background-color:#FAFAFA}"
-        )
-        q_h_box_layout = QHBoxLayout(header)
-        q_h_box_layout.setContentsMargins(QMargins(0, 0, 0, 1))
-        q_h_box_layout_contents_margins = q_h_box_layout.contentsMargins()
-        q_push_button = QPushButton()
-        q_push_button.setStyleSheet("QPushButton{border:0;background-color:#E5E5E5}")
-        q_push_button.setFixedSize(
-            QSize(44, 44 - q_h_box_layout_contents_margins.bottom())
-        )
-        q_push_button.clicked.connect(
-            lambda: navigation.setHidden(not navigation.isHidden())
-        )
-        q_h_box_layout.addWidget(q_push_button)
-        q_h_box_layout.addWidget(QWidget(), 1)
-        m.addWidget(header)
-        m.addWidget(self.q_stacked_widget)
-        q_splitter.addWidget(m)
-        q_splitter_index = q_splitter.indexOf(m)
+        q_splitter.addWidget(self.q_stacked_widget)
+        q_splitter_index = q_splitter.indexOf(self.q_stacked_widget)
         if q_splitter_index > -1:
             q_splitter.setCollapsible(q_splitter_index, False)
             q_splitter.handle(1).setEnabled(False)

@@ -4,8 +4,8 @@
 *.py diff=python
 
 *.ico binary
-*.ttf binary
 *.png binary
+*.ttf binary
 
 /.github/ export-ignore
 /CHANGELOG.md export-ignore

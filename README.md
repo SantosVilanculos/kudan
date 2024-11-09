@@ -17,11 +17,19 @@
 ```sh
 python -m venv "./.venv"
 source "./venv/Scripts/activate"
+```
+
+```sh
+python3 -m venv "./.venv"
+source "./venv/bin/activate"
+```
+
+```sh
 pip install -r requirements.txt
 ```
 
 ```sh
-pyinstaller "./src/main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./icon.ico" --add-data="./icon.ico:./" --add-data="./res:./" --windowed
+pyinstaller "./main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./favicon.ico" --add-data="./favicon.ico:./" --add-data="./inter:./" --windowed
 ```
 
 ![](./screenshot.png)

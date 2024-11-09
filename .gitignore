@@ -1,11 +1,15 @@
 /**/**/__pycache__/
+
 /.idea/
 /.venv/
 /.vscode/*
 !/.vscode/launch.json
 !/.vscode/settings.json
 !/.vscode/tasks.json
+
 /build/
 /dist/
+
 /*.spec
+
 /TODO.md
