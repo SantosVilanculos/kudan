@@ -1,7 +1,7 @@
 import sys
 from functools import partial
 
-from PySide6.QtCore import QSize, Qt
+from PySide6.QtCore import QSize
 from PySide6.QtGui import QAction, QFont, QFontDatabase, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QSystemTrayIcon
 

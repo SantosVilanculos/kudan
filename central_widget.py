@@ -9,7 +9,6 @@ from PySide6.QtWidgets import (
     QLabel,
     QListWidget,
     QListWidgetItem,
-    QPushButton,
     QSplitter,
     QStackedWidget,
     QVBoxLayout,
