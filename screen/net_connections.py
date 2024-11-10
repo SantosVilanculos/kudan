@@ -17,7 +17,7 @@ from PySide6.QtWidgets import (
 from environment import logger
 
 
-class SocketConnections(QWidget):
+class Widget(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.logger = logger()

@@ -21,18 +21,13 @@ class Widget(QWidget):
 
         self.q_table_widget = QTableWidget()
         self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
-        self.q_table_widget.setColumnCount(2)
-        self.q_table_widget.setHorizontalHeaderLabels(
-            [
-                "pid",
-                "name",
-            ]
-        )
+        self.q_table_widget.setColumnCount(3)
+        self.q_table_widget.setHorizontalHeaderLabels(["pid", "name", "username"])
         q_table_widget_horizontal_header = self.q_table_widget.horizontalHeader()
         q_table_widget_horizontal_header.setSectionResizeMode(
             QHeaderView.ResizeMode.Stretch
         )
-        q_table_widget_horizontal_header.setFixedHeight(44)
+        q_table_widget_horizontal_header.setFixedHeight(32)
         self.q_table_widget.verticalHeader().setHidden(True)
         self.q_table_widget.setAutoScroll(True)
         self.q_table_widget.setVerticalScrollMode(
@@ -66,5 +61,9 @@ class Widget(QWidget):
         column = 1
         name = QTableWidgetItem(str(process.name()))
         self.q_table_widget.setItem(row, column, name)
+
+        column = 2
+        username = QTableWidgetItem(str(process.username()))
+        self.q_table_widget.setItem(row, column, username)
 
         self.q_table_widget.setSortingEnabled(True)

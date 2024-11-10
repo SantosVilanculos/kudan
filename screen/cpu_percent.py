@@ -1,4 +1,4 @@
-from psutil import sensors_battery
+from psutil import cpu_percent
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent, QTextDocument
 from PySide6.QtWidgets import QTextBrowser, QVBoxLayout, QWidget
@@ -21,7 +21,9 @@ class Widget(QWidget):
 
     def q_timer_timeout(self) -> None:
         q_text_document = QTextDocument()
-        q_text_document.setPlainText(str(sensors_battery()))
+        q_text_document.setPlainText(
+            f"— percpu=False\n{str(cpu_percent(percpu=False)) }\n\n— percpu=True\n{str(cpu_percent(percpu=True))}"
+        )
         self.q_text_browser.setDocument(q_text_document)
 
     def showEvent(self, event: QShowEvent) -> None:

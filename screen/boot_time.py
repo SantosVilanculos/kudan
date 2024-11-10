@@ -1,4 +1,6 @@
-from psutil import sensors_battery
+from datetime import datetime
+
+from psutil import boot_time
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent, QTextDocument
 from PySide6.QtWidgets import QTextBrowser, QVBoxLayout, QWidget
@@ -21,7 +23,10 @@ class Widget(QWidget):
 
     def q_timer_timeout(self) -> None:
         q_text_document = QTextDocument()
-        q_text_document.setPlainText(str(sensors_battery()))
+        # TODO: Elapsed time
+        q_text_document.setPlainText(
+            str(datetime.fromtimestamp(boot_time()).strftime("%Y-%m-%d %H:%M:%S"))
+        )
         self.q_text_browser.setDocument(q_text_document)
 
     def showEvent(self, event: QShowEvent) -> None:

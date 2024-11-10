@@ -6,7 +6,7 @@ from PySide6.QtWidgets import QTabWidget, QTextBrowser, QVBoxLayout, QWidget
 from environment import logger
 
 
-class Widget(QWidget):
+class Tab(QWidget):
     def __init__(self, nic: str) -> None:
         super().__init__()
         self.nic = nic
@@ -15,7 +15,7 @@ class Widget(QWidget):
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.setSpacing(0)
         self.q_text_browser = QTextBrowser()
-        self.q_text_browser.setFont(QFont("JetBrains Mono", int(14 / (96 / 72)), 400))
+        self.q_text_browser.setFont(QFont("Inter", int(14 / (96 / 72)), 400))
         q_v_box_layout.addWidget(self.q_text_browser)
 
         self.q_timer = QTimer(self)
@@ -39,7 +39,7 @@ class Widget(QWidget):
         return super().hideEvent(event)
 
 
-class NetworkInterfaceCard(QWidget):
+class Widget(QWidget):
     def __init__(self) -> None:
         super().__init__()
         self.logger = logger()
@@ -51,7 +51,7 @@ class NetworkInterfaceCard(QWidget):
         self.q_tab_widget = QTabWidget()
         self.q_tab_widget.removeTab
         for nic in net_if_stats().keys():
-            widget = Widget(nic)
+            widget = Tab(nic)
             self.q_tab_widget.addTab(widget, nic)
         q_v_box_layout.addWidget(self.q_tab_widget)
 
@@ -71,7 +71,7 @@ class NetworkInterfaceCard(QWidget):
             index += 1
 
         for nic in nic_list:
-            widget = Widget(nic)
+            widget = Tab(nic)
             self.q_tab_widget.addTab(widget, nic)
 
     def showEvent(self, event: QShowEvent) -> None:
