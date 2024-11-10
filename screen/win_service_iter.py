@@ -29,7 +29,7 @@ class Widget(QWidget):
         q_table_widget_horizontal_header.setSectionResizeMode(
             QHeaderView.ResizeMode.Stretch
         )
-        q_table_widget_horizontal_header.setFixedHeight(44)
+        # q_table_widget_horizontal_header.setFixedHeight(44)
         self.q_table_widget.verticalHeader().setHidden(True)
         self.q_table_widget.setAutoScroll(True)
         self.q_table_widget.setVerticalScrollMode(
