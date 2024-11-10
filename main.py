@@ -7,6 +7,7 @@ from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QSystemTrayIcon
 
 from central_widget import CentralWidget
 from environment import APPLICATION_NAME, contents_path
+from q_palette import q_palette
 
 
 def q_action_1_triggered(q_action: QAction, q_main_window: QMainWindow) -> None:
@@ -24,7 +25,9 @@ def main():
     cp = contents_path()
 
     q_application = QApplication(sys.argv)
-    # q_application.setDesktopSettingsAware(False)
+    # q_application.setDesktopSettingsAware(True)
+    # q_application.paletteChanged.connect(lambda q_palette: print(q_palette))
+    q_application.setPalette(q_palette())
 
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-bold.ttf")))
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-medium.ttf")))
@@ -42,6 +45,7 @@ def main():
     q_main_window.setWindowIcon(q_icon)
     q_main_window.setWindowTitle(APPLICATION_NAME)
     q_main_window.setMinimumSize(QSize(640, 360))
+
     central_widget = CentralWidget()
     q_main_window.setCentralWidget(central_widget)
 
