@@ -28,10 +28,13 @@ from screen import (
     net_connections,
     net_if_stats,
     process_iter,
+    q_input_device,
+    q_screen,
     sensors_battery,
     sensors_fans,
     sensors_temperatures,
     swap_memory,
+    test,
     users,
     virtual_memory,
 )
@@ -111,6 +114,19 @@ class CentralWidget(QWidget):
         self.q_list_widget.currentRowChanged.connect(
             self.q_list_widget_current_row_changed
         )
+
+        # Test
+        q_stacked_widget_index = self.q_stacked_widget.addWidget(test.Widget())
+        self.q_list_widget_add_item("test", q_stacked_widget_index)
+
+        # I/O
+        q_stacked_widget_index = self.q_stacked_widget.addWidget(q_screen.Widget())
+        self.q_list_widget_add_item("q_screen", q_stacked_widget_index)
+
+        q_stacked_widget_index = self.q_stacked_widget.addWidget(
+            q_input_device.Widget()
+        )
+        self.q_list_widget_add_item("q_input_device", q_stacked_widget_index)
 
         # CPU
         q_stacked_widget_index = self.q_stacked_widget.addWidget(cpu_times.Widget())
