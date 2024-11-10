@@ -27,6 +27,7 @@ def main():
     q_application = QApplication(sys.argv)
     # q_application.setDesktopSettingsAware(True)
     # q_application.paletteChanged.connect(lambda q_palette: print(q_palette))
+    q_application.setStyle("Fusion")
     q_application.setPalette(q_palette())
 
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-bold.ttf")))
