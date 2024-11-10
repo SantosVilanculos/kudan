@@ -23,6 +23,8 @@ from screen import (
     net_connections,
     net_if_stats,
     process_iter,
+    q_audio_device,
+    q_camera_device,
     q_input_device,
     q_screen,
     sensors_battery,
@@ -72,6 +74,16 @@ class CentralWidget(QWidget):
         # I/O
         q_stacked_widget_index = self.q_stacked_widget.addWidget(q_screen.Widget())
         self.q_list_widget_add_item("q_screen", q_stacked_widget_index)
+
+        q_stacked_widget_index = self.q_stacked_widget.addWidget(
+            q_camera_device.Widget()
+        )
+        self.q_list_widget_add_item("q_camera_device", q_stacked_widget_index)
+
+        q_stacked_widget_index = self.q_stacked_widget.addWidget(
+            q_audio_device.Widget()
+        )
+        self.q_list_widget_add_item("q_audio_device", q_stacked_widget_index)
 
         q_stacked_widget_index = self.q_stacked_widget.addWidget(
             q_input_device.Widget()

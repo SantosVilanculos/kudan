@@ -22,7 +22,12 @@ class Widget(QWidget):
     def q_timer_timeout(self) -> None:
         q_text_document = QTextDocument()
         q_text_document.setPlainText(
-            f"— audioInputs (default={QMediaDevices.defaultAudioInput()})\n{QMediaDevices.audioInputs()}\n\n— audioOutputs (default={QMediaDevices.defaultAudioOutput()})\n{QMediaDevices.audioOutputs()}\n\n— videoInputs (default={QMediaDevices.defaultVideoInput()})\n{QMediaDevices.videoInputs()}\n\n"
+            str(
+                [
+                    f"correction_angle={q_camera_device.correctionAngle()}, description={q_camera_device.description()}, id={q_camera_device.id()}, is_default={q_camera_device.isDefault()}, photo_resolutions={q_camera_device.photoResolutions()}, position={q_camera_device.position()}, video_formats={q_camera_device.videoFormats()}"
+                    for q_camera_device in QMediaDevices.videoInputs()
+                ]
+            )
         )
         self.q_text_browser.setDocument(q_text_document)
 
