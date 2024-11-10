@@ -1,11 +1,6 @@
-from functools import partial
-from typing import Callable
-
 from psutil import WINDOWS
-from PySide6.QtCore import QMargins, QSize, Qt
-from PySide6.QtGui import QMouseEvent
+from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
-    QHBoxLayout,
     QLabel,
     QListWidget,
     QListWidgetItem,
@@ -40,60 +35,6 @@ from screen import (
 )
 
 
-class Label(QLabel):
-    def __init__(self, function: Callable) -> None:
-        super().__init__()
-
-        self.function = function
-
-        self.setStyleSheet("QLabel{padding-left:4px;padding-right:4px}")
-
-    def mousePressEvent(self, q_mouse_event: QMouseEvent) -> None:
-        if q_mouse_event.button() == Qt.MouseButton.LeftButton:
-            self.function()
-        return super().mousePressEvent(q_mouse_event)
-
-
-class VStack(QWidget):
-    def __init__(self) -> None:
-        super().__init__()
-        self.q_v_box_layout = QVBoxLayout(self)
-        self.q_v_box_layout.setContentsMargins(QMargins(0, 0, 0, 0))
-        self.q_v_box_layout.setSpacing(0)
-
-    def addWidget(self, q_widget: QWidget) -> None:
-        self.q_v_box_layout.addWidget(q_widget)
-
-    def removeWidget(self, q_widget: QWidget) -> None:
-        self.q_v_box_layout.removeWidget(q_widget)
-
-    def setContentsMargins(self, q_margins: QMargins):
-        self.q_v_box_layout.setContentsMargins(q_margins)
-
-    def setSpacing(self, spacing: int):
-        self.q_v_box_layout.setSpacing(spacing)
-
-
-class HStack(QWidget):
-    def __init__(self) -> None:
-        super().__init__()
-        self.q_h_box_layout = QHBoxLayout(self)
-        self.q_h_box_layout.setContentsMargins(QMargins(0, 0, 0, 0))
-        self.q_h_box_layout.setSpacing(0)
-
-    def addWidget(self, q_widget: QWidget) -> None:
-        self.q_h_box_layout.addWidget(q_widget)
-
-    def removeWidget(self, q_widget: QWidget) -> None:
-        self.q_h_box_layout.removeWidget(q_widget)
-
-    def setContentsMargins(self, q_margins: QMargins):
-        self.q_h_box_layout.setContentsMargins(q_margins)
-
-    def setSpacing(self, spacing: int):
-        self.q_h_box_layout.setSpacing(spacing)
-
-
 class CentralWidget(QWidget):
     def __init__(self):
         super().__init__()
@@ -111,8 +52,17 @@ class CentralWidget(QWidget):
         self.q_list_widget = QListWidget()
         self.q_list_widget.setFixedWidth(256)
         self.q_list_widget.setStyleSheet("QListWidget{border:0}")
-        self.q_list_widget.currentRowChanged.connect(
-            self.q_list_widget_current_row_changed
+
+        self.q_list_widget.itemActivated.connect(
+            lambda q_list_widget_item: self.q_stacked_widget.setCurrentIndex(
+                int(q_list_widget_item.data(Qt.ItemDataRole.UserRole))
+            )
+        )
+
+        self.q_list_widget.itemClicked.connect(
+            lambda q_list_widget_item: self.q_stacked_widget.setCurrentIndex(
+                int(q_list_widget_item.data(Qt.ItemDataRole.UserRole))
+            )
         )
 
         # Test
@@ -203,6 +153,7 @@ class CentralWidget(QWidget):
 
         # Windows services
         if WINDOWS:
+            # TODO: Implement functionality
             q_stacked_widget_index = self.q_stacked_widget.addWidget(QWidget())
             self.q_list_widget_add_item("win_service_iter", q_stacked_widget_index)
 
@@ -216,19 +167,14 @@ class CentralWidget(QWidget):
 
         q_v_box_layout.addWidget(q_splitter)
 
-    def q_list_widget_current_row_changed(self, q_list_widget_row: int) -> None:
-        q_list_widget_item = self.q_list_widget.item(q_list_widget_row)
-        print(f'q_list_widget_item_tool_tip="{q_list_widget_item.toolTip()}"')
-
     def q_list_widget_add_item(self, text: str, q_stacked_widget_index: int) -> None:
         q_list_widget_item = QListWidgetItem()
+        q_list_widget_item.setData(Qt.ItemDataRole.UserRole, q_stacked_widget_index)
         q_list_widget_item.setToolTip(text)
         q_list_widget_item.setSizeHint(QSize(0, 44))
         self.q_list_widget.addItem(q_list_widget_item)
-        q_label = Label(
-            partial(self.q_stacked_widget.setCurrentIndex, q_stacked_widget_index)
-        )
-        q_label.setText(text)
+        q_label = QLabel(text)
+        q_label.setStyleSheet("QLabel{padding-left:4px;padding-right:4px}")
         self.q_list_widget.setItemWidget(q_list_widget_item, q_label)
         if self.q_list_widget.row(q_list_widget_item) == 0:
             q_list_widget_item.setSelected(True)
