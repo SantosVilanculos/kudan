@@ -2,6 +2,7 @@ from PySide6.QtGui import QColor, QPalette
 
 
 def q_palette() -> QPalette:
+    # TODO: prefers_color_scheme ['light','dark','no-preference']
     _ = QPalette()
     _.setColor(QPalette.ColorRole.WindowText, QColor("#ffffff"))
     _.setColor(QPalette.ColorRole.Button, QColor("#353535"))
