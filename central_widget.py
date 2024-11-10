@@ -31,7 +31,6 @@ from screen import (
     sensors_fans,
     sensors_temperatures,
     swap_memory,
-    test,
     users,
     virtual_memory,
 )
@@ -67,9 +66,9 @@ class CentralWidget(QWidget):
             )
         )
 
-        # Test
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(test.Widget())
-        self.q_list_widget_add_item("test", q_stacked_widget_index)
+        # index
+        q_stacked_widget_index = self.q_stacked_widget.addWidget(QWidget())
+        self.q_list_widget_add_item("index", q_stacked_widget_index)
 
         # I/O
         q_stacked_widget_index = self.q_stacked_widget.addWidget(q_screen.Widget())
