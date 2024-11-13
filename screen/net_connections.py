@@ -2,7 +2,7 @@ from datetime import datetime
 from logging import WARNING
 
 from more_itertools import unique
-from psutil import Process, _common, net_connections
+from psutil import Process, _common, net_connections, process_iter
 from PySide6.QtCore import QTimer, QUrl
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -158,25 +158,47 @@ class Widget(QWidget):
         self.q_table_widget.setSortingEnabled(True)
 
     def q_timer_timeout(self) -> None:
-        sconn_list = net_connections()
-        # FIXME: dont use library, throws an error
-        sconn_unique_pid_list = list(unique(sconn.pid for sconn in sconn_list))
+        n = net_connections()
+        process_list: list[Process] = list(process_iter())
+        if not process_list:
+            return
 
-        index = 0
-        while index < self.q_table_widget.rowCount():
-            pid = int(self.q_table_widget.item(index, 0).text())
-            if sconn_unique_pid_list.count(pid) == 0:
-                self.q_table_widget.removeRow(index)
-            else:
-                sconn_unique_pid_list.remove(pid)
-            index += 1
+        process_pids = {int(process.pid) for process in process_list}
 
-        sconn_list = list(
-            filter(lambda sconn: sconn_unique_pid_list.count(sconn.pid) > 0, sconn_list)
-        )
+        # Create a dictionary to store the unique network connections
+        unique_connections: dict[int, dict[tuple[str, str], _common.sconn]] = {}
 
-        for index, sconn in enumerate(sconn_list, self.q_table_widget.rowCount()):
-            self.q_table_widget_insert_row(index, sconn)
+        # Iterate through the network connections and store the unique ones
+        for sconn in n:
+            if sconn.pid in process_pids:
+                conn_key = (sconn.laddr, sconn.raddr)
+                if sconn.pid not in unique_connections:
+                    unique_connections[sconn.pid] = {}
+                if conn_key not in unique_connections[sconn.pid]:
+                    unique_connections[sconn.pid][conn_key] = sconn
+
+        # Create a set of PIDs from the q_table_widget
+        q_table_widget_pids = set()
+        for index in range(self.q_table_widget.rowCount()):
+            text = self.q_table_widget.item(index, 0).text()
+            if (text is not None) and (text != "None"):
+                q_table_widget_pids.add(int(text))
+
+        # Remove the rows from the q_table_widget that are no longer in the process_list
+        for index in reversed(range(self.q_table_widget.rowCount())):
+            text = self.q_table_widget.item(index, 0).text()
+            if (text is not None) and (text != "None"):
+                pid = int(text)
+                if pid not in process_pids:
+                    self.q_table_widget.removeRow(index)
+
+        # Add the unique network connections to the q_table_widget
+        row_count = self.q_table_widget.rowCount()
+        for pid, conn_dict in unique_connections.items():
+            for sconn in conn_dict.values():
+                if pid not in q_table_widget_pids:
+                    self.q_table_widget_insert_row(row_count, sconn)
+                    row_count += 1
 
     def showEvent(self, event: QShowEvent) -> None:
         self.q_timer.start()
