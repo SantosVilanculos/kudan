@@ -11,7 +11,7 @@ class Widget(QWidget):
         super().__init__()
 
         q_v_box_layout = QVBoxLayout(self)
-        q_v_box_layout.setContentsMargins(0, 0, 0, 0)
+        q_v_box_layout.setContentsMargins(4, 0, 4, 0)
         q_v_box_layout.setSpacing(0)
         q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
