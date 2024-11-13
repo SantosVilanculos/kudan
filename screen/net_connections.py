@@ -8,6 +8,7 @@ from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
+    QMessageBox,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -223,6 +224,12 @@ class Widget(QWidget):
                     process = Process(pid)
                     process.kill()
                 except Exception as exception:
+                    msg_box = QMessageBox(self)
+                    msg_box.setIcon(QMessageBox.Warning)
+                    msg_box.setText("Warning!")
+                    msg_box.setInformativeText(f"Unable to kill process (pid={pid})")
+                    msg_box.setStandardButtons(QMessageBox.Ok)
+                    msg_box.show()
                     self.logger.log(WARNING, f"Unable to kill process (pid={pid})")
 
     def process_terminate(self) -> None:
