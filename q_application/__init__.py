@@ -11,6 +11,13 @@ from q_application.q_font import q_font
 from q_application.q_palette import q_palette
 
 
+def q_system_tray_icon_activated(
+    activation_reason: QSystemTrayIcon.ActivationReason, q_main_window: QMainWindow
+) -> None:
+    if activation_reason != QSystemTrayIcon.ActivationReason.Context:
+        q_main_window.setVisible(not q_main_window.isVisible())
+
+
 def q_action_1_triggered(q_action: QAction, q_main_window: QMainWindow) -> None:
     q_main_window.setVisible(not q_main_window.isVisible())
 
@@ -50,8 +57,8 @@ def q_application():
         q_system_tray_icon.setIcon(q_icon)
 
         q_system_tray_icon.activated.connect(
-            lambda activation_reason: q_main_window.setVisible(
-                not q_main_window.isVisible()
+            lambda activation_reason: q_system_tray_icon_activated(
+                activation_reason, q_main_window
             )
         )
 
