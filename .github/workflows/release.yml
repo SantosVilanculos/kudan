@@ -58,8 +58,8 @@ jobs:
       - name: Zip file windows
         run: zip -r kudan_windows.zip dist-windows-*
 
-      - name: Zip file linux
-        run: zip -r kudan_linux.zip dist-linux-*
+      - name: Zip file ubuntu
+        run: zip -r kudan_linux.zip dist-ubuntu-*
 
       - name: Zip file macos
         run: zip -r kudan_macos.zip dist-macos-*
