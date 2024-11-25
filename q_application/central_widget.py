@@ -1,4 +1,4 @@
-from psutil import WINDOWS
+from psutil import LINUX, WINDOWS
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
     QLabel,
@@ -143,8 +143,11 @@ class CentralWidget(QWidget):
         )
         self.q_list_widget_add_item("sensors_temperatures", q_stacked_widget_index)
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(sensors_fans.Widget())
-        self.q_list_widget_add_item("sensors_fans", q_stacked_widget_index)
+        if LINUX:
+            q_stacked_widget_index = self.q_stacked_widget.addWidget(
+                sensors_fans.Widget()
+            )
+            self.q_list_widget_add_item("sensors_fans", q_stacked_widget_index)
 
         q_stacked_widget_index = self.q_stacked_widget.addWidget(
             sensors_battery.Widget()
