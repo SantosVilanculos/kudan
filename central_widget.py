@@ -1,4 +1,4 @@
-from psutil import LINUX, WINDOWS
+from psutil import FREEBSD, LINUX, MACOS, WINDOWS
 from PySide6.QtCore import QSize, Qt
 from PySide6.QtWidgets import (
     QLabel,
@@ -89,7 +89,9 @@ class CentralWidget(QWidget):
         )
         self.q_list_widget_add_item("q_input_device", q_stacked_widget_index)
 
-        # CPU
+        # =====================================================================
+        # --- CPU related functions
+        # =====================================================================
         q_stacked_widget_index = self.q_stacked_widget.addWidget(cpu_times.Widget())
         self.q_list_widget_add_item("cpu_times", q_stacked_widget_index)
 
@@ -108,7 +110,9 @@ class CentralWidget(QWidget):
         q_stacked_widget_index = self.q_stacked_widget.addWidget(getloadavg.Widget())
         self.q_list_widget_add_item("getloadavg", q_stacked_widget_index)
 
-        # Memory
+        # =====================================================================
+        # --- system memory related functions
+        # =====================================================================
         q_stacked_widget_index = self.q_stacked_widget.addWidget(
             virtual_memory.Widget()
         )
@@ -117,7 +121,9 @@ class CentralWidget(QWidget):
         q_stacked_widget_index = self.q_stacked_widget.addWidget(swap_memory.Widget())
         self.q_list_widget_add_item("swap_memory", q_stacked_widget_index)
 
-        # Disk
+        # =====================================================================
+        # --- disks/partitions related functions
+        # =====================================================================
         q_stacked_widget_index = self.q_stacked_widget.addWidget(
             disk_partitions.Widget()
         )
@@ -128,7 +134,9 @@ class CentralWidget(QWidget):
         )
         self.q_list_widget_add_item("disk_io_counters", q_stacked_widget_index)
 
-        # Network
+        # =====================================================================
+        # --- network related functions
+        # =====================================================================
         q_stacked_widget_index = self.q_stacked_widget.addWidget(net_if_stats.Widget())
         self.q_list_widget_add_item("net_if_stats", q_stacked_widget_index)
 
@@ -137,11 +145,14 @@ class CentralWidget(QWidget):
         )
         self.q_list_widget_add_item("net_connections", q_stacked_widget_index)
 
-        # Sensors
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            sensors_temperatures.Widget()
-        )
-        self.q_list_widget_add_item("sensors_temperatures", q_stacked_widget_index)
+        # =====================================================================
+        # --- sensors
+        # =====================================================================
+        if LINUX or MACOS:
+            q_stacked_widget_index = self.q_stacked_widget.addWidget(
+                sensors_temperatures.Widget()
+            )
+            self.q_list_widget_add_item("sensors_temperatures", q_stacked_widget_index)
 
         if LINUX:
             q_stacked_widget_index = self.q_stacked_widget.addWidget(
@@ -149,12 +160,15 @@ class CentralWidget(QWidget):
             )
             self.q_list_widget_add_item("sensors_fans", q_stacked_widget_index)
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            sensors_battery.Widget()
-        )
-        self.q_list_widget_add_item("sensors_battery", q_stacked_widget_index)
+        if LINUX or WINDOWS or FREEBSD or MACOS:
+            q_stacked_widget_index = self.q_stacked_widget.addWidget(
+                sensors_battery.Widget()
+            )
+            self.q_list_widget_add_item("sensors_battery", q_stacked_widget_index)
 
-        # Other system info
+        # =====================================================================
+        # --- other system related functions
+        # =====================================================================
         q_stacked_widget_index = self.q_stacked_widget.addWidget(boot_time.Widget())
         self.q_list_widget_add_item("boot_time", q_stacked_widget_index)
 
@@ -165,7 +179,9 @@ class CentralWidget(QWidget):
         q_stacked_widget_index = self.q_stacked_widget.addWidget(process_iter.Widget())
         self.q_list_widget_add_item("process_iter", q_stacked_widget_index)
 
-        # Windows services
+        # =====================================================================
+        # --- Windows services
+        # =====================================================================
         if WINDOWS:
             # TODO: Implement functionality
             q_stacked_widget_index = self.q_stacked_widget.addWidget(QWidget())

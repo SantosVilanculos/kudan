@@ -1,4 +1,4 @@
-from psutil import sensors_battery
+import psutil
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent, QTextDocument
 from PySide6.QtWidgets import QTextBrowser, QVBoxLayout, QWidget
@@ -21,7 +21,8 @@ class Widget(QWidget):
 
     def q_timer_timeout(self) -> None:
         q_text_document = QTextDocument()
-        q_text_document.setPlainText(str(sensors_battery()))
+        if psutil.LINUX or psutil.WINDOWS or psutil.FREEBSD or psutil.MACOS:
+            q_text_document.setPlainText(str(psutil.sensors_battery()))
         self.q_text_browser.setDocument(q_text_document)
 
     def showEvent(self, event: QShowEvent) -> None:
