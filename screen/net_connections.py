@@ -1,7 +1,7 @@
 from datetime import datetime
 from logging import WARNING
 
-from more_itertools import unique
+# from more_itertools import unique
 from psutil import Process, _common, net_connections, process_iter
 from PySide6.QtCore import QTimer, QUrl
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
@@ -213,7 +213,7 @@ class Widget(QWidget):
         q_table_widget_selected_items = self.q_table_widget.selectedItems()
         if len(q_table_widget_selected_items) > 0:
             row_list = list(
-                unique(
+                set(
                     self.q_table_widget.row(x)
                     for x in self.q_table_widget.selectedItems()
                 )
@@ -236,7 +236,7 @@ class Widget(QWidget):
         q_table_widget_selected_items = self.q_table_widget.selectedItems()
         if len(q_table_widget_selected_items) > 0:
             row_list = list(
-                unique(
+                set(
                     self.q_table_widget.row(x)
                     for x in self.q_table_widget.selectedItems()
                 )
