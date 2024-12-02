@@ -28,9 +28,9 @@ def q_action_1_triggered(q_action: QAction, q_main_window: QMainWindow) -> None:
 def main():
     cp = contents_path()
 
-    _ = QApplication(sys.argv)
+    q_application = QApplication(sys.argv)
 
-    _.setStyle("Fusion")
+    q_application.setStyle("Fusion")
 
     q_palette = QPalette()
     q_palette.setColor(QPalette.ColorRole.WindowText, QColor("#ffffff"))
@@ -57,7 +57,7 @@ def main():
     # q_palette.setColor(QPalette.ColorRole.Accent, QColor("#ff0000"))
     # q_palette.setColor(QPalette.ColorRole.NColorRoles, QColor("#ff0000"))
 
-    _.setPalette(q_palette)
+    q_application.setPalette(q_palette)
 
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-bold.ttf")))
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-medium.ttf")))
@@ -68,7 +68,7 @@ def main():
     q_font.setWeight(QFont.Weight.Normal)
     q_font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
 
-    _.setFont(q_font)
+    q_application.setFont(q_font)
 
     q_icon = QIcon(str(cp.joinpath("favicon.ico")))
 
@@ -106,15 +106,15 @@ def main():
         # q_menu.addSeparator()
 
         q_action_2 = QAction("Exit")
-        q_action_2.triggered.connect(_.quit)
+        q_action_2.triggered.connect(q_application.quit)
         q_menu.addAction(q_action_2)
 
         q_system_tray_icon.setContextMenu(q_menu)
         q_system_tray_icon.show()
-        _.setQuitOnLastWindowClosed(not q_system_tray_icon.isVisible())
+        q_application.setQuitOnLastWindowClosed(not q_system_tray_icon.isVisible())
 
     q_main_window.show()
-    sys.exit(_.exec())
+    sys.exit(q_application.exec())
 
 
 if __name__ == "__main__":

@@ -1,20 +1,25 @@
+from logging import WARNING
+
 from psutil import AccessDenied, NoSuchProcess, Process, process_iter
 from PySide6.QtCore import QMargins, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
+    QMessageBox,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
 )
 
+from environment import logger
+
 
 class Widget(QWidget):
     def __init__(self) -> None:
         super().__init__()
-
+        self.logger = logger()
         self.q_v_box_layout = QVBoxLayout(self)
         self.q_v_box_layout.setContentsMargins(QMargins(0, 0, 0, 0))
         self.q_v_box_layout.setSpacing(0)
@@ -41,6 +46,9 @@ class Widget(QWidget):
         self.q_table_widget.setContextMenuPolicy(
             Qt.ContextMenuPolicy.ActionsContextMenu
         )
+        self.q_table_widget.addAction("SIGKILL", self.process_kill)
+        self.q_table_widget.addAction("SIGTERM", self.process_terminate)
+
         self.q_table_widget.setSortingEnabled(True)
         self.q_table_widget.sortByColumn(0, Qt.SortOrder.AscendingOrder)
         self.q_v_box_layout.addWidget(self.q_table_widget)
@@ -117,3 +125,43 @@ class Widget(QWidget):
         self.q_table_widget.setItem(row, column, username)
 
         self.q_table_widget.setSortingEnabled(True)
+
+    def process_kill(self) -> None:
+        q_table_widget_selected_items = self.q_table_widget.selectedItems()
+        if len(q_table_widget_selected_items) > 0:
+            row_list = list(
+                set(
+                    self.q_table_widget.row(x)
+                    for x in self.q_table_widget.selectedItems()
+                )
+            )
+            for row in row_list:
+                pid = int(self.q_table_widget.item(row, 0).text())
+                try:
+                    process = Process(pid)
+                    process.kill()
+                except Exception as exception:
+                    msg_box = QMessageBox(self)
+                    msg_box.setIcon(QMessageBox.Warning)
+                    msg_box.setText("Warning!")
+                    msg_box.setInformativeText(f"Unable to kill process (pid={pid})")
+                    msg_box.setStandardButtons(QMessageBox.Ok)
+                    msg_box.show()
+                    self.logger.log(WARNING, f"Unable to kill process (pid={pid})")
+
+    def process_terminate(self) -> None:
+        q_table_widget_selected_items = self.q_table_widget.selectedItems()
+        if len(q_table_widget_selected_items) > 0:
+            row_list = list(
+                set(
+                    self.q_table_widget.row(x)
+                    for x in self.q_table_widget.selectedItems()
+                )
+            )
+            for row in row_list:
+                pid = int(self.q_table_widget.item(row, 0).text())
+                try:
+                    process = Process(pid)
+                    process.terminate()
+                except Exception as exception:
+                    self.logger.log(WARNING, f"Unable to terminate process (pid={pid})")
