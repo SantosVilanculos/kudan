@@ -3,12 +3,11 @@ from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
 
 from menu import Menu
 from screen import (
-    boot_time,
-    cpu_count,
     cpu_freq,
     cpu_percent,
     cpu_stats,
     cpu_times,
+    dashboard,
     disk_io_counters,
     disk_partitions,
     getloadavg,
@@ -46,7 +45,7 @@ class CentralWidget(QWidget):
         q_splitter.setStyleSheet("QSplitter::handle{background-color:#E0E0E0}")
 
         # index
-        self.addWidget("―", QWidget())
+        self.addWidget("―", dashboard.Widget())
 
         # I/O
         self.addWidget("q_screen", q_screen.Widget())
@@ -65,8 +64,6 @@ class CentralWidget(QWidget):
         self.addWidget("cpu_times", cpu_times.Widget())
 
         self.addWidget("cpu_percent", cpu_percent.Widget())
-
-        self.addWidget("cpu_count", cpu_count.Widget())
 
         self.addWidget("cpu_stats", cpu_stats.Widget())
 
@@ -110,8 +107,6 @@ class CentralWidget(QWidget):
         # =====================================================================
         # --- other system related functions
         # =====================================================================
-        self.addWidget("boot_time", boot_time.Widget())
-
         self.addWidget("users", users.Widget())
 
         # Processes

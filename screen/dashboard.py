@@ -1,4 +1,6 @@
-from psutil import cpu_count
+from datetime import datetime
+
+from psutil import boot_time, cpu_count
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent, QTextDocument
 from PySide6.QtWidgets import QTextBrowser, QVBoxLayout, QWidget
@@ -21,8 +23,12 @@ class Widget(QWidget):
 
     def q_timer_timeout(self) -> None:
         q_text_document = QTextDocument()
+        bt = str(datetime.fromtimestamp(boot_time()).strftime("%Y-%m-%d %H:%M:%S"))
+        a = datetime.fromtimestamp(boot_time())
+        b = datetime.now()
+        e = b - a
         q_text_document.setPlainText(
-            f"— logical=False\n{str(cpu_count(logical=False)) }\n\n— logical=True\n{str(cpu_count(logical=True))}"
+            f"― cpu_count (logical=False)\n{str(cpu_count(logical=False)) }\n\n― cpu_count (logical=True)\n{str(cpu_count(logical=True))}\n\n― boot_time\n{bt} ({str(e)})"
         )
         self.q_text_browser.setDocument(q_text_document)
 
