@@ -15,7 +15,6 @@ from screen import (
     net_connections,
     net_if_stats,
     process_iter,
-    q_audio_device,
     q_camera_device,
     q_input_device,
     q_screen,
@@ -47,117 +46,76 @@ class CentralWidget(QWidget):
         q_splitter.setStyleSheet("QSplitter::handle{background-color:#E0E0E0}")
 
         # index
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(QWidget())
-        self.menu.add("―", q_stacked_widget_index)
+        self.addWidget("―", QWidget())
 
         # I/O
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(q_screen.Widget())
-        self.menu.add("q_screen", q_stacked_widget_index)
+        self.addWidget("q_screen", q_screen.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            q_camera_device.Widget()
-        )
-        self.menu.add("q_camera_device", q_stacked_widget_index)
+        self.addWidget("q_camera_device", q_camera_device.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            q_audio_device.Widget()
-        )
-        self.menu.add("q_audio_device", q_stacked_widget_index)
+        self.addWidget("q_audio_device", q_input_device.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            q_input_device.Widget()
-        )
-        self.menu.add("q_input_device", q_stacked_widget_index)
+        self.addWidget("q_audio_device", q_input_device.Widget())
+
+        self.addWidget("q_input_device", q_input_device.Widget())
 
         # =====================================================================
         # --- CPU related functions
         # =====================================================================
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(cpu_times.Widget())
-        self.menu.add("cpu_times", q_stacked_widget_index)
+        self.addWidget("cpu_times", cpu_times.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(cpu_percent.Widget())
-        self.menu.add("cpu_percent", q_stacked_widget_index)
+        self.addWidget("cpu_percent", cpu_percent.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(cpu_count.Widget())
-        self.menu.add("cpu_count", q_stacked_widget_index)
+        self.addWidget("cpu_count", cpu_count.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(cpu_stats.Widget())
-        self.menu.add("cpu_stats", q_stacked_widget_index)
+        self.addWidget("cpu_stats", cpu_stats.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(cpu_freq.Widget())
-        self.menu.add("cpu_freq", q_stacked_widget_index)
+        self.addWidget("cpu_freq", cpu_freq.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(getloadavg.Widget())
-        self.menu.add("getloadavg", q_stacked_widget_index)
+        self.addWidget("getloadavg", getloadavg.Widget())
 
         # =====================================================================
         # --- system memory related functions
         # =====================================================================
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            virtual_memory.Widget()
-        )
-        self.menu.add("virtual_memory", q_stacked_widget_index)
+        self.addWidget("virtual_memory", virtual_memory.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(swap_memory.Widget())
-        self.menu.add("swap_memory", q_stacked_widget_index)
+        self.addWidget("swap_memory", swap_memory.Widget())
 
         # =====================================================================
         # --- disks/partitions related functions
         # =====================================================================
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            disk_partitions.Widget()
-        )
-        self.menu.add("disk_partitions", q_stacked_widget_index)
+        self.addWidget("disk_partitions", disk_partitions.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            disk_io_counters.Widget()
-        )
-        self.menu.add("disk_io_counters", q_stacked_widget_index)
+        self.addWidget("disk_io_counters", disk_io_counters.Widget())
 
         # =====================================================================
         # --- network related functions
         # =====================================================================
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(net_if_stats.Widget())
-        self.menu.add("net_if_stats", q_stacked_widget_index)
+        self.addWidget("net_if_stats", net_if_stats.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(
-            net_connections.Widget()
-        )
-        self.menu.add("net_connections", q_stacked_widget_index)
+        self.addWidget("net_connections", net_connections.Widget())
 
         # =====================================================================
         # --- sensors
         # =====================================================================
         if LINUX or MACOS:
-            q_stacked_widget_index = self.q_stacked_widget.addWidget(
-                sensors_temperatures.Widget()
-            )
-            self.menu.add("sensors_temperatures", q_stacked_widget_index)
+            self.addWidget("sensors_temperatures", sensors_temperatures.Widget())
 
         if LINUX:
-            q_stacked_widget_index = self.q_stacked_widget.addWidget(
-                sensors_fans.Widget()
-            )
-            self.menu.add("sensors_fans", q_stacked_widget_index)
+            self.addWidget("sensors_fans", sensors_fans.Widget())
 
         if LINUX or WINDOWS or FREEBSD or MACOS:
-            q_stacked_widget_index = self.q_stacked_widget.addWidget(
-                sensors_battery.Widget()
-            )
-            self.menu.add("sensors_battery", q_stacked_widget_index)
+            self.addWidget("sensors_battery", sensors_battery.Widget())
 
         # =====================================================================
         # --- other system related functions
         # =====================================================================
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(boot_time.Widget())
-        self.menu.add("boot_time", q_stacked_widget_index)
+        self.addWidget("boot_time", boot_time.Widget())
 
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(users.Widget())
-        self.menu.add("users", q_stacked_widget_index)
+        self.addWidget("users", users.Widget())
 
         # Processes
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(process_iter.Widget())
-        self.menu.add("process_iter", q_stacked_widget_index)
+        self.addWidget("process_iter", process_iter.Widget())
 
         # =====================================================================
         # --- Windows services
@@ -176,3 +134,7 @@ class CentralWidget(QWidget):
             q_splitter.handle(1).setEnabled(False)
 
         q_v_box_layout.addWidget(q_splitter)
+
+    def addWidget(self, accessible_text_role: str, q_widget: QWidget) -> None:
+        q_stacked_widget_index = self.q_stacked_widget.addWidget(q_widget)
+        self.menu.add(accessible_text_role, q_stacked_widget_index)
