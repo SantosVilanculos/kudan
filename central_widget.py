@@ -1,4 +1,5 @@
 from psutil import FREEBSD, LINUX, MACOS, WINDOWS
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
 
 from menu import Menu
@@ -35,15 +36,20 @@ class CentralWidget(QWidget):
         q_v_box_layout.setSpacing(0)
         self.setLayout(q_v_box_layout)
 
+        q_splitter = QSplitter()
+        q_splitter.setHandleWidth(1)
+        q_splitter.setStyleSheet("QSplitter::handle{background-color:#E0E0E0}")
+
         self.menu = Menu()
         self.q_stacked_widget = QStackedWidget()
         self.menu.itemActivated.connect(
             lambda user_data: self.q_stacked_widget.setCurrentIndex(int(user_data))
         )
-        q_splitter = QSplitter()
-        q_splitter.setHandleWidth(1)
-        q_splitter.setStyleSheet("QSplitter::handle{background-color:#E0E0E0}")
 
+        q_shortcut = QShortcut(QKeySequence("Ctrl+B"), self)
+        q_shortcut.activated.connect(
+            lambda: self.menu.setVisible(not self.menu.isVisible())
+        )
         # index
         self.addWidget("―", dashboard.Widget())
 
