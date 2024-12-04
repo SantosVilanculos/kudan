@@ -1,6 +1,6 @@
 from math import floor, log2
 
-from psutil import virtual_memory
+from psutil import BSD, LINUX, MACOS, POSIX, virtual_memory
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent
 from PySide6.QtWidgets import QFormLayout, QLabel, QProgressBar, QVBoxLayout, QWidget
@@ -99,12 +99,16 @@ class Widget(QWidget):
         self.percent.setText(f"{vm.percent}%")
         self.used.setText(str(self.format_bytes(vm.used)))
         self.free.setText(str(self.format_bytes(vm.free)))
-        self.active.setText(str(self.format_bytes(vm.active)))
-        self.inactive.setText(str(self.format_bytes(vm.inactive)))
-        self.buffers.setText(str(self.format_bytes(vm.buffers)))
-        self.cached.setText(str(self.format_bytes(vm.cached)))
-        self.shared.setText(str(self.format_bytes(vm.shared)))
-        self.slab.setText(str(self.format_bytes(vm.slab)))
+        if POSIX:
+            self.active.setText(str(self.format_bytes(vm.active)))
+            self.inactive.setText(str(self.format_bytes(vm.inactive)))
+        if BSD or LINUX:
+            self.buffers.setText(str(self.format_bytes(vm.buffers)))
+            self.cached.setText(str(self.format_bytes(vm.cached)))
+        if BSD:
+            self.shared.setText(str(self.format_bytes(vm.shared)))
+        if MACOS or BSD:
+            self.slab.setText(str(self.format_bytes(vm.slab)))
 
         self.q_progress_bar.setMaximum(100)
         self.q_progress_bar.setValue(int(vm.percent))
