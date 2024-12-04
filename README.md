@@ -11,6 +11,9 @@
       alt="last commit"
     />
   </a>
+  <a href="https://github.com/SantosVilanculos/kudan/releases">
+  <img alt="release" src="https://img.shields.io/github/v/release/SantosVilanculos/kudan">
+  </a>
 </div>
 
 ![](./screenshot.png)
