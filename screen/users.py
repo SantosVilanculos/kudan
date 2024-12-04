@@ -56,22 +56,22 @@ class Widget(QWidget):
 
     def q_timer_timeout(self) -> None:
         users_list: list[_common.suser] = users()
-        users_list_pid: list[int] = [int(user.pid) for user in users_list]
+        users_list_pid: list[str] = [str(user.pid) for user in users_list]
 
         # Create a set of PIDs from the q_table_widget
         q_table_widget_pids = set(
-            int(self.q_table_widget.item(index, 0).text())
+            str(self.q_table_widget.item(index, 0).text())
             for index in range(self.q_table_widget.rowCount())
         )
 
         # Remove the users from the users_list that are already present in the q_table_widget
         users_list = [
-            user for user in users_list if int(user.pid) not in q_table_widget_pids
+            user for user in users_list if str(user.pid) not in q_table_widget_pids
         ]
 
         # Remove the rows from the q_table_widget that are no longer in the users_list
         for index in reversed(range(self.q_table_widget.rowCount())):
-            pid = int(self.q_table_widget.item(index, 0).text())
+            pid = str(self.q_table_widget.item(index, 0).text())
             if pid not in users_list_pid:
                 self.q_table_widget.removeRow(index)
 
