@@ -1,9 +1,19 @@
-<p align="center">
-    <img src="./icon.ico" />
-</p>
+<div align="left">
+  <a href="https://github.com/SantosVilanculos/configuration/blob/main/LICENSE">
+    <img
+      src="https://img.shields.io/github/license/SantosVilanculos/configuration"
+      alt="license"
+    />
+  </a>
+  <a href="https://github.com/SantosVilanculos/configuration/commits/main">
+    <img
+      src="https://img.shields.io/github/last-commit/SantosVilanculos/configuration"
+      alt="last commit"
+    />
+  </a>
+</div>
 
-![X (Formerly Twitter)](https://img.shields.io/twitter/follow/quollouq)
-![LICENSE](https://img.shields.io/github/license/westernqoul/kudan)
+![](./screenshot.png)
 
 <p align="justify">
  <strong>Kudan</strong> is a desktop operating system monitoring application that provides real-time insights into system performance, resource management and key metrics, offering a reliable and efficient way to monitor your computer.
@@ -15,21 +25,9 @@
 ---
 
 ```sh
-python -m venv "./.venv"
-source "./venv/Scripts/activate"
-```
-
-```sh
-python3 -m venv "./.venv"
-source "./venv/bin/activate"
-```
-
-```sh
 pip install -r requirements.txt
 ```
 
 ```sh
 pyinstaller "./main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./favicon.ico" --add-data="./favicon.ico:./" --add-data="./inter:./" --windowed
 ```
-
-![](./screenshot.png)
