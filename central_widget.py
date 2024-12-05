@@ -1,5 +1,6 @@
 from psutil import FREEBSD, LINUX, MACOS, WINDOWS
-from PySide6.QtGui import QKeySequence, QShortcut
+from PySide6.QtCore import QKeyCombination, Qt
+from PySide6.QtGui import QShortcut
 from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
 
 from menu import Menu
@@ -46,7 +47,9 @@ class CentralWidget(QWidget):
             lambda user_data: self.q_stacked_widget.setCurrentIndex(int(user_data))
         )
 
-        q_shortcut = QShortcut(QKeySequence("Ctrl+B"), self)
+        q_shortcut = QShortcut(
+            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_B), self
+        )
         q_shortcut.activated.connect(
             lambda: self.menu.setVisible(not self.menu.isVisible())
         )
