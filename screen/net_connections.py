@@ -7,8 +7,11 @@ from PySide6.QtCore import QTimer, QUrl
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
     QAbstractItemView,
+    QComboBox,
+    QHBoxLayout,
     QHeaderView,
     QMessageBox,
+    QSizePolicy,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -19,20 +22,42 @@ from environment import logger
 
 
 class Widget(QWidget):
+
     def __init__(self) -> None:
         super().__init__()
+        self.kind = "all"
         self.logger = logger()
 
         q_v_box_layout = QVBoxLayout(self)
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.setSpacing(0)
 
-        # h = QWidget()
-        # h.setFixedHeight(44)
-        # h.setStyleSheet(
-        #     "QWidget{border-bottom:1px solid #e0e0e0;background-color:#fff}"
-        # )
-        # q_v_box_layout.addWidget(h)
+        q_widget = QWidget()
+        q_widget.setFixedHeight(44)
+        q_h_box_layout = QHBoxLayout(q_widget)
+        # q_h_box_layout.setContentsMargins(0, 0, 0, 0)
+        self.q_combo_box = QComboBox()
+        self.q_combo_box.setSizePolicy(
+            QSizePolicy.Policy.Minimum,
+            QSizePolicy.Policy.Preferred,
+        )
+        self.q_combo_box.addItem(
+            "the sum of all the possible families and protocols", "all"
+        )
+        self.q_combo_box.addItem("IPv4 and IPv6", "inet")
+        self.q_combo_box.addItem("IPv4", "inet4")
+        self.q_combo_box.addItem("IPv6", "inet6")
+        self.q_combo_box.addItem("TCP", "tcp")
+        self.q_combo_box.addItem("TCP over IPv4", "tcp4")
+        self.q_combo_box.addItem("TCP over IPv6", "tcp6")
+        self.q_combo_box.addItem("UDP", "udp")
+        self.q_combo_box.addItem("UDP over IPv4", "udp4")
+        self.q_combo_box.addItem("UDP over IPv6", "udp6")
+        self.q_combo_box.addItem("UNIX socket (both UDP and TCP protocols)", "unix")
+
+        self.q_combo_box.currentIndexChanged.connect(lambda index: self.k(index))
+        q_h_box_layout.addWidget(self.q_combo_box, 0, Qt.AlignmentFlag.AlignLeft)
+        q_v_box_layout.addWidget(q_widget)
 
         self.q_table_widget = QTableWidget()
         self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
@@ -86,6 +111,10 @@ class Widget(QWidget):
         self.q_timer = QTimer(self)
         self.q_timer.setInterval(1_000)
         self.q_timer.timeout.connect(self.q_timer_timeout)
+
+    def k(self, index: int) -> None:
+        # TODO: update table
+        self.kind = self.q_combo_box.currentData(Qt.ItemDataRole.UserRole)
 
     def q_table_widget_insert_row(self, row: int, sconn: _common.sconn) -> None:
         self.q_table_widget.setSortingEnabled(False)
@@ -159,7 +188,9 @@ class Widget(QWidget):
         self.q_table_widget.setSortingEnabled(True)
 
     def q_timer_timeout(self) -> None:
-        n = net_connections()
+
+        print(self.kind)
+        n = net_connections(str(self.kind))
         process_list: list[Process] = list(process_iter())
         if not process_list:
             return
