@@ -1,4 +1,4 @@
-from psutil import _common, disk_io_counters
+from psutil import FREEBSD, LINUX, _common, disk_io_counters
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -118,9 +118,11 @@ class Widget(QWidget):
         self.write_bytes.setText(str(sdiskio.write_bytes))
         self.read_time.setText(str(sdiskio.read_time))
         self.write_time.setText(str(sdiskio.write_time))
-        self.busy_time.setText(f"{sdiskio.busy_time} ms")
-        self.read_merged_count.setText(str(sdiskio.read_merged_count))
-        self.write_merged_count.setText(str(sdiskio.write_merged_count))
+        if LINUX or FREEBSD:
+            self.busy_time.setText(f"{sdiskio.busy_time} ms")
+        if LINUX:
+            self.read_merged_count.setText(str(sdiskio.read_merged_count))
+            self.write_merged_count.setText(str(sdiskio.write_merged_count))
 
         p = disk_io_counters(perdisk=True, nowrap=True)
 
@@ -205,15 +207,24 @@ class Widget(QWidget):
         self.q_table_widget.setItem(row, column, write_time)
 
         column = 7
-        busy_time = QTableWidgetItem(f"{sdiskio.busy_time} ms")
+        if LINUX or FREEBSD:
+            busy_time = QTableWidgetItem(f"{sdiskio.busy_time} ms")
+        else:
+            busy_time = QTableWidgetItem("—")
         self.q_table_widget.setItem(row, column, busy_time)
 
         column = 8
-        read_merged_count = QTableWidgetItem(str(sdiskio.read_merged_count))
+        if LINUX:
+            read_merged_count = QTableWidgetItem(str(sdiskio.read_merged_count))
+        else:
+            read_merged_count = QTableWidgetItem("—")
         self.q_table_widget.setItem(row, column, read_merged_count)
 
         column = 9
-        write_merged_count = QTableWidgetItem(str(sdiskio.write_merged_count))
+        if LINUX:
+            write_merged_count = QTableWidgetItem(str(sdiskio.write_merged_count))
+        else:
+            write_merged_count = QTableWidgetItem("—")
         self.q_table_widget.setItem(row, column, write_merged_count)
 
         self.q_table_widget.setSortingEnabled(True)
@@ -253,14 +264,23 @@ class Widget(QWidget):
 
         column = 7
         busy_time = self.q_table_widget.item(row, column)
-        busy_time.setText(f"{sdiskio.busy_time} ms")
+        if LINUX or FREEBSD:
+            busy_time.setText(f"{sdiskio.busy_time} ms")
+        else:
+            busy_time.setText("—")
 
         column = 8
         read_merged_count = self.q_table_widget.item(row, column)
-        read_merged_count.setText(str(sdiskio.read_merged_count))
+        if LINUX:
+            read_merged_count.setText(str(sdiskio.read_merged_count))
+        else:
+            read_merged_count.setText("—")
 
         column = 9
         write_merged_count = self.q_table_widget.item(row, column)
-        write_merged_count.setText(str(sdiskio.write_merged_count))
+        if LINUX:
+            write_merged_count.setText(str(sdiskio.write_merged_count))
+        else:
+            write_merged_count.setText("—")
 
         self.q_table_widget.setSortingEnabled(True)
