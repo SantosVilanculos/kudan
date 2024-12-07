@@ -33,6 +33,7 @@ def main():
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-bold.ttf")))
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-medium.ttf")))
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-regular.ttf")))
+    QFontDatabase.addApplicationFont(str(cp.joinpath("gitlab_mono.ttf")))
 
     q_font = QFont("Inter")
     q_font.setPixelSize(13)

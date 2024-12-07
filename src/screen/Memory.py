@@ -14,6 +14,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from components.ML import ML
 from components.Page import Page
 
 
@@ -37,13 +38,13 @@ def format_bytes(bytes_value) -> str:
     # Format with appropriate decimal places based on size
     if value >= 100:
         # For large numbers, no decimal places
-        return f"{value:.0f} {units[unit_index]}"
+        return f"{value:.0f}{units[unit_index]}"
     elif value >= 10:
         # For medium numbers, one decimal place
-        return f"{value:.1f} {units[unit_index]}"
+        return f"{value:.1f}{units[unit_index]}"
     else:
         # For small numbers, two decimal places
-        return f"{value:.2f} {units[unit_index]}"
+        return f"{value:.2f}{units[unit_index]}"
 
 
 class VirtualMemory(QWidget):
@@ -84,53 +85,53 @@ class VirtualMemory(QWidget):
         q_form_layout = QFormLayout()
         q_form_layout.setVerticalSpacing(12)
 
-        self.total = QLabel()
+        self.total = ML()
         self.total.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("total", self.total)
 
-        self.available = QLabel()
+        self.available = ML()
         self.available.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("available", self.available)
 
-        self.percent = QLabel()
+        self.percent = ML()
         self.percent.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("percent", self.percent)
 
-        self.used = QLabel()
+        self.used = ML()
         self.used.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("used", self.used)
 
-        self.free = QLabel()
+        self.free = ML()
         self.free.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("free", self.free)
 
         if psutil.LINUX or psutil.MACOS:
-            self.active = QLabel()
+            self.active = ML()
             self.active.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("active", self.active)
 
-            self.inactive = QLabel()
+            self.inactive = ML()
             self.inactive.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("inactive", self.inactive)
 
         if psutil.LINUX or psutil.BSD:
-            self.buffers = QLabel()
+            self.buffers = ML()
             self.buffers.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("buffers", self.buffers)
 
-            self.cached = QLabel()
+            self.cached = ML()
             self.cached.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("cached", self.cached)
 
-            self.shared = QLabel()
+            self.shared = ML()
             self.shared.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("shared", self.shared)
         if psutil.LINUX:
-            self.slab = QLabel()
+            self.slab = ML()
             self.slab.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("slab", self.slab)
         if psutil.BSD or psutil.MACOS:
-            self.wired = QLabel()
+            self.wired = ML()
             self.wired.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("wired", self.wired)
 
@@ -199,28 +200,28 @@ class SwapMemory(QWidget):
         q_form_layout = QFormLayout()
         q_form_layout.setVerticalSpacing(12)
 
-        self.total = QLabel()
+        self.total = ML()
         self.total.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("total", self.total)
 
-        self.used = QLabel()
+        self.used = ML()
         self.used.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("used", self.used)
 
-        self.free = QLabel()
+        self.free = ML()
         self.free.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("free", self.free)
 
-        self.percent = QLabel()
+        self.percent = ML()
         self.percent.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("percent", self.percent)
 
         if not psutil.WINDOWS:
-            self.sin = QLabel()
+            self.sin = ML()
             self.sin.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("sin", self.sin)
 
-            self.sout = QLabel()
+            self.sout = ML()
             self.sout.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("sout", self.sout)
 
