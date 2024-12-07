@@ -25,6 +25,7 @@ from screen import (
     swap_memory,
     users,
     virtual_memory,
+    win_service_iter,
 )
 
 
@@ -125,7 +126,7 @@ class CentralWidget(QWidget):
         # =====================================================================
         if WINDOWS:
             # TODO: Implement functionality
-            self.menu.add("win_service_iter", QWidget())
+            self.addWidget("win_service_iter", win_service_iter.Widget())
 
         q_splitter.addWidget(self.menu)
 
