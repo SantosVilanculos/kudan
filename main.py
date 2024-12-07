@@ -2,7 +2,7 @@ import sys
 from functools import partial
 
 from PySide6.QtCore import QSize
-from PySide6.QtGui import QAction, QFont, QFontDatabase, QIcon, QPalette
+from PySide6.QtGui import QAction, QFont, QFontDatabase, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow, QMenu, QSystemTrayIcon
 
 from central_widget import CentralWidget
@@ -30,33 +30,6 @@ def main():
 
     q_application = QApplication(sys.argv)
 
-    # q_application.setStyle("Fusion")
-
-    q_palette = QPalette()
-    # q_palette.setColor(QPalette.ColorRole.WindowText, QColor("#e0e0e0"))
-    # q_palette.setColor(QPalette.ColorRole.Button, QColor("#353535"))
-    # q_palette.setColor(QPalette.ColorRole.Light, QColor("#4a4a4a"))
-    # q_palette.setColor(QPalette.ColorRole.Midlight, QColor("#3d3d3d"))
-    # q_palette.setColor(QPalette.ColorRole.Dark, QColor("#202020"))
-    # q_palette.setColor(QPalette.ColorRole.Mid, QColor("#2c2c2c"))
-    # q_palette.setColor(QPalette.ColorRole.Text, QColor("#f0f0f0"))
-    # q_palette.setColor(QPalette.ColorRole.BrightText, QColor("#ffffff"))
-    # q_palette.setColor(QPalette.ColorRole.ButtonText, QColor("#e6e6e6"))
-    # q_palette.setColor(QPalette.ColorRole.Base, QColor("#2c2c2c"))
-    # q_palette.setColor(QPalette.ColorRole.Window, QColor("#1e1e1e"))
-    # q_palette.setColor(QPalette.ColorRole.Shadow, QColor("#121212"))
-    # q_palette.setColor(QPalette.ColorRole.Highlight, QColor("#4a4a4a"))
-    # q_palette.setColor(QPalette.ColorRole.HighlightedText, QColor("#ffffff"))
-    # q_palette.setColor(QPalette.ColorRole.Link, QColor("#5a9eff"))
-    # q_palette.setColor(QPalette.ColorRole.LinkVisited, QColor("#7b64ff"))
-    # q_palette.setColor(QPalette.ColorRole.AlternateBase, QColor("#2a2a2a"))
-    # q_palette.setColor(QPalette.ColorRole.ToolTipBase, QColor("#3a3a3a"))
-    # q_palette.setColor(QPalette.ColorRole.ToolTipText, QColor("#e0e0e0"))
-    # q_palette.setColor(QPalette.ColorRole.PlaceholderText, QColor("#707070"))
-    # q_palette.setColor(QPalette.ColorRole.Accent, QColor("#ff0000"))
-    # q_palette.setColor(QPalette.ColorRole.NColorRoles, QColor("#ff0000"))
-    q_application.setPalette(q_palette)
-
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-bold.ttf")))
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-medium.ttf")))
     QFontDatabase.addApplicationFont(str(cp.joinpath("inter/4.0/inter-regular.ttf")))
@@ -67,7 +40,9 @@ def main():
     q_font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
 
     q_application.setFont(q_font)
+
     q_icon = QIcon(str(cp.joinpath("favicon.ico")))
+
     q_application.setWindowIcon(q_icon)
 
     q_main_window = QMainWindow()

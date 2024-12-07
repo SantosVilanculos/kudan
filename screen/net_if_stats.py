@@ -29,7 +29,6 @@ class Tab(QWidget):
         self.q_v_box_layout.addWidget(self.q_text_browser, 0)
 
         self.q_table_widget = QTableWidget()
-        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(5)
         self.q_table_widget.setHorizontalHeaderLabels(
             ["family", "address", "netmask", "broadcast", "ptp"]

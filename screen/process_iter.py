@@ -25,7 +25,6 @@ class Widget(QWidget):
         self.q_v_box_layout.setSpacing(0)
 
         self.q_table_widget = QTableWidget()
-        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(3)
         self.q_table_widget.setHorizontalHeaderLabels(["pid", "name", "username"])
         q_table_widget_horizontal_header = self.q_table_widget.horizontalHeader()

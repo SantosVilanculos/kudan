@@ -60,7 +60,6 @@ class Widget(QWidget):
         q_v_box_layout.addWidget(q_widget)
 
         self.q_table_widget = QTableWidget()
-        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(9)
         self.q_table_widget.setHorizontalHeaderLabels(
             [

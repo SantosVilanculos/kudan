@@ -38,7 +38,6 @@ class Widget(QWidget):
         q_v_box_layout.addWidget(h)
 
         self.q_table_widget = QTableWidget()
-        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(4)
         self.q_table_widget.setHorizontalHeaderLabels(
             ["device", "mountpoint", "fstype", "opts"]

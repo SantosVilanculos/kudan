@@ -28,45 +28,35 @@ class Widget(QWidget):
         q_form_layout.setFormAlignment(Qt.AlignmentFlag.AlignLeft)
 
         self.read_count = QLabel("—")
-        self.read_count.setStyleSheet("color:#bbb")
         q_form_layout.addRow("read_count", self.read_count)
 
         self.write_count = QLabel("—")
-        self.write_count.setStyleSheet("color:#bbb")
         q_form_layout.addRow("write_count", self.write_count)
 
         self.read_bytes = QLabel("—")
-        self.read_bytes.setStyleSheet("color:#bbb")
         q_form_layout.addRow("read_bytes", self.read_bytes)
 
         self.write_bytes = QLabel("—")
-        self.write_bytes.setStyleSheet("color:#bbb")
         q_form_layout.addRow("write_bytes", self.write_bytes)
 
         self.read_time = QLabel("—")
-        self.read_time.setStyleSheet("color:#bbb")
         q_form_layout.addRow("read_time", self.read_time)
 
         self.write_time = QLabel("—")
-        self.write_time.setStyleSheet("color:#bbb")
         q_form_layout.addRow("write_time", self.write_time)
 
         self.read_merged_count = QLabel("—")
-        self.read_merged_count.setStyleSheet("color:#bbb")
         q_form_layout.addRow("read_merged_count", self.read_merged_count)
 
         self.write_merged_count = QLabel("—")
-        self.write_merged_count.setStyleSheet("color:#bbb")
         q_form_layout.addRow("write_merged_count", self.write_merged_count)
 
         self.busy_time = QLabel("—")
-        self.busy_time.setStyleSheet("color:#bbb")
         q_form_layout.addRow("busy_time", self.busy_time)
 
         q_v_box_layout.addWidget(h)
 
         self.q_table_widget = QTableWidget()
-        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(10)
         self.q_table_widget.setHorizontalHeaderLabels(
             [

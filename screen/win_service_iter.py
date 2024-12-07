@@ -20,7 +20,6 @@ class Widget(QWidget):
         self.q_v_box_layout.setSpacing(0)
 
         self.q_table_widget = QTableWidget()
-        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(5)
         self.q_table_widget.setHorizontalHeaderLabels(
             ["pid", "display_name", "name", "username", "start_type"]

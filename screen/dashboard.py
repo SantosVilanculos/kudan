@@ -1,9 +1,15 @@
 from datetime import datetime
 
 from psutil import boot_time, cpu_count
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent, QTextDocument
-from PySide6.QtWidgets import QTextBrowser, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QApplication,
+    QPushButton,
+    QTextBrowser,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class Widget(QWidget):
@@ -13,9 +19,15 @@ class Widget(QWidget):
         q_v_box_layout = QVBoxLayout(self)
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.setSpacing(0)
+        q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
         self.q_text_browser = QTextBrowser()
         self.q_text_browser.setFont(QFont("Inter", int(14 / (96 / 72)), 400))
-        q_v_box_layout.addWidget(self.q_text_browser)
+        q_v_box_layout.addWidget(self.q_text_browser, 0, Qt.AlignmentFlag.AlignTop)
+
+        q_push_button = QPushButton("...")
+        q_push_button.clicked.connect(QApplication.quit)
+        q_v_box_layout.addWidget(q_push_button)
 
         self.q_timer = QTimer(self)
         self.q_timer.setInterval(1_000)

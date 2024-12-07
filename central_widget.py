@@ -39,7 +39,6 @@ class CentralWidget(QWidget):
 
         q_splitter = QSplitter()
         q_splitter.setHandleWidth(1)
-        q_splitter.setStyleSheet("QSplitter::handle{background-color:#E0E0E0}")
 
         self.menu = Menu()
         self.q_stacked_widget = QStackedWidget()
