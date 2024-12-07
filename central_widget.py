@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
 from menu import Menu
 from screen import (
     CPU,
+    Memory,
     dashboard,
     disk_io_counters,
     disk_partitions,
@@ -18,9 +19,7 @@ from screen import (
     sensors_battery,
     sensors_fans,
     sensors_temperatures,
-    swap_memory,
     users,
-    virtual_memory,
     win_service_iter,
 )
 
@@ -61,9 +60,7 @@ class CentralWidget(QWidget):
         # =====================================================================
         # --- system memory related functions
         # =====================================================================
-        self.addWidget("virtual_memory", virtual_memory.Widget())
-
-        self.addWidget("swap_memory", swap_memory.Widget())
+        self.addWidget("Memory", Memory.Memory())
 
         # =====================================================================
         # --- disks/partitions related functions
