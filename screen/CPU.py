@@ -351,6 +351,6 @@ class CPU(Page):
         q_v_box_layout = QVBoxLayout(c)
         q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
         q_v_box_layout.setContentsMargins(24, 24, 24, 24)
-        q_v_box_layout.addWidget(C1())
+        q_v_box_layout.addWidget(C1(), 0, Qt.AlignmentFlag.AlignTop)
         q_h_box_layout.addWidget(c)
         self.setWidget(q_widget)
