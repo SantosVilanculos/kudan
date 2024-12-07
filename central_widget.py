@@ -5,14 +5,10 @@ from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
 
 from menu import Menu
 from screen import (
-    cpu_freq,
-    cpu_percent,
-    cpu_stats,
-    cpu_times,
+    CPU,
     dashboard,
     disk_io_counters,
     disk_partitions,
-    getloadavg,
     net_connections,
     net_if_stats,
     process_iter,
@@ -40,6 +36,7 @@ class CentralWidget(QWidget):
 
         q_splitter = QSplitter()
         q_splitter.setHandleWidth(1)
+        q_splitter.setChildrenCollapsible(False)
 
         self.menu = Menu()
         self.q_stacked_widget = QStackedWidget()
@@ -70,15 +67,7 @@ class CentralWidget(QWidget):
         # =====================================================================
         # --- CPU related functions
         # =====================================================================
-        self.addWidget("cpu_times", cpu_times.Widget())
-
-        self.addWidget("cpu_percent", cpu_percent.Widget())
-
-        self.addWidget("cpu_stats", cpu_stats.Widget())
-
-        self.addWidget("cpu_freq", cpu_freq.Widget())
-
-        self.addWidget("getloadavg", getloadavg.Widget())
+        self.addWidget("CPU", CPU.CPU())
 
         # =====================================================================
         # --- system memory related functions
@@ -133,7 +122,6 @@ class CentralWidget(QWidget):
         q_splitter.addWidget(self.q_stacked_widget)
         index = q_splitter.indexOf(self.q_stacked_widget)
         if index > -1:
-            q_splitter.setCollapsible(index, False)
             q_splitter.handle(index).setEnabled(False)
 
         q_v_box_layout.addWidget(q_splitter)
