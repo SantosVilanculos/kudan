@@ -285,23 +285,14 @@ class F4(QWidget):
         )
         self.q_progress_bar.setFixedHeight(24)
         self.q_progress_bar.setMaximum(100)
-        self.q_progress_bar.setTextVisible(False)
+        # self.q_progress_bar.setTextVisible(False)
+        self.q_progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
         q_v_box_layout.addWidget(self.q_progress_bar)
-
-        q_form_layout = QFormLayout()
-        q_form_layout.setVerticalSpacing(12)
-        # q_form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
-        # q_form_layout.setFormAlignment(Qt.AlignmentFlag.AlignRight)
-        self.scpupercent = QLabel()
-        self.scpupercent.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("cpu_percent", self.scpupercent)
-        q_v_box_layout.addLayout(q_form_layout)
         # TODO: cpu_percent(interval=None, percpu=True)
 
     def update(self) -> None:
         p = cpu_percent(interval=None, percpu=False)
         self.q_progress_bar.setValue(int(p))
-        self.scpupercent.setText(f"{p}%")
 
 
 class F5(QWidget):
