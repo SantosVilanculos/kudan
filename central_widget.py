@@ -53,17 +53,6 @@ class CentralWidget(QWidget):
         # index
         self.addWidget("―", dashboard.Widget())
 
-        # I/O
-        self.addWidget("q_screen", q_screen.Widget())
-
-        self.addWidget("q_camera_device", q_camera_device.Widget())
-
-        self.addWidget("q_audio_device", q_input_device.Widget())
-
-        self.addWidget("q_audio_device", q_input_device.Widget())
-
-        self.addWidget("q_input_device", q_input_device.Widget())
-
         # =====================================================================
         # --- CPU related functions
         # =====================================================================
@@ -125,6 +114,17 @@ class CentralWidget(QWidget):
             q_splitter.handle(index).setEnabled(False)
 
         q_v_box_layout.addWidget(q_splitter)
+
+        # I/O
+        self.addWidget("q_screen", q_screen.Widget())
+
+        self.addWidget("q_camera_device", q_camera_device.Widget())
+
+        self.addWidget("q_audio_device", q_input_device.Widget())
+
+        self.addWidget("q_audio_device", q_input_device.Widget())
+
+        self.addWidget("q_input_device", q_input_device.Widget())
 
     def addWidget(self, accessible_text_role: str, q_widget: QWidget) -> None:
         index = self.q_stacked_widget.addWidget(q_widget)
