@@ -9,7 +9,7 @@ from PySide6.QtWidgets import (
     QLabel,
     QProgressBar,
     QSizePolicy,
-    QSplitter,
+    QStackedLayout,
     QVBoxLayout,
     QWidget,
 )
@@ -50,7 +50,15 @@ class VirtualMemory(QWidget):
     def __init__(self):
         super().__init__()
 
-        q_v_box_layout = QVBoxLayout(self)
+        q_stacked_layout = QStackedLayout(self)
+
+        q_widget = QWidget()
+        q_widget.setObjectName("form")
+        q_widget.setStyleSheet(
+            "#form{border:1px solid #e0e0e0;background-color:#ffffff}"
+        )
+        q_v_box_layout = QVBoxLayout(q_widget)
+
         q_v_box_layout.setContentsMargins(24, 24, 24, 24)
         q_v_box_layout.setSpacing(24)
         q_label = QLabel("virtual_memory")
@@ -127,10 +135,10 @@ class VirtualMemory(QWidget):
             q_form_layout.addRow("wired", self.wired)
 
         q_v_box_layout.addLayout(q_form_layout)
-        # TODO: cpu_times(percpu=True)
+        q_stacked_layout.addWidget(q_widget)
 
     def update(self) -> None:
-        # TODO: format dates
+        # TODO: format correctly the filesizes
         svirtualmemory = psutil.virtual_memory()
 
         self.q_progress_bar.setValue(int(svirtualmemory.percent))
@@ -161,14 +169,18 @@ class SwapMemory(QWidget):
     def __init__(self):
         super().__init__()
 
-        q_v_box_layout = QVBoxLayout(self)
+        q_stacked_layout = QStackedLayout(self)
+        q_widget = QWidget()
+        q_widget.setObjectName("form")
+        q_widget.setStyleSheet(
+            "#form{border:1px solid #e0e0e0;background-color:#ffffff}"
+        )
+        q_v_box_layout = QVBoxLayout(q_widget)
         q_v_box_layout.setContentsMargins(24, 24, 24, 24)
         q_v_box_layout.setSpacing(24)
+
         q_label = QLabel("swap_memory")
         q_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        q_font = q_label.font()
-        q_font.setWeight(QFont.Weight.Medium)
-        q_label.setFont(q_font)
         q_font = q_label.font()
         q_font.setWeight(QFont.Weight.Medium)
         q_label.setFont(q_font)
@@ -213,10 +225,10 @@ class SwapMemory(QWidget):
             q_form_layout.addRow("sout", self.sout)
 
         q_v_box_layout.addLayout(q_form_layout)
-        # TODO: cpu_times(percpu=True)
+        q_stacked_layout.addWidget(q_widget)
 
     def update(self) -> None:
-        # TODO: format dates
+        # TODO: format correctly the filesizes
         sswap = psutil.swap_memory()
 
         self.q_progress_bar.setValue(int(sswap.percent))
@@ -230,23 +242,32 @@ class SwapMemory(QWidget):
             self.sout.setText(format_bytes(sswap.sout))
 
 
-class C1(QSplitter):
+class Memory(Page):
     def __init__(self):
-        super().__init__()
-        self.setChildrenCollapsible(False)
-        self.setStyleSheet(
-            "QSplitter{border:1px solid #e0e0e0;background-color:#ffffff}QSplitter::handle{background-color:#e0e0e0}"
+        super().__init__("Memory")
+
+        q_widget = QWidget()
+        q_h_box_layout = QHBoxLayout(q_widget)
+        q_h_box_layout.setContentsMargins(0, 0, 0, 0)
+        q_h_box_layout.setSpacing(0)
+        c = QWidget()
+        c.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Preferred,
         )
-        self.setOrientation(Qt.Orientation.Vertical)
-        self.setHandleWidth(1)
+        c.setMaximumWidth(640)
+        q_v_box_layout = QVBoxLayout(c)
+        q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
+        q_v_box_layout.setSpacing(24)
         self.virtual_memory = VirtualMemory()
-        self.addWidget(self.virtual_memory)
+        q_v_box_layout.addWidget(
+            self.virtual_memory, alignment=Qt.AlignmentFlag.AlignTop
+        )
         self.swap_memory = SwapMemory()
-        self.addWidget(self.swap_memory)
-
-        for index in range(self.count()):
-            self.handle(index).setEnabled(False)
-
+        q_v_box_layout.addWidget(self.swap_memory, alignment=Qt.AlignmentFlag.AlignTop)
+        q_h_box_layout.addWidget(c)
+        self.setWidget(q_widget)
         self.q_timer = QTimer(self)
         self.q_timer.setInterval(1_000)
         self.q_timer.timeout.connect(self.update)
@@ -263,24 +284,3 @@ class C1(QSplitter):
     def hideEvent(self, event: QHideEvent) -> None:
         self.q_timer.stop()
         return super().hideEvent(event)
-
-
-class Memory(Page):
-    def __init__(self):
-        super().__init__("Memory")
-        q_widget = QWidget()
-        q_h_box_layout = QHBoxLayout(q_widget)
-        q_h_box_layout.setContentsMargins(0, 0, 0, 0)
-        q_h_box_layout.setSpacing(0)
-        c = QWidget()
-        c.setSizePolicy(
-            QSizePolicy.Policy.Expanding,
-            QSizePolicy.Policy.Preferred,
-        )
-        c.setMaximumWidth(640)
-        q_v_box_layout = QVBoxLayout(c)
-        q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
-        q_v_box_layout.addWidget(C1(), 0, Qt.AlignmentFlag.AlignTop)
-        q_h_box_layout.addWidget(c)
-        self.setWidget(q_widget)
