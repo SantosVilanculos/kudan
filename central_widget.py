@@ -126,19 +126,18 @@ class CentralWidget(QWidget):
         # =====================================================================
         if WINDOWS:
             # TODO: Implement functionality
-            q_stacked_widget_index = self.q_stacked_widget.addWidget(QWidget())
-            self.menu.add("win_service_iter", q_stacked_widget_index)
+            self.menu.add("win_service_iter", QWidget())
 
         q_splitter.addWidget(self.menu)
 
         q_splitter.addWidget(self.q_stacked_widget)
-        q_splitter_index = q_splitter.indexOf(self.q_stacked_widget)
-        if q_splitter_index > -1:
-            q_splitter.setCollapsible(q_splitter_index, False)
-            q_splitter.handle(1).setEnabled(False)
+        index = q_splitter.indexOf(self.q_stacked_widget)
+        if index > -1:
+            q_splitter.setCollapsible(index, False)
+            q_splitter.handle(index).setEnabled(False)
 
         q_v_box_layout.addWidget(q_splitter)
 
     def addWidget(self, accessible_text_role: str, q_widget: QWidget) -> None:
-        q_stacked_widget_index = self.q_stacked_widget.addWidget(q_widget)
-        self.menu.add(accessible_text_role, q_stacked_widget_index)
+        index = self.q_stacked_widget.addWidget(q_widget)
+        self.menu.add(accessible_text_role, index)
