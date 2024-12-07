@@ -46,11 +46,15 @@ class Menu(QWidget):
         for index in range(self.q_list_widget.count()):
             q_list_widget_item = self.q_list_widget.item(index)
 
+            accessible_text_role = q_list_widget_item.data(
+                Qt.ItemDataRole.AccessibleTextRole
+            )
+
+            if type(accessible_text_role) != str:
+                return None
+
             q_list_widget_item.setHidden(
-                str(q_list_widget_item.data(Qt.ItemDataRole.AccessibleTextRole)).find(
-                    q_string.lower()
-                )
-                == -1
+                accessible_text_role.lower().find(q_string.lower()) == -1
             )
 
     def add(self, accessible_text_role: str, user_role: Any) -> None:
