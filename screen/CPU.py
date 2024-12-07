@@ -1,14 +1,4 @@
-from psutil import (
-    LINUX,
-    MACOS,
-    WINDOWS,
-    cpu_count,
-    cpu_freq,
-    cpu_percent,
-    cpu_stats,
-    cpu_times,
-    getloadavg,
-)
+import psutil
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent
 from PySide6.QtWidgets import (
@@ -16,50 +6,16 @@ from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
     QProgressBar,
-    QScrollArea,
     QSizePolicy,
     QSplitter,
     QVBoxLayout,
     QWidget,
 )
 
-
-class Page(QWidget):
-    def __init__(self, label: str):
-        super().__init__()
-        q_v_box_layout = QVBoxLayout(self)
-        q_v_box_layout.setContentsMargins(0, 0, 0, 0)
-        q_v_box_layout.setSpacing(0)
-
-        q_widget = QWidget()
-        q_widget.setFixedHeight(44)
-        q_h_box_layout = QHBoxLayout(q_widget)
-        q_h_box_layout.setContentsMargins(24, 0, 24, 0)
-        q_label = QLabel(label)
-        q_font = q_label.font()
-        q_font.setWeight(QFont.Weight.Medium)
-        q_label.setFont(q_font)
-        q_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        q_h_box_layout.addWidget(q_label)
-
-        q_v_box_layout.addWidget(q_widget)
-
-        self.q_scroll_area = QScrollArea()
-        self.q_scroll_area.setStyleSheet("QScrollArea{border:0}")
-        self.q_scroll_area.setVerticalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAsNeeded
-        )
-        self.q_scroll_area.setHorizontalScrollBarPolicy(
-            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
-        )
-        self.q_scroll_area.setWidgetResizable(True)
-        q_v_box_layout.addWidget(self.q_scroll_area)
-
-    def setWidget(self, q_widget: QWidget) -> None:
-        self.q_scroll_area.setWidget(q_widget)
+from components.Page import Page
 
 
-class F0(QWidget):
+class CpuTimes(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -91,12 +47,12 @@ class F0(QWidget):
         self.idle.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("idle", self.idle)
 
-        if LINUX or MACOS:
+        if psutil.LINUX or psutil.MACOS:
             self.nice = QLabel()
             self.nice.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("nice", self.nice)
 
-        if LINUX:
+        if psutil.LINUX:
             self.iowait = QLabel()
             self.iowait.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("iowait", self.iowait)
@@ -121,7 +77,7 @@ class F0(QWidget):
             self.guest_nice.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("guest_nice", self.guest_nice)
 
-        if WINDOWS:
+        if psutil.WINDOWS:
             self.interrupt = QLabel()
             self.interrupt.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("interrupt", self.interrupt)
@@ -130,20 +86,20 @@ class F0(QWidget):
             self.dpc.setAlignment(Qt.AlignmentFlag.AlignRight)
             q_form_layout.addRow("dpc", self.dpc)
         q_v_box_layout.addLayout(q_form_layout)
-        # TODO: cpu_times(percpu=True)
+        # TODO: psutil.cpu_times(percpu=True)
 
     def update(self) -> None:
         # TODO: format dates
-        scputimes = cpu_times(percpu=False)
+        scputimes = psutil.cpu_times(percpu=False)
 
         self.user.setText(str(scputimes.user))
         self.system.setText(str(scputimes.system))
         self.idle.setText(str(scputimes.idle))
 
-        if LINUX or MACOS:
+        if psutil.LINUX or psutil.MACOS:
             self.nice.setText(str(scputimes.nice))
 
-        if LINUX:
+        if psutil.LINUX:
             self.iowait.setText(str(scputimes.iowait))
             self.irq.setText(str(scputimes.irq))
             self.softirq.setText(str(scputimes.softirq))
@@ -151,12 +107,42 @@ class F0(QWidget):
             self.guest.setText(str(scputimes.guest))
             self.guest_nice.setText(str(scputimes.guest_nice))
 
-        if WINDOWS:
+        if psutil.WINDOWS:
             self.interrupt.setText(str(scputimes.interrupt))
             self.dpc.setText(str(scputimes.dpc))
 
 
-class F1(QWidget):
+class CpuPercent(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        q_v_box_layout = QVBoxLayout(self)
+        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
+        q_v_box_layout.setSpacing(24)
+        q_label = QLabel("cpu_percent")
+        q_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        q_font = q_label.font()
+        q_font.setWeight(QFont.Weight.Medium)
+        q_label.setFont(q_font)
+        q_v_box_layout.addWidget(q_label)
+
+        self.q_progress_bar = QProgressBar()
+        self.q_progress_bar.setStyleSheet(
+            "QProgressBar{border:1px solid #e0e0e0;background-color:#f6f6f6}"
+        )
+        self.q_progress_bar.setFixedHeight(24)
+        self.q_progress_bar.setMaximum(100)
+        # self.q_progress_bar.setTextVisible(False)
+        self.q_progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        q_v_box_layout.addWidget(self.q_progress_bar)
+        # TODO: psutil.cpu_percent(interval=None, percpu=True)
+
+    def update(self) -> None:
+        p = psutil.cpu_percent(interval=None, percpu=False)
+        self.q_progress_bar.setValue(int(p))
+
+
+class CpuCount(QWidget):
     def __init__(self):
         super().__init__()
         q_v_box_layout = QVBoxLayout(self)
@@ -181,12 +167,12 @@ class F1(QWidget):
         q_v_box_layout.addLayout(q_form_layout)
 
     def showEvent(self, event: QShowEvent) -> None:
-        self.cpu_count_cores.setText(str(cpu_count(logical=False)))
-        self.cpu_count_logical.setText(str(cpu_count(logical=True)))
+        self.cpu_count_cores.setText(str(psutil.cpu_count(logical=False)))
+        self.cpu_count_logical.setText(str(psutil.cpu_count(logical=True)))
         return super().showEvent(event)
 
 
-class F2(QWidget):
+class CpuStats(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -221,14 +207,14 @@ class F2(QWidget):
         q_v_box_layout.addLayout(q_form_layout)
 
     def update(self) -> None:
-        scpustats = cpu_stats()
+        scpustats = psutil.cpu_stats()
         self.ctx_switches.setText(str(scpustats.ctx_switches))
         self.interrupts.setText(str(scpustats.interrupts))
         self.soft_interrupts.setText(str(scpustats.soft_interrupts))
         self.syscalls.setText(str(scpustats.syscalls))
 
 
-class F3(QWidget):
+class CpuFreq(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -257,45 +243,15 @@ class F3(QWidget):
         q_v_box_layout.addLayout(q_form_layout)
 
     def update(self) -> None:
-        scpufreq = cpu_freq(percpu=False)
+        scpufreq = psutil.cpu_freq(percpu=False)
         self.current.setText(f"{scpufreq.current}MHz")
         self.min.setText(f"{scpufreq.min}MHz")
         self.max.setText(f"{scpufreq.max}MHz")
 
-        # TODO: cpu_freq(percpu=True)/Availability: Linux and FreeBSD
+        # TODO: psutil.cpu_freq(percpu=True)/Availability: Linux and FreeBSD
 
 
-class F4(QWidget):
-    def __init__(self):
-        super().__init__()
-
-        q_v_box_layout = QVBoxLayout(self)
-        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
-        q_v_box_layout.setSpacing(24)
-        q_label = QLabel("cpu_percent")
-        q_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        q_font = q_label.font()
-        q_font.setWeight(QFont.Weight.Medium)
-        q_label.setFont(q_font)
-        q_v_box_layout.addWidget(q_label)
-
-        self.q_progress_bar = QProgressBar()
-        self.q_progress_bar.setStyleSheet(
-            "QProgressBar{border:1px solid #e0e0e0;background-color:#f6f6f6}"
-        )
-        self.q_progress_bar.setFixedHeight(24)
-        self.q_progress_bar.setMaximum(100)
-        # self.q_progress_bar.setTextVisible(False)
-        self.q_progress_bar.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        q_v_box_layout.addWidget(self.q_progress_bar)
-        # TODO: cpu_percent(interval=None, percpu=True)
-
-    def update(self) -> None:
-        p = cpu_percent(interval=None, percpu=False)
-        self.q_progress_bar.setValue(int(p))
-
-
-class F5(QWidget):
+class Getloadavg(QWidget):
     def __init__(self):
         super().__init__()
 
@@ -322,8 +278,8 @@ class F5(QWidget):
         q_v_box_layout.addLayout(q_h_box_layout)
 
     def update(self) -> None:
-        p1, p2, p3 = getloadavg()
-        scpucount = cpu_count()
+        p1, p2, p3 = psutil.getloadavg()
+        scpucount = psutil.cpu_count()
         self.q_label1.setText(f"{p1 / scpucount * 100}%")
         self.q_label2.setText(f"{p2 / scpucount * 100}%")
         self.q_label3.setText(f"{p3 / scpucount * 100}%")
@@ -338,17 +294,23 @@ class C1(QSplitter):
         )
         self.setOrientation(Qt.Orientation.Vertical)
         self.setHandleWidth(1)
-        self.f0 = F0()
-        self.addWidget(self.f0)
-        self.addWidget(F1())
-        self.f2 = F2()
-        self.addWidget(self.f2)
-        self.f3 = F3()
-        self.addWidget(self.f3)
-        self.f4 = F4()
-        self.addWidget(self.f4)
-        self.f5 = F5()
-        self.addWidget(self.f5)
+
+        self.cpu_times = CpuTimes()
+        self.addWidget(self.cpu_times)
+
+        self.cpu_percent = CpuPercent()
+        self.addWidget(self.cpu_percent)
+
+        self.addWidget(CpuCount())
+
+        self.cpu_stats = CpuStats()
+        self.addWidget(self.cpu_stats)
+
+        self.cpu_freq = CpuFreq()
+        self.addWidget(self.cpu_freq)
+
+        self.getloadavg = Getloadavg()
+        self.addWidget(self.getloadavg)
         for index in range(self.count()):
             self.handle(index).setEnabled(False)
 
@@ -357,11 +319,11 @@ class C1(QSplitter):
         self.q_timer.timeout.connect(self.update)
 
     def update(self) -> None:
-        self.f0.update()
-        self.f2.update()
-        self.f3.update()
-        self.f4.update()
-        self.f5.update()
+        self.cpu_times.update()
+        self.cpu_percent.update()
+        self.cpu_stats.update()
+        self.cpu_freq.update()
+        self.getloadavg.update()
 
     def showEvent(self, event: QShowEvent) -> None:
         self.update()
