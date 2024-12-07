@@ -16,6 +16,12 @@ from PySide6.QtWidgets import (
 from components.Page import Page
 
 
+def secs2hours(secs):
+    mm, ss = divmod(secs, 60)
+    hh, mm = divmod(mm, 60)
+    return "%02d:%02d:%02d" % (hh, mm, ss)
+
+
 class CpuTimes(QWidget):
     def __init__(self):
         super().__init__()
@@ -100,24 +106,24 @@ class CpuTimes(QWidget):
         # TODO: format dates
         scputimes = psutil.cpu_times(percpu=False)
 
-        self.user.setText(str(scputimes.user))
-        self.system.setText(str(scputimes.system))
-        self.idle.setText(str(scputimes.idle))
+        self.user.setText(str(secs2hours(scputimes.user)))
+        self.system.setText(str(secs2hours(scputimes.system)))
+        self.idle.setText(str(secs2hours(scputimes.idle)))
 
         if psutil.LINUX or psutil.MACOS:
-            self.nice.setText(str(scputimes.nice))
+            self.nice.setText(str(secs2hours(scputimes.nice)))
 
         if psutil.LINUX:
-            self.iowait.setText(str(scputimes.iowait))
-            self.irq.setText(str(scputimes.irq))
-            self.softirq.setText(str(scputimes.softirq))
-            self.steal.setText(str(scputimes.steal))
-            self.guest.setText(str(scputimes.guest))
-            self.guest_nice.setText(str(scputimes.guest_nice))
+            self.iowait.setText(str(secs2hours(scputimes.iowait)))
+            self.irq.setText(str(secs2hours(scputimes.irq)))
+            self.softirq.setText(str(secs2hours(scputimes.softirq)))
+            self.steal.setText(str(secs2hours(scputimes.steal)))
+            self.guest.setText(str(secs2hours(scputimes.guest)))
+            self.guest_nice.setText(str(secs2hours(scputimes.guest_nice)))
 
         if psutil.WINDOWS:
-            self.interrupt.setText(str(scputimes.interrupt))
-            self.dpc.setText(str(scputimes.dpc))
+            self.interrupt.setText(str(secs2hours(scputimes.interrupt)))
+            self.dpc.setText(str(secs2hours(scputimes.dpc)))
 
 
 class CpuPercent(QWidget):
