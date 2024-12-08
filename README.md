@@ -27,9 +27,41 @@
 
 ---
 
+## Features
+
+### System Information
+
+- Retrieve detailed memory usage statistics;
+- Display disk partitions and usage;
+- Monitor input/output counters for disk activity.
+
+### Network Monitoring
+
+- View network interface statistics (e.g., sent and received data);
+- Display network connections and active states.
+
+### Hardware Information
+
+- Detect and display camera devices (ID, description, position, etc.);
+- Show audio and input devices connected;
+- Display battery and screen statistics (if supported).
+
+### Process Management
+
+- List all running processes.
+- Access Windows service iterators for advanced process details (if on Windows).
+
+### Cross-Platform
+
+- Built to run on multiple operating systems where psutil is supported.
+
+## Installation
+
 ```sh
 pip install -r requirements.txt
 ```
+
+## Building a release
 
 ```sh
 pyinstaller "./src/main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./favicon.ico" --add-data="./favicon.ico:./" --add-data="./res:./res" --windowed
