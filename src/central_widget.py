@@ -13,6 +13,7 @@ from screens import (
     net_connections,
     net_if_stats,
     process_iter,
+    q_audio_device,
     q_camera_device,
     q_input_device,
     q_screen,
@@ -117,9 +118,7 @@ class CentralWidget(QWidget):
 
         self.addWidget("q_camera_device", q_camera_device.Widget())
 
-        self.addWidget("q_audio_device", q_input_device.Widget())
-
-        self.addWidget("q_audio_device", q_input_device.Widget())
+        self.addWidget("q_audio_device", q_audio_device.Widget())
 
         self.addWidget("q_input_device", q_input_device.Widget())
 
