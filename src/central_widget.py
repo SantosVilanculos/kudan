@@ -7,7 +7,7 @@ from menu import Menu
 from screens import (
     CPU,
     Memory,
-    dashboard,
+    boot_time,
     disk_io_counters,
     disk_partitions,
     net_connections,
@@ -50,8 +50,7 @@ class CentralWidget(QWidget):
         q_shortcut.activated.connect(
             lambda: self.menu.setVisible(not self.menu.isVisible())
         )
-        # index
-        self.addWidget("default", dashboard.Widget())
+        self.addWidget("boot_time", boot_time.Widget())
 
         # =====================================================================
         # --- CPU related functions
