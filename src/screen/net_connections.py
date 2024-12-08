@@ -114,6 +114,10 @@ class Widget(QWidget):
     def k(self, index: int) -> None:
         # TODO: update table
         self.kind = self.q_combo_box.currentData(Qt.ItemDataRole.UserRole)
+        self.q_table_widget.clearContents()
+        self.q_table_widget.setRowCount(0)
+        for index, sconn in enumerate(net_connections(self.kind)):
+            self.q_table_widget_insert_row(index, sconn)
 
     def q_table_widget_insert_row(self, row: int, sconn: _common.sconn) -> None:
         self.q_table_widget.setSortingEnabled(False)
@@ -187,9 +191,7 @@ class Widget(QWidget):
         self.q_table_widget.setSortingEnabled(True)
 
     def q_timer_timeout(self) -> None:
-
-        print(self.kind)
-        n = net_connections(str(self.kind))
+        n = net_connections(kind=self.kind)
         process_list: list[Process] = list(process_iter())
         if not process_list:
             return
