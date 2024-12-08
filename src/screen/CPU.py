@@ -105,12 +105,14 @@ class CpuTimes(QWidget):
         # TODO: psutil.cpu_times(percpu=True)
 
     def update(self) -> None:
+
         # TODO: format dates
+        p = psutil.cpu_times_percent(interval=None, percpu=False)
         scputimes = psutil.cpu_times(percpu=False)
 
-        self.user.setText(str(secs2hours(scputimes.user)))
-        self.system.setText(str(secs2hours(scputimes.system)))
-        self.idle.setText(str(secs2hours(scputimes.idle)))
+        self.user.setText(f"{secs2hours(scputimes.user)} ({p.user}%)")
+        self.system.setText(f"{secs2hours(scputimes.system)} ({p.system}%)")
+        self.idle.setText(f"{secs2hours(scputimes.idle)} ({p.idle}%)")
 
         if psutil.LINUX or psutil.MACOS:
             self.nice.setText(str(secs2hours(scputimes.nice)))
@@ -124,8 +126,10 @@ class CpuTimes(QWidget):
             self.guest_nice.setText(str(secs2hours(scputimes.guest_nice)))
 
         if psutil.WINDOWS:
-            self.interrupt.setText(str(secs2hours(scputimes.interrupt)))
-            self.dpc.setText(str(secs2hours(scputimes.dpc)))
+            self.interrupt.setText(
+                f"{secs2hours(scputimes.interrupt)} ({p.interrupt}%)"
+            )
+            self.dpc.setText(f"{secs2hours(scputimes.dpc)} ({p.dpc}%)")
 
 
 class CpuPercent(QWidget):
