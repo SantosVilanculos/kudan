@@ -1,6 +1,7 @@
 - [x] Implement network connections filter
 - [ ] Refactor signal handling: Create global/reusable functions for SIGKILL and SIGTERM
 - [ ] Implement unique service update mechanism for Windows services based on service name
+- [ ] Center cards using a component
 
 ---
 
