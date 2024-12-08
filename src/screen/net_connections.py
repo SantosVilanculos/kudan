@@ -156,9 +156,14 @@ class Widget(QWidget):
         if isinstance(sconn.laddr, _common.addr):
             q_url.setHost(sconn.laddr.ip)
             q_url.setPort(sconn.laddr.port)
-        laddr = QTableWidgetItem(
-            str(q_url.url(QUrl.ComponentFormattingOption.EncodeUnicode))
-        )
+            laddr = QTableWidgetItem(
+                str(q_url.url(QUrl.ComponentFormattingOption.EncodeUnicode))
+            )
+        elif sconn.laddr:
+            laddr = QTableWidgetItem(str(sconn.laddr))
+        else:
+            laddr = QTableWidgetItem()
+
         self.q_table_widget.setItem(row, column, laddr)
 
         column = 6
@@ -166,9 +171,13 @@ class Widget(QWidget):
         if isinstance(sconn.raddr, _common.addr):
             q_url.setHost(sconn.raddr.ip)
             q_url.setPort(sconn.raddr.port)
-        raddr = QTableWidgetItem(
-            q_url.url(QUrl.ComponentFormattingOption.EncodeUnicode)
-        )
+            raddr = QTableWidgetItem(
+                q_url.url(QUrl.ComponentFormattingOption.EncodeUnicode)
+            )
+        elif sconn.raddr:
+            raddr = QTableWidgetItem(str(sconn.raddr))
+        else:
+            raddr = QTableWidgetItem()
         self.q_table_widget.setItem(row, column, raddr)
 
         column = 7
