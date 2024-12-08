@@ -32,5 +32,5 @@ pip install -r requirements.txt
 ```
 
 ```sh
-pyinstaller "./src/main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./favicon.ico" --add-data="./favicon.ico:./" --add-data="./inter:./" --windowed
+pyinstaller "./src/main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./favicon.ico" --add-data="./favicon.ico:./" --add-data="./res:./res" --windowed
 ```
