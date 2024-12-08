@@ -152,7 +152,7 @@ class List(QWidget):
 
 class Widget(Page):
     def __init__(self):
-        super().__init__("q_screen")
+        super().__init__("screen")
 
         self.q_widget = QWidget()
         q_h_box_layout = QHBoxLayout(self.q_widget)

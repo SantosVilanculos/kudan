@@ -245,7 +245,7 @@ class SwapMemory(QWidget):
 
 class Memory(Page):
     def __init__(self):
-        super().__init__("Memory")
+        super().__init__("memory")
 
         q_widget = QWidget()
         q_h_box_layout = QHBoxLayout(q_widget)

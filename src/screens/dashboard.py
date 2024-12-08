@@ -7,7 +7,7 @@ class Widget(QWidget):
 
         q_stacked_layout = QStackedLayout(self)
         q_widget = QWidget()
-        q_widget.setStyleSheet("background-color:#cc0000")
+        q_widget.setStyleSheet("background-color:#4285f4")
         q_v_box_layout = QVBoxLayout(q_widget)
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.setSpacing(0)

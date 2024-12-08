@@ -137,7 +137,7 @@ class List(QWidget):
 
 class Widget(Page):
     def __init__(self):
-        super().__init__("q_camera_device")
+        super().__init__("camera_device")
 
         self.q_widget = QWidget()
         q_h_box_layout = QHBoxLayout(self.q_widget)

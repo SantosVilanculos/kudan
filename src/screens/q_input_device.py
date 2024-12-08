@@ -104,7 +104,7 @@ class List(QWidget):
 
 class Widget(Page):
     def __init__(self):
-        super().__init__("q_input_device")
+        super().__init__("input_device")
 
         q_widget = QWidget()
         q_h_box_layout = QHBoxLayout(q_widget)

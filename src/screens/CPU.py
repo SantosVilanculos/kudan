@@ -392,7 +392,7 @@ class C1(QSplitter):
 
 class CPU(Page):
     def __init__(self):
-        super().__init__("CPU")
+        super().__init__("cpu")
         q_widget = QWidget()
         q_h_box_layout = QHBoxLayout(q_widget)
         q_h_box_layout.setContentsMargins(0, 0, 0, 0)

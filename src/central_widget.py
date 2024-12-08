@@ -51,17 +51,17 @@ class CentralWidget(QWidget):
             lambda: self.menu.setVisible(not self.menu.isVisible())
         )
         # index
-        self.addWidget("―", dashboard.Widget())
+        self.addWidget("default", dashboard.Widget())
 
         # =====================================================================
         # --- CPU related functions
         # =====================================================================
-        self.addWidget("CPU", CPU.CPU())
+        self.addWidget("cpu", CPU.CPU())
 
         # =====================================================================
         # --- system memory related functions
         # =====================================================================
-        self.addWidget("Memory", Memory.Memory())
+        self.addWidget("memory", Memory.Memory())
 
         # =====================================================================
         # --- disks/partitions related functions
@@ -114,13 +114,13 @@ class CentralWidget(QWidget):
         q_v_box_layout.addWidget(q_splitter)
 
         # I/O
-        self.addWidget("q_screen", q_screen.Widget())
+        self.addWidget("screen", q_screen.Widget())
 
-        self.addWidget("q_camera_device", q_camera_device.Widget())
+        self.addWidget("camera_device", q_camera_device.Widget())
 
-        self.addWidget("q_audio_device", q_audio_device.Widget())
+        self.addWidget("audio_device", q_audio_device.Widget())
 
-        self.addWidget("q_input_device", q_input_device.Widget())
+        self.addWidget("input_device", q_input_device.Widget())
 
     def addWidget(self, accessible_text_role: str, q_widget: QWidget) -> None:
         index = self.q_stacked_widget.addWidget(q_widget)

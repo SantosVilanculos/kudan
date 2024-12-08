@@ -227,7 +227,7 @@ class ListOutput(QWidget):
 
 class Widget(Page):
     def __init__(self):
-        super().__init__("q_audio_device")
+        super().__init__("audio_device")
 
         self.q_widget = QWidget()
         q_h_box_layout = QHBoxLayout(self.q_widget)
