@@ -1,6 +1,7 @@
-from psutil import WINDOWS, _pswindows, win_service_iter
-from PySide6.QtCore import QMargins
-from PySide6.QtGui import Qt
+import psutil
+from psutil import WINDOWS, win_service_iter
+from PySide6.QtCore import QMargins, QTimer
+from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QHeaderView,
@@ -49,35 +50,76 @@ class Widget(QWidget):
         self.q_table_widget.sortByColumn(0, Qt.SortOrder.AscendingOrder)
         self.q_v_box_layout.addWidget(self.q_table_widget)
 
+        self.q_timer = QTimer(self)
+        self.q_timer.setInterval(1_000)
+        self.q_timer.timeout.connect(self.update)
+
+    def update(self) -> None:
+        win_service_list = psutil.win_service_iter()
+        win_service_list_name: list[str] = [
+            str(win_service.name()) for win_service in win_service_list
+        ]
+
+        q_table_widget_names = set(
+            str(self.q_table_widget.item(index, 2).text())
+            for index in range(self.q_table_widget.rowCount())
+        )
+
+        win_service_list = [
+            win_service
+            for win_service in win_service_list
+            if str(win_service.name()) not in q_table_widget_names
+        ]
+
+        for index in reversed(range(self.q_table_widget.rowCount())):
+            name = str(self.q_table_widget.item(index, 2).text())
+            if name not in win_service_list_name:
+                self.q_table_widget.removeRow(index)
+
+        row_count = self.q_table_widget.rowCount()
+        for index, win_service in enumerate(win_service_list):
+            self.q_table_widget_insert_row(
+                row=(row_count + index), win_service=win_service
+            )
+
+    def showEvent(self, event: QShowEvent) -> None:
+        self.update()
+        self.q_timer.start()
+        return super().showEvent(event)
+
+    def hideEvent(self, event: QHideEvent) -> None:
+        self.q_timer.stop()
+        return super().hideEvent(event)
+
     def q_table_widget_insert_row(
-        self, row: int, service: _pswindows.WindowsService
+        self, row: int, win_service: psutil._pswindows.WindowsService
     ) -> None:
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
 
         column = 0
-        pid = QTableWidgetItem(str(service.pid()))
+        pid = QTableWidgetItem(str(win_service.pid()))
         self.q_table_widget.setItem(row, column, pid)
 
         column = 1
-        display_name = QTableWidgetItem(str(service.display_name()))
+        display_name = QTableWidgetItem(str(win_service.display_name()))
         self.q_table_widget.setItem(row, column, display_name)
 
         column = 2
-        name = QTableWidgetItem(str(service.name()))
+        name = QTableWidgetItem(str(win_service.name()))
         self.q_table_widget.setItem(row, column, name)
 
         column = 3
         try:
-            username = QTableWidgetItem(str(service.username()))
+            username = QTableWidgetItem(str(win_service.username()))
         except Exception as exception:
             username = QTableWidgetItem()
         self.q_table_widget.setItem(row, column, username)
 
         column = 4
         try:
-            start_type = QTableWidgetItem(str(service.start_type()))
+            start_type = QTableWidgetItem(str(win_service.start_type()))
         except Exception as exception:
             start_type = QTableWidgetItem()
         self.q_table_widget.setItem(row, column, start_type)
