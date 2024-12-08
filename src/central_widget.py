@@ -4,7 +4,7 @@ from PySide6.QtGui import QShortcut
 from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
 
 from menu import Menu
-from screen import (
+from screens import (
     CPU,
     Memory,
     dashboard,
