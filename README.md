@@ -25,11 +25,8 @@
 ![](./screenshot.png)
 
 <p align="justify">
- <strong>Kudan</strong> is a desktop operating system monitoring application that provides real-time insights into system performance, resource management and key metrics, offering a reliable and efficient way to monitor your computer.
- <p/>
- <p align="justify">
-    This application makes use of the <a href="https://github.com/giampaolo/psutil">psutil</a> library, a cross-platform library for retrieving information on running processes and system utilization (CPU, memory, disks, network, sensors) and system uptime.
-</p>
+Kudan is a sleek desktop OS monitor providing real-time insights into CPU, memory, disk, network, sensor data, and system uptime. Utilizing the <a href="https://github.com/giampaolo/psutil">psutil</a> library, it also showcases detailed I/O device information for optimal system performance analysis.
+<p/>
 
 ---
 
