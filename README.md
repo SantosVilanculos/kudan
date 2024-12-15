@@ -1,18 +1,24 @@
 <div align="left">
-  <a href="https://github.com/SantosVilanculos/configuration/blob/main/LICENSE">
+  <a href="https://github.com/SantosVilanculos/kudan/actions">
     <img
-      src="https://img.shields.io/github/license/SantosVilanculos/configuration"
-      alt="license"
-    />
-  </a>
-  <a href="https://github.com/SantosVilanculos/configuration/commits/main">
-    <img
-      src="https://img.shields.io/github/last-commit/SantosVilanculos/configuration"
-      alt="last commit"
+      src="https://img.shields.io/github/actions/workflow/status/SantosVilanculos/kudan/release.yml"
+      alt="build"
     />
   </a>
   <a href="https://github.com/SantosVilanculos/kudan/releases">
-  <img alt="release" src="https://img.shields.io/github/v/release/SantosVilanculos/kudan">
+    <img alt="release" src="https://img.shields.io/github/v/release/SantosVilanculos/kudan"/>
+  </a>
+  <a href="https://github.com/SantosVilanculos/kudan/blob/main/LICENSE">
+    <img
+      src="https://img.shields.io/github/license/SantosVilanculos/kudan"
+      alt="license"
+    />
+  </a>
+  <a href="https://github.com/SantosVilanculos/kudan/commits/main">
+    <img
+      src="https://img.shields.io/github/last-commit/SantosVilanculos/kudan"
+      alt="last commit"
+    />
   </a>
 </div>
 
