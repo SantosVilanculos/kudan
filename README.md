@@ -25,7 +25,7 @@
 ![](./screenshot.png)
 
 <p align="justify">
-Kudan is a sleek desktop OS monitor providing real-time insights into CPU, memory, disk, network, sensor data, and system uptime. Utilizing the <a href="https://github.com/giampaolo/psutil">psutil</a> library, it also showcases detailed I/O device information for optimal system performance analysis.
+A sleek desktop OS monitor providing real-time insights into CPU, memory, disk, network, sensor data, and system uptime. Utilizing the <a href="https://github.com/giampaolo/psutil">psutil</a> library, it also showcases detailed I/O device information for optimal system performance analysis.
 <p/>
 
 ---
