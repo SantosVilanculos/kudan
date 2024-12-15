@@ -39,12 +39,13 @@ def application_temp_path() -> Path:
 
 def logger() -> Logger:
     rotating_file_handler = RotatingFileHandler(
-        filename=application_data_path().joinpath(".log"),
+        filename=application_data_path().joinpath("application.log"),
         maxBytes=512,
         backupCount=2,
     )
     rotating_file_handler.setLevel(INFO)
     basicConfig(
+        force=True,
         level=DEBUG,
         encoding="UTF-8",
         format="%(asctime)s:%(levelname)s:%(filename)s:%(lineno)d:%(message)s",
