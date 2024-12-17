@@ -24,7 +24,7 @@ class Card(QWidget):
         self.q_widget.setObjectName("form")
         if device.isDefault():
             self.q_widget.setStyleSheet(
-                "#form{border:1px solid #34a853;background-color:#ffffff}"
+                "#form{border:2px solid #34a853;background-color:#ffffff}"
             )
         else:
             self.q_widget.setStyleSheet(
@@ -91,7 +91,7 @@ class Card(QWidget):
     def update(self, device: QAudioDevice):
         if device.isDefault():
             self.q_widget.setStyleSheet(
-                "#form{border:1px solid #34a853;background-color:#ffffff}"
+                "#form{border:2px solid #34a853;background-color:#ffffff}"
             )
         else:
             self.q_widget.setStyleSheet(
