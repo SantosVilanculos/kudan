@@ -37,23 +37,23 @@ class Card(QWidget):
         q_form_layout = QFormLayout()
         q_form_layout.setVerticalSpacing(12)
 
-        self.id = QLabel(str(device.id()))
+        self.id = QLabel()
         self.id.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("id", self.id)
 
-        self.description = QLabel(device.description())
+        self.description = QLabel()
         self.description.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("description", self.description)
 
-        self.is_default = QLabel(str(device.isDefault()))
+        self.is_default = QLabel()
         self.is_default.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("is_default", self.is_default)
 
-        self.correction_angle = QLabel(device.correctionAngle().name)
+        self.correction_angle = QLabel()
         self.correction_angle.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("correction_angle", self.correction_angle)
 
-        self.position = QLabel(device.position().name)
+        self.position = QLabel()
         self.position.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("position", self.position)
 

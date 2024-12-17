@@ -37,48 +37,48 @@ class Card(QWidget):
         q_form_layout = QFormLayout()
         q_form_layout.setVerticalSpacing(12)
 
-        self.id = QLabel(str(device.id()))
+        self.id = QLabel()
         self.id.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("id", self.id)
 
-        self.description = QLabel(device.description())
+        self.description = QLabel()
         self.description.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("description", self.description)
 
-        self.mode = QLabel(device.mode().name)
+        self.mode = QLabel()
         self.mode.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("mode", self.mode)
 
-        self.channel_configuration = QLabel(device.channelConfiguration().name)
+        self.channel_configuration = QLabel()
         self.channel_configuration.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("channel_configuration", self.channel_configuration)
 
-        self.is_default = QLabel(str(device.isDefault()))
+        self.is_default = QLabel()
         self.is_default.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("is_default", self.is_default)
 
-        self.minimum_channel_count = QLabel(str(device.minimumChannelCount()))
+        self.minimum_channel_count = QLabel()
         self.minimum_channel_count.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("minimum_channel_count", self.minimum_channel_count)
 
-        self.maximum_channel_count = QLabel(str(device.maximumChannelCount()))
+        self.maximum_channel_count = QLabel()
         self.maximum_channel_count.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("maximum_channel_count", self.maximum_channel_count)
 
-        self.minimum_sample_rate = QLabel(f"{device.minimumSampleRate()}Hz (Hertz)")
+        self.minimum_sample_rate = QLabel()
 
         self.minimum_sample_rate.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("minimum_sample_rate", self.minimum_sample_rate)
 
-        self.maximum_sample_rate = QLabel(f"{device.maximumSampleRate()}Hz (Hertz)")
+        self.maximum_sample_rate = QLabel()
         self.maximum_sample_rate.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("maximum_sample_rate", self.maximum_sample_rate)
 
-        self.preferred_format = QLabel(str(device.preferredFormat()))
+        self.preferred_format = QLabel()
         self.preferred_format.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("preferred_format", self.preferred_format)
 
-        self.supported_sample_formats = QLabel(str(device.supportedSampleFormats()))
+        self.supported_sample_formats = QLabel()
         self.supported_sample_formats.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("supported_sample_formats", self.supported_sample_formats)
 
