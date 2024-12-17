@@ -1,5 +1,4 @@
 import psutil
-from psutil import WINDOWS, win_service_iter
 from PySide6.QtCore import QMargins, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -43,8 +42,8 @@ class Widget(QWidget):
         self.q_table_widget.setContextMenuPolicy(
             Qt.ContextMenuPolicy.ActionsContextMenu
         )
-        if WINDOWS:
-            for index, service in enumerate(win_service_iter()):
+        if psutil.WINDOWS:
+            for index, service in enumerate(psutil.win_service_iter()):
                 self.q_table_widget_insert_row(index, service)
         self.q_table_widget.setSortingEnabled(True)
         self.q_table_widget.sortByColumn(0, Qt.SortOrder.AscendingOrder)
@@ -92,7 +91,7 @@ class Widget(QWidget):
         return super().hideEvent(event)
 
     def q_table_widget_insert_row(
-        self, row: int, win_service: psutil._pswindows.WindowsService
+        self, row: int, win_service
     ) -> None:
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
