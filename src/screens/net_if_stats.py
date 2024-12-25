@@ -1,4 +1,5 @@
-from psutil import _common, net_if_addrs, net_if_stats, net_io_counters
+import psutil
+import psutil._common
 from PySide6.QtCore import QTimer
 from PySide6.QtGui import QFont, QHideEvent, QShowEvent, Qt, QTextDocument
 from PySide6.QtWidgets import (
@@ -63,14 +64,14 @@ class Tab(QWidget):
     def q_timer_timeout(self) -> None:
         q_text_document = QTextDocument()
         q_text_document.setPlainText(
-            f"{str(net_if_stats().get(self.nic))}\n\n{str(net_io_counters(pernic=True).get(self.nic))}"
+            f"{str(psutil.net_if_stats().get(self.nic))}\n\n{str(psutil.net_io_counters(pernic=True).get(self.nic))}"
         )
         self.q_text_browser.setDocument(q_text_document)
 
         self.q_table_widget.clearContents()
         self.q_table_widget.setRowCount(0)
         row_count = self.q_table_widget.rowCount()
-        for index, snicaddr in enumerate(net_if_addrs().get(self.nic)):
+        for index, snicaddr in enumerate(psutil.net_if_addrs().get(self.nic)):
             self.q_table_widget_insert_row(row=(row_count + index), snicaddr=snicaddr)
 
     def showEvent(self, event: QShowEvent) -> None:
@@ -82,7 +83,9 @@ class Tab(QWidget):
         self.q_timer.stop()
         return super().hideEvent(event)
 
-    def q_table_widget_insert_row(self, row: int, snicaddr: _common.snicaddr) -> None:
+    def q_table_widget_insert_row(
+        self, row: int, snicaddr: psutil._common.snicaddr
+    ) -> None:
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
@@ -121,7 +124,7 @@ class Widget(QWidget):
 
         self.q_tab_widget = QTabWidget()
         self.q_tab_widget.removeTab
-        for nic in net_if_stats().keys():
+        for nic in psutil.net_if_stats().keys():
             widget = Tab(nic)
             self.q_tab_widget.addTab(widget, nic)
         q_v_box_layout.addWidget(self.q_tab_widget)
@@ -131,7 +134,7 @@ class Widget(QWidget):
         self.q_timer.timeout.connect(self.q_timer_timeout)
 
     def q_timer_timeout(self) -> None:
-        nic_list = list(net_if_stats().keys())
+        nic_list = list(psutil.net_if_stats().keys())
         index = 0
         while index < self.q_tab_widget.count():
             nic = self.q_tab_widget.tabText(index)

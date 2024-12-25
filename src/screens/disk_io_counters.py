@@ -1,4 +1,5 @@
-from psutil import FREEBSD, LINUX, _common, disk_io_counters
+import psutil
+import psutil._common
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -100,7 +101,7 @@ class Widget(QWidget):
         self.q_timer.timeout.connect(self.q_timer_timeout)
 
     def q_timer_timeout(self) -> None:
-        sdiskio: _common.sdiskio = disk_io_counters(perdisk=False, nowrap=True)
+        sdiskio = psutil.disk_io_counters(perdisk=False, nowrap=True)
 
         self.read_count.setText(str(sdiskio.read_count))
         self.write_count.setText(str(sdiskio.write_count))
@@ -108,13 +109,13 @@ class Widget(QWidget):
         self.write_bytes.setText(str(sdiskio.write_bytes))
         self.read_time.setText(str(sdiskio.read_time))
         self.write_time.setText(str(sdiskio.write_time))
-        if LINUX or FREEBSD:
+        if psutil.LINUX or psutil.FREEBSD:
             self.busy_time.setText(f"{sdiskio.busy_time} ms")
-        if LINUX:
+        if psutil.LINUX:
             self.read_merged_count.setText(str(sdiskio.read_merged_count))
             self.write_merged_count.setText(str(sdiskio.write_merged_count))
 
-        p = disk_io_counters(perdisk=True, nowrap=True)
+        p = psutil.disk_io_counters(perdisk=True, nowrap=True)
 
         # Create a set of PIDs from the q_table_widget
         q_table_widget_devices = set(
@@ -160,9 +161,7 @@ class Widget(QWidget):
         self.q_timer.stop()
         return super().hideEvent(event)
 
-    def q_table_widget_insert_row(
-        self, row: int, device: str, sdiskio: _common.sdiskio
-    ) -> None:
+    def q_table_widget_insert_row(self, row: int, device: str, sdiskio) -> None:
 
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
@@ -197,21 +196,21 @@ class Widget(QWidget):
         self.q_table_widget.setItem(row, column, write_time)
 
         column = 7
-        if LINUX or FREEBSD:
+        if psutil.LINUX or psutil.FREEBSD:
             busy_time = QTableWidgetItem(f"{sdiskio.busy_time} ms")
         else:
             busy_time = QTableWidgetItem("—")
         self.q_table_widget.setItem(row, column, busy_time)
 
         column = 8
-        if LINUX:
+        if psutil.LINUX:
             read_merged_count = QTableWidgetItem(str(sdiskio.read_merged_count))
         else:
             read_merged_count = QTableWidgetItem("—")
         self.q_table_widget.setItem(row, column, read_merged_count)
 
         column = 9
-        if LINUX:
+        if psutil.LINUX:
             write_merged_count = QTableWidgetItem(str(sdiskio.write_merged_count))
         else:
             write_merged_count = QTableWidgetItem("—")
@@ -219,9 +218,7 @@ class Widget(QWidget):
 
         self.q_table_widget.setSortingEnabled(True)
 
-    def q_table_widget_update_row(
-        self, row: int, device: str, sdiskio: _common.sdiskio
-    ) -> None:
+    def q_table_widget_update_row(self, row: int, device: str, sdiskio) -> None:
         self.q_table_widget.setSortingEnabled(False)
 
         column = 0
@@ -254,21 +251,21 @@ class Widget(QWidget):
 
         column = 7
         busy_time = self.q_table_widget.item(row, column)
-        if LINUX or FREEBSD:
+        if psutil.LINUX or psutil.FREEBSD:
             busy_time.setText(f"{sdiskio.busy_time} ms")
         else:
             busy_time.setText("—")
 
         column = 8
         read_merged_count = self.q_table_widget.item(row, column)
-        if LINUX:
+        if psutil.LINUX:
             read_merged_count.setText(str(sdiskio.read_merged_count))
         else:
             read_merged_count.setText("—")
 
         column = 9
         write_merged_count = self.q_table_widget.item(row, column)
-        if LINUX:
+        if psutil.LINUX:
             write_merged_count.setText(str(sdiskio.write_merged_count))
         else:
             write_merged_count.setText("—")

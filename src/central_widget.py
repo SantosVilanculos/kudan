@@ -1,4 +1,4 @@
-from psutil import FREEBSD, LINUX, MACOS, WINDOWS
+import psutil
 from PySide6.QtCore import QKeyCombination, Qt
 from PySide6.QtGui import QShortcut
 from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
@@ -79,13 +79,13 @@ class CentralWidget(QWidget):
         # =====================================================================
         # --- sensors
         # =====================================================================
-        if LINUX or MACOS:
+        if psutil.LINUX or psutil.MACOS:
             self.addWidget("sensors_temperatures", sensors_temperatures.Widget())
 
-        if LINUX:
+        if psutil.LINUX:
             self.addWidget("sensors_fans", sensors_fans.Widget())
 
-        if LINUX or WINDOWS or FREEBSD or MACOS:
+        if psutil.LINUX or psutil.WINDOWS or psutil.FREEBSD or psutil.MACOS:
             self.addWidget("sensors_battery", sensors_battery.Widget())
 
         # =====================================================================
@@ -99,7 +99,7 @@ class CentralWidget(QWidget):
         # =====================================================================
         # --- Windows services
         # =====================================================================
-        if WINDOWS:
+        if psutil.WINDOWS:
             # TODO: Implement functionality
             self.addWidget("win_service_iter", win_service_iter.Widget())
 

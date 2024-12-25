@@ -1,6 +1,6 @@
 from logging import WARNING
 
-from psutil import AccessDenied, NoSuchProcess, Process, process_iter
+import psutil
 from PySide6.QtCore import QMargins, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -57,7 +57,7 @@ class Widget(QWidget):
         self.q_timer.timeout.connect(self.q_timer_timeout)
 
     def q_timer_timeout(self) -> None:
-        process_list: list[Process] = list(process_iter())
+        process_list: list[psutil.Process] = list(psutil.process_iter())
         if not process_list:
             return
 
@@ -86,11 +86,11 @@ class Widget(QWidget):
         row_count = self.q_table_widget.rowCount()
         for index, process in enumerate(process_list):
             try:
-                if Process(process.pid).is_running():
+                if psutil.Process(process.pid).is_running():
                     self.q_table_widget_insert_row(
                         row=(row_count + index), process=process
                     )
-            except (NoSuchProcess, AccessDenied):
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
                 # TODO:log it
                 # Skip the process if it no longer exists or we don't have permission to access it
                 pass
@@ -104,9 +104,7 @@ class Widget(QWidget):
         self.q_timer.stop()
         return super().hideEvent(event)
 
-    def q_table_widget_insert_row(self, row: int, process: Process) -> None:
-        # process_iter.clear_cache()
-
+    def q_table_widget_insert_row(self, row: int, process: psutil.Process) -> None:
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
@@ -137,7 +135,7 @@ class Widget(QWidget):
             for row in row_list:
                 pid = int(self.q_table_widget.item(row, 0).text())
                 try:
-                    process = Process(pid)
+                    process = psutil.Process(pid)
                     process.kill()
                 except Exception as exception:
                     msg_box = QMessageBox(self)
@@ -160,7 +158,7 @@ class Widget(QWidget):
             for row in row_list:
                 pid = int(self.q_table_widget.item(row, 0).text())
                 try:
-                    process = Process(pid)
+                    process = psutil.Process(pid)
                     process.terminate()
                 except Exception as exception:
                     self.logger.log(WARNING, f"Unable to terminate process (pid={pid})")

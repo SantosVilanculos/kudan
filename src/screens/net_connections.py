@@ -1,8 +1,8 @@
 from datetime import datetime
 from logging import WARNING
 
-# from more_itertools import unique
-from psutil import Process, _common, net_connections, process_iter
+import psutil
+import psutil._common
 from PySide6.QtCore import QTimer, QUrl
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -99,7 +99,7 @@ class Widget(QWidget):
         self.q_table_widget.addAction("SIGKILL", self.process_kill)
         self.q_table_widget.addAction("SIGTERM", self.process_terminate)
 
-        for index, sconn in enumerate(net_connections()):
+        for index, sconn in enumerate(psutil.net_connections()):
             self.q_table_widget_insert_row(index, sconn)
 
         self.q_table_widget.setSortingEnabled(True)
@@ -116,10 +116,10 @@ class Widget(QWidget):
         self.kind = self.q_combo_box.currentData(Qt.ItemDataRole.UserRole)
         self.q_table_widget.clearContents()
         self.q_table_widget.setRowCount(0)
-        for index, sconn in enumerate(net_connections(self.kind)):
+        for index, sconn in enumerate(psutil.net_connections(self.kind)):
             self.q_table_widget_insert_row(index, sconn)
 
-    def q_table_widget_insert_row(self, row: int, sconn: _common.sconn) -> None:
+    def q_table_widget_insert_row(self, row: int, sconn) -> None:
         self.q_table_widget.setSortingEnabled(False)
 
         self.q_table_widget.insertRow(row)
@@ -133,7 +133,7 @@ class Widget(QWidget):
         column = 1
         name = QTableWidgetItem()
         try:
-            process = Process(sconn.pid)
+            process = psutil.Process(sconn.pid)
             name.setText(process.name())
         except Exception as exception:
             pass
@@ -153,7 +153,7 @@ class Widget(QWidget):
 
         column = 5
         q_url = QUrl()
-        if isinstance(sconn.laddr, _common.addr):
+        if isinstance(sconn.laddr, psutil._common.addr):
             q_url.setHost(sconn.laddr.ip)
             q_url.setPort(sconn.laddr.port)
             laddr = QTableWidgetItem(
@@ -168,7 +168,7 @@ class Widget(QWidget):
 
         column = 6
         q_url.clear()
-        if isinstance(sconn.raddr, _common.addr):
+        if isinstance(sconn.raddr, psutil._common.addr):
             q_url.setHost(sconn.raddr.ip)
             q_url.setPort(sconn.raddr.port)
             raddr = QTableWidgetItem(
@@ -187,7 +187,7 @@ class Widget(QWidget):
         column = 8
         create_time = QTableWidgetItem()
         try:
-            process = Process(sconn.pid)
+            process = psutil.Process(sconn.pid)
             create_time.setText(
                 datetime.fromtimestamp(process.create_time()).strftime(
                     "%Y-%m-%d %H:%M:%S"
@@ -200,15 +200,15 @@ class Widget(QWidget):
         self.q_table_widget.setSortingEnabled(True)
 
     def q_timer_timeout(self) -> None:
-        n = net_connections(kind=self.kind)
-        process_list: list[Process] = list(process_iter())
+        n = psutil.net_connections(kind=self.kind)
+        process_list: list[psutil.Process] = list(psutil.process_iter())
         if not process_list:
             return
 
         process_pids = {int(process.pid) for process in process_list}
 
         # Create a dictionary to store the unique network connections
-        unique_connections: dict[int, dict[tuple[str, str], _common.sconn]] = {}
+        unique_connections: dict[int, dict[tuple[str, str], psutil._common.sconn]] = {}
 
         # Iterate through the network connections and store the unique ones
         for sconn in n:
@@ -262,7 +262,7 @@ class Widget(QWidget):
             for row in row_list:
                 pid = int(self.q_table_widget.item(row, 0).text())
                 try:
-                    process = Process(pid)
+                    process = psutil.Process(pid)
                     process.kill()
                 except Exception as exception:
                     msg_box = QMessageBox(self)
@@ -285,7 +285,7 @@ class Widget(QWidget):
             for row in row_list:
                 pid = int(self.q_table_widget.item(row, 0).text())
                 try:
-                    process = Process(pid)
+                    process = psutil.Process(pid)
                     process.terminate()
                 except Exception as exception:
                     self.logger.log(WARNING, f"Unable to terminate process (pid={pid})")

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from psutil import _common, users
+import psutil._common
 from PySide6.QtCore import QMargins, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -54,7 +54,7 @@ class Widget(QWidget):
         self.q_timer.timeout.connect(self.q_timer_timeout)
 
     def q_timer_timeout(self) -> None:
-        users_list: list[_common.suser] = users()
+        users_list: list[psutil._common.suser] = psutil.users()
         users_list_pid: list[str] = [str(user.pid) for user in users_list]
 
         # Create a set of PIDs from the q_table_widget
@@ -88,7 +88,7 @@ class Widget(QWidget):
         self.q_timer.stop()
         return super().hideEvent(event)
 
-    def q_table_widget_insert_row(self, row: int, user: _common.suser) -> None:
+    def q_table_widget_insert_row(self, row: int, user: psutil._common.suser) -> None:
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
