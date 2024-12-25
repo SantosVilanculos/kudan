@@ -2,32 +2,13 @@ from typing import Any
 
 from PySide6.QtCore import QSize, Qt, Signal
 from PySide6.QtWidgets import (
-    QApplication,
-    QHBoxLayout,
     QLabel,
     QLineEdit,
     QListWidget,
     QListWidgetItem,
-    QPushButton,
-    QSizePolicy,
     QVBoxLayout,
     QWidget,
 )
-
-
-class Footer(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.setFixedHeight(44)
-        q_h_box_layout = QHBoxLayout(self)
-        q_h_box_layout.setContentsMargins(0, 0, 0, 0)
-        q_push_button = QPushButton("...")
-        q_push_button.setFixedWidth(44)
-        q_push_button.setSizePolicy(
-            QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Expanding
-        )
-        q_push_button.clicked.connect(QApplication.quit)
-        q_h_box_layout.addWidget(q_push_button, alignment=Qt.AlignmentFlag.AlignRight)
 
 
 class Menu(QWidget):
@@ -58,8 +39,6 @@ class Menu(QWidget):
             )
         )
         q_v_box_layout.addWidget(self.q_list_widget)
-
-        q_v_box_layout.addWidget(Footer())
 
     def text_changed(self, q_string: str) -> None:
         for index in range(self.q_list_widget.count()):
