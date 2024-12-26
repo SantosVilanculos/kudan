@@ -17,7 +17,7 @@ def main():
     QFontDatabase.addApplicationFont(str(contents_path("res/font/gitlab_mono.ttf")))
 
     q_font = QFont("Inter")
-    q_font.setPixelSize(13)
+    q_font.setPixelSize(14)
     q_font.setWeight(QFont.Weight.Normal)
     q_font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
     q_application.setFont(q_font)
