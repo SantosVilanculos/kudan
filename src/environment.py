@@ -11,11 +11,11 @@ load_dotenv()
 APPLICATION_NAME = "Kudan"
 
 
-def contents_path() -> Path:
+def contents_path(path: str = "") -> Path:
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
-        return Path(sys._MEIPASS).resolve()
+        return Path(sys._MEIPASS).resolve().joinpath(path)
     else:
-        return Path(".").resolve()
+        return Path(".").resolve().joinpath(path)
 
 
 GENERIC_DATA_PATH = Path(

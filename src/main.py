@@ -9,28 +9,24 @@ from environment import APPLICATION_NAME, contents_path
 
 
 def main():
-    cp = contents_path()
-
     q_application = QApplication(sys.argv)
 
-    QFontDatabase.addApplicationFont(str(cp.joinpath("res/font/inter-bold.ttf")))
-    QFontDatabase.addApplicationFont(str(cp.joinpath("res/font/inter-medium.ttf")))
-    QFontDatabase.addApplicationFont(str(cp.joinpath("res/font/inter-regular.ttf")))
-    QFontDatabase.addApplicationFont(str(cp.joinpath("res/font/gitlab_mono.ttf")))
+    QFontDatabase.addApplicationFont(str(contents_path("res/font/inter-bold.ttf")))
+    QFontDatabase.addApplicationFont(str(contents_path("res/font/inter-medium.ttf")))
+    QFontDatabase.addApplicationFont(str(contents_path("res/font/inter-regular.ttf")))
+    QFontDatabase.addApplicationFont(str(contents_path("res/font/gitlab_mono.ttf")))
 
     q_font = QFont("Inter")
     q_font.setPixelSize(13)
     q_font.setWeight(QFont.Weight.Normal)
     q_font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
-
     q_application.setFont(q_font)
 
     q_icon = QIcon(str(cp.joinpath("favicon.ico")))
 
-    q_application.setWindowIcon(q_icon)
+    q_application.setWindowIcon(QIcon(str(contents_path("favicon.ico"))))
 
     q_main_window = QMainWindow()
-    q_main_window.setWindowTitle(APPLICATION_NAME)
     q_main_window.setMinimumSize(QSize(640, 360))
 
     central_widget = CentralWidget()
