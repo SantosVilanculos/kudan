@@ -9,6 +9,7 @@ from PySide6.QtCore import QStandardPaths
 load_dotenv()
 
 APPLICATION_NAME = "Kudan"
+APPLICATION_VERSION = ""
 
 
 def contents_path(path: str = "") -> Path:
