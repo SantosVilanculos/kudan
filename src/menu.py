@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 
 
 class Menu(QWidget):
-    itemActivated = Signal(Any)
+    currentItemChanged = Signal(int)
 
     def __init__(self):
         super().__init__()
@@ -29,13 +29,13 @@ class Menu(QWidget):
 
         self.q_list_widget = QListWidget()
         self.q_list_widget.itemActivated.connect(
-            lambda q_list_widget_item: self.itemActivated.emit(
-                q_list_widget_item.data(Qt.ItemDataRole.UserRole)
+            lambda q_list_widget_item: self.currentItemChanged.emit(
+                int(q_list_widget_item.data(Qt.ItemDataRole.UserRole))
             )
         )
         self.q_list_widget.itemClicked.connect(
-            lambda q_list_widget_item: self.itemActivated.emit(
-                q_list_widget_item.data(Qt.ItemDataRole.UserRole)
+            lambda q_list_widget_item: self.currentItemChanged.emit(
+                int(q_list_widget_item.data(Qt.ItemDataRole.UserRole))
             )
         )
         q_v_box_layout.addWidget(self.q_list_widget)

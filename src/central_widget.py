@@ -40,8 +40,8 @@ class CentralWidget(QWidget):
 
         self.menu = Menu()
         self.q_stacked_widget = QStackedWidget()
-        self.menu.itemActivated.connect(
-            lambda user_data: self.q_stacked_widget.setCurrentIndex(int(user_data))
+        self.menu.currentItemChanged.connect(
+            lambda index: self.q_stacked_widget.setCurrentIndex(int(index))
         )
 
         q_shortcut = QShortcut(
