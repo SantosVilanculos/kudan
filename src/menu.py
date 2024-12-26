@@ -1,6 +1,7 @@
-from typing import Any
+from functools import partial
 
-from PySide6.QtCore import QSize, Qt, Signal
+from PySide6.QtCore import QKeyCombination, QSize, Qt, Signal
+from PySide6.QtGui import QShortcut
 from PySide6.QtWidgets import (
     QLabel,
     QLineEdit,
@@ -25,6 +26,12 @@ class Menu(QWidget):
         q_line_edit.setFixedHeight(44)
         q_line_edit.setTextMargins(14, 0, 14, 0)
         q_line_edit.textChanged.connect(lambda q_string: self.text_changed(q_string))
+        q_shortcut = QShortcut(
+            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_F), self
+        )
+        q_shortcut.activated.connect(
+            partial(q_line_edit.setFocus, Qt.FocusReason.ShortcutFocusReason)
+        )
         q_v_box_layout.addWidget(q_line_edit)
 
         self.q_list_widget = QListWidget()
