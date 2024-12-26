@@ -23,7 +23,7 @@ class Menu(QWidget):
 
         q_line_edit = QLineEdit()
         q_line_edit.setFixedHeight(44)
-        q_line_edit.setTextMargins(4, 0, 4, 0)
+        q_line_edit.setTextMargins(14, 0, 14, 0)
         q_line_edit.textChanged.connect(lambda q_string: self.text_changed(q_string))
         q_v_box_layout.addWidget(q_line_edit)
 
@@ -64,6 +64,6 @@ class Menu(QWidget):
         q_list_widget_item.setSizeHint(QSize(0, 44))
 
         q_label = QLabel(accessible_text_role)
-        q_label.setContentsMargins(4, 0, 4, 0)
+        q_label.setContentsMargins(14, 0, 14, 0)
 
         self.q_list_widget.setItemWidget(q_list_widget_item, q_label)
