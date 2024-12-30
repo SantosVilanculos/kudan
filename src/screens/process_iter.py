@@ -61,8 +61,6 @@ class Widget(QWidget):
         if not process_list:
             return
 
-        process_list_pid: list[int] = [int(process.pid) for process in process_list]
-
         # Create a set of PIDs from the q_table_widget
         q_table_widget_pids = set(
             int(self.q_table_widget.item(index, 0).text())
@@ -79,7 +77,7 @@ class Widget(QWidget):
         # Remove the rows from the q_table_widget that are no longer in the process_list
         for index in reversed(range(self.q_table_widget.rowCount())):
             pid = int(self.q_table_widget.item(index, 0).text())
-            if pid not in process_list_pid:
+            if not psutil.pid_exists(pid):
                 self.q_table_widget.removeRow(index)
 
         # Add the remaining processes to the q_table_widget
