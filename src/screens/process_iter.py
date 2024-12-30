@@ -25,8 +25,10 @@ class Widget(QWidget):
         self.q_v_box_layout.setSpacing(0)
 
         self.q_table_widget = QTableWidget()
-        self.q_table_widget.setColumnCount(3)
-        self.q_table_widget.setHorizontalHeaderLabels(["pid", "name", "username"])
+        self.q_table_widget.setColumnCount(5)
+        self.q_table_widget.setHorizontalHeaderLabels(
+            ["pid", "name", "cpu_percent", "memory_percent", "username"]
+        )
         q_table_widget_horizontal_header = self.q_table_widget.horizontalHeader()
         q_table_widget_horizontal_header.setSectionResizeMode(
             QHeaderView.ResizeMode.Stretch
@@ -57,6 +59,8 @@ class Widget(QWidget):
         self.q_timer.timeout.connect(self.q_timer_timeout)
 
     def q_timer_timeout(self) -> None:
+        self.q_table_widget.setSortingEnabled(False)
+
         process_list: list[psutil.Process] = list(psutil.process_iter())
         if not process_list:
             return
@@ -80,6 +84,19 @@ class Widget(QWidget):
             if not psutil.pid_exists(pid):
                 self.q_table_widget.removeRow(index)
 
+        # Update the rows from the q_table_widget that exists in the process_list
+        for index in range(self.q_table_widget.rowCount()):
+            pid = int(self.q_table_widget.item(index, 0).text())
+            try:
+                process = psutil.Process(pid)
+
+                if process.is_running():
+                    self.q_table_widget_update_row(row=index, process=process)
+            except (psutil.NoSuchProcess, psutil.AccessDenied):
+                # TODO:log it
+                # Skip the process if it no longer exists or we don't have permission to access it
+                pass
+
         # Add the remaining processes to the q_table_widget
         row_count = self.q_table_widget.rowCount()
         for index, process in enumerate(process_list):
@@ -93,6 +110,8 @@ class Widget(QWidget):
                 # Skip the process if it no longer exists or we don't have permission to access it
                 pass
 
+        self.q_table_widget.setSortingEnabled(True)
+
     def showEvent(self, event: QShowEvent) -> None:
         self.q_timer_timeout()
         self.q_timer.start()
@@ -103,7 +122,6 @@ class Widget(QWidget):
         return super().hideEvent(event)
 
     def q_table_widget_insert_row(self, row: int, process: psutil.Process) -> None:
-        self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
 
@@ -116,10 +134,37 @@ class Widget(QWidget):
         self.q_table_widget.setItem(row, column, name)
 
         column = 2
+        cpu_percent = QTableWidgetItem(str(process.cpu_percent()))
+        self.q_table_widget.setItem(row, column, cpu_percent)
+
+        column = 3
+        memory_percent = QTableWidgetItem(str(process.memory_percent()))
+        self.q_table_widget.setItem(row, column, memory_percent)
+
+        column = 4
         username = QTableWidgetItem(str(process.username()))
         self.q_table_widget.setItem(row, column, username)
 
-        self.q_table_widget.setSortingEnabled(True)
+    def q_table_widget_update_row(self, row: int, process: psutil.Process) -> None:
+        column = 0
+        pid = self.q_table_widget.item(row, column)
+        pid.setText(str(process.pid))
+
+        column = 1
+        name = self.q_table_widget.item(row, column)
+        name.setText(str(process.name()))
+
+        column = 2
+        cpu_percent = self.q_table_widget.item(row, column)
+        cpu_percent.setText(str(process.cpu_percent()))
+
+        column = 3
+        memory_percent = self.q_table_widget.item(row, column)
+        memory_percent.setText(str(process.memory_percent()))
+
+        column = 4
+        username = self.q_table_widget.item(row, column)
+        username.setText(str(process.username()))
 
     def process_kill(self) -> None:
         q_table_widget_selected_items = self.q_table_widget.selectedItems()
