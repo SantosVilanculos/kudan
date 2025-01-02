@@ -3,8 +3,9 @@ from functools import partial
 import psutil
 from PySide6.QtCore import QKeyCombination, Qt
 from PySide6.QtGui import QShortcut
-from PySide6.QtWidgets import QSplitter, QStackedWidget, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QSplitter, QVBoxLayout, QWidget
 
+from components.ui.stack import Navigator
 from menu import Menu
 from screens import (
     CPU,
@@ -41,9 +42,9 @@ class CentralWidget(QWidget):
         q_splitter.setChildrenCollapsible(False)
 
         self.menu = Menu()
-        self.q_stacked_widget = QStackedWidget()
+        self.navigator = Navigator()
         self.menu.currentItemChanged.connect(
-            lambda index: self.q_stacked_widget.setCurrentIndex(int(index))
+            lambda index: self.navigator.setCurrentIndex(int(index))
         )
 
         q_shortcut_0 = QShortcut(
@@ -121,8 +122,8 @@ class CentralWidget(QWidget):
 
         q_splitter.addWidget(self.menu)
 
-        q_splitter.addWidget(self.q_stacked_widget)
-        index = q_splitter.indexOf(self.q_stacked_widget)
+        q_splitter.addWidget(self.navigator)
+        index = q_splitter.indexOf(self.navigator)
         if index > -1:
             q_splitter.handle(index).setEnabled(False)
 
@@ -138,5 +139,5 @@ class CentralWidget(QWidget):
         self.addWidget("input_device", q_input_device.Widget())
 
     def addWidget(self, accessible_text_role: str, q_widget: QWidget) -> None:
-        index = self.q_stacked_widget.addWidget(q_widget)
+        index = self.navigator.addWidget(accessible_text_role, q_widget)
         self.menu.add(accessible_text_role, index)
