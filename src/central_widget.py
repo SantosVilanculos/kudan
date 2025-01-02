@@ -1,3 +1,5 @@
+from functools import partial
+
 import psutil
 from PySide6.QtCore import QKeyCombination, Qt
 from PySide6.QtGui import QShortcut
@@ -44,12 +46,26 @@ class CentralWidget(QWidget):
             lambda index: self.q_stacked_widget.setCurrentIndex(int(index))
         )
 
-        q_shortcut = QShortcut(
+        q_shortcut_0 = QShortcut(
             QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_B), self
         )
-        q_shortcut.activated.connect(
+        q_shortcut_0.activated.connect(
             lambda: self.menu.setVisible(not self.menu.isVisible())
         )
+        q_shortcut_1 = QShortcut(
+            QKeyCombination(
+                Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.ShiftModifier,
+                Qt.Key.Key_F,
+            ),
+            self,
+        )
+        q_shortcut_1.activated.connect(
+            partial(self.menu.focusQLineEdit.emit, Qt.FocusReason.ShortcutFocusReason)
+        )
+        q_shortcut_2 = QShortcut(
+            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Q), self
+        )
+        q_shortcut_2.activated.connect(QApplication.quit)
         self.addWidget("boot_time", boot_time.Widget())
 
         # =====================================================================
