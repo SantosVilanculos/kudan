@@ -1,4 +1,5 @@
 import psutil
+import psutil._common
 from PySide6.QtCore import QMargins, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
@@ -90,9 +91,7 @@ class Widget(QWidget):
         self.q_timer.stop()
         return super().hideEvent(event)
 
-    def q_table_widget_insert_row(
-        self, row: int, win_service
-    ) -> None:
+    def q_table_widget_insert_row(self, row: int, win_service) -> None:
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
