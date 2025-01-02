@@ -3,6 +3,7 @@ from logging import DEBUG, INFO, Logger, StreamHandler, basicConfig, getLogger
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
+import psutil
 from dotenv import load_dotenv
 from PySide6.QtCore import QStandardPaths
 
@@ -53,3 +54,13 @@ def logger() -> Logger:
         handlers=[StreamHandler(), rotating_file_handler],
     )
     return getLogger()
+
+
+UNIX = (
+    psutil.LINUX
+    or psutil.MACOS
+    or psutil.OSX
+    or psutil.BSD
+    or psutil.SUNOS
+    or psutil.AIX
+)
