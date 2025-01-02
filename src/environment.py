@@ -9,8 +9,10 @@ from PySide6.QtCore import QStandardPaths
 
 load_dotenv()
 
-APPLICATION_NAME = "Kudan"
-APPLICATION_VERSION = ""
+APP_NAME = "Kudan"
+APP_VERSION = ""
+APP_ORGANIZATION_NAME = ""
+APP_ORGANIZATION_DOMAIN = ""
 
 
 def contents_path(path: str = "") -> Path:
@@ -25,18 +27,18 @@ GENERIC_DATA_PATH = Path(
 )
 
 
-def application_data_path() -> Path:
-    application_data_path = GENERIC_DATA_PATH.joinpath(APPLICATION_NAME)
+def application_data_path(path: str = "") -> Path:
+    application_data_path = GENERIC_DATA_PATH.joinpath(APP_NAME)
     application_data_path.mkdir(parents=True, exist_ok=True)
-    return application_data_path
+    return application_data_path.joinpath(path)
 
 
-def application_temp_path() -> Path:
+def application_temp_path(path: str = "") -> Path:
     application_temp_path = Path(
         QStandardPaths.writableLocation(QStandardPaths.StandardLocation.TempLocation)
-    ).joinpath(APPLICATION_NAME)
+    ).joinpath(APP_NAME)
     application_temp_path.mkdir(parents=True, exist_ok=True)
-    return application_temp_path
+    return application_temp_path.joinpath(path)
 
 
 def logger() -> Logger:

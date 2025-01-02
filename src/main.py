@@ -5,7 +5,13 @@ from PySide6.QtGui import QFont, QFontDatabase, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow
 
 from central_widget import CentralWidget
-from environment import APPLICATION_NAME, APPLICATION_VERSION, contents_path
+from environment import (
+    APP_NAME,
+    APP_ORGANIZATION_DOMAIN,
+    APP_ORGANIZATION_NAME,
+    APP_VERSION,
+    contents_path,
+)
 
 
 def main():
@@ -22,12 +28,12 @@ def main():
     q_font.setStyleStrategy(QFont.StyleStrategy.PreferQuality)
     q_application.setFont(q_font)
 
-    q_application.setApplicationName(APPLICATION_NAME)
-    q_application.setApplicationDisplayName(APPLICATION_NAME)
-    q_application.setApplicationVersion(APPLICATION_VERSION)
+    q_application.setApplicationName(APP_NAME)
+    q_application.setApplicationDisplayName(APP_NAME)
+    q_application.setApplicationVersion(APP_VERSION)
 
-    # q_application.setOrganizationName()
-    # q_application.setOrganizationDomain()
+    q_application.setOrganizationName(APP_ORGANIZATION_NAME)
+    q_application.setOrganizationDomain(APP_ORGANIZATION_DOMAIN)
 
     q_application.setWindowIcon(QIcon(str(contents_path("favicon.ico"))))
 
