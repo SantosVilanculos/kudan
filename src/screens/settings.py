@@ -57,19 +57,19 @@ class P(QWidget):
         )
 
     def addRow(self, arg_1: list[str], arg_2: str):
-        keybinding = QLabel(str.join("+", arg_1))
-        q_font = keybinding.font()
+        keybind = QLabel(str.join("+", arg_1))
+        q_font = keybind.font()
         q_font.setWeight(QFont.Weight.Medium)
-        keybinding.setFont(q_font)
+        keybind.setFont(q_font)
 
         command = QLabel(arg_2)
         command.setWordWrap(True)
         command.setAlignment(Qt.AlignmentFlag.AlignJustify)
-        self.q_form_layout.addRow(keybinding, command)
+        self.q_form_layout.addRow(keybind, command)
 
     def search(self, text: str):
         for row in reversed(range(self.q_form_layout.rowCount())):
-            keybinding = self.q_form_layout.itemAt(
+            keybind = self.q_form_layout.itemAt(
                 row, QFormLayout.ItemRole.LabelRole
             ).widget()
 
@@ -77,13 +77,11 @@ class P(QWidget):
                 row, QFormLayout.ItemRole.FieldRole
             ).widget()
 
-            if (not isinstance(keybinding, QLabel)) or (
-                not isinstance(command, QLabel)
-            ):
+            if (not isinstance(keybind, QLabel)) or (not isinstance(command, QLabel)):
                 continue
 
             if (
-                keybinding.text().lower().find(text.lower()) == -1
+                keybind.text().lower().find(text.lower()) == -1
                 and command.text().lower().find(text.lower()) == -1
             ):
                 self.q_form_layout.setRowVisible(row, False)

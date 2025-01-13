@@ -1,4 +1,4 @@
-import platform
+from platform import uname
 from datetime import datetime, timedelta
 from locale import getencoding, getlocale
 from pathlib import Path
@@ -34,23 +34,23 @@ class OS(QObject):
 
     @staticmethod
     def system() -> str:
-        return platform.uname().system
+        return uname().system
 
     @staticmethod
     def node() -> str:
-        return platform.uname().node
+        return uname().node
 
     @staticmethod
     def release() -> str:
-        return platform.uname().release
+        return uname().release
 
     @staticmethod
     def machine() -> str:
-        return platform.uname().machine
+        return uname().machine
 
     @staticmethod
     def processor() -> str:
-        return platform.uname().processor
+        return uname().processor
 
     @staticmethod
     def boot_time() -> datetime:
@@ -69,8 +69,8 @@ class OS(QObject):
         return getencoding()
 
     @staticmethod
-    def open_url(q_url: QUrl | str) -> bool:
-        return QDesktopServices.openUrl(q_url)
+    def open_uri(uri: QUrl | str) -> bool:
+        return QDesktopServices.openUrl(uri)
 
     @staticmethod
     def open_path(path: Path | str) -> bool:
@@ -80,25 +80,11 @@ class OS(QObject):
         return QDesktopServices.openUrl(path.resolve().as_uri())
 
     @staticmethod
-    def generic_data_path(path: Path | str = "") -> Path:
+    def standard_path(
+        standard_location: QStandardPaths.StandardLocation, path: Path | str = ""
+    ) -> Path:
         return (
-            Path(
-                QStandardPaths.writableLocation(
-                    QStandardPaths.StandardLocation.GenericDataLocation
-                )
-            )
-            .resolve()
-            .joinpath(path)
-        )
-
-    @staticmethod
-    def temp_path(path: Path | str = "") -> Path:
-        return (
-            Path(
-                QStandardPaths.writableLocation(
-                    QStandardPaths.StandardLocation.TempLocation
-                )
-            )
+            Path(QStandardPaths.writableLocation(standard_location))
             .resolve()
             .joinpath(path)
         )

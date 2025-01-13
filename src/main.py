@@ -5,22 +5,39 @@ from PySide6.QtGui import QFont, QFontDatabase, QIcon
 from PySide6.QtWidgets import QApplication, QMainWindow
 
 from central_widget import CentralWidget
+from custom.contents_path import contents_path
 from environment import (
     APP_NAME,
     APP_ORGANIZATION_DOMAIN,
     APP_ORGANIZATION_NAME,
     APP_VERSION,
-    contents_path,
 )
 
 
 def main():
     q_application = QApplication(sys.argv)
 
-    QFontDatabase.addApplicationFont(str(contents_path("res/font/inter-bold.ttf")))
-    QFontDatabase.addApplicationFont(str(contents_path("res/font/inter-medium.ttf")))
-    QFontDatabase.addApplicationFont(str(contents_path("res/font/inter-regular.ttf")))
-    QFontDatabase.addApplicationFont(str(contents_path("res/font/gitlab_mono.ttf")))
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/thin.ttf").as_posix())
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/extra_light.ttf").as_posix()
+    )
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/light.ttf").as_posix())
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/normal.ttf").as_posix())
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/medium.ttf").as_posix())
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/demi_bold.ttf").as_posix()
+    )
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/bold.ttf").as_posix())
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/extra_bold.ttf").as_posix()
+    )
+    QFontDatabase.addApplicationFont(
+        contents_path("font/inter/black.ttf").as_posix())
 
     q_font = QFont("Inter")
     q_font.setPixelSize(14)
@@ -35,7 +52,7 @@ def main():
     q_application.setOrganizationName(APP_ORGANIZATION_NAME)
     q_application.setOrganizationDomain(APP_ORGANIZATION_DOMAIN)
 
-    q_application.setWindowIcon(QIcon(str(contents_path("favicon.png"))))
+    q_application.setWindowIcon(QIcon(contents_path("favicon.png").as_posix()))
 
     q_main_window = QMainWindow()
     q_main_window.setMinimumSize(QSize(640, 360))

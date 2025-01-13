@@ -12,7 +12,8 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from environment import APP_NAME, APP_URL, APP_VERSION, contents_path
+from custom.contents_path import contents_path
+from environment import APP_NAME, APP_URL, APP_VERSION
 
 
 class Widget(QWidget):
@@ -43,7 +44,8 @@ class Widget(QWidget):
         q_v_box_layout.addWidget(q_label_1)
         q_push_button = QPushButton("Homepage")
         q_push_button.setFixedHeight(36)
-        q_push_button.pressed.connect(partial(QDesktopServices.openUrl, QUrl(APP_URL)))
+        q_push_button.pressed.connect(
+            partial(QDesktopServices.openUrl, QUrl(APP_URL)))
         q_v_box_layout.addWidget(q_push_button)
         # Project Website
         # Report an issue

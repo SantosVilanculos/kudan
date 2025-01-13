@@ -1,5 +1,6 @@
 from datetime import datetime
-from logging import WARNING
+from logging import ERROR, WARNING
+from sys import exec_prefix
 
 import psutil
 import psutil._common
@@ -10,7 +11,6 @@ from PySide6.QtWidgets import (
     QComboBox,
     QHBoxLayout,
     QHeaderView,
-    QMessageBox,
     QSizePolicy,
     QTableWidget,
     QTableWidgetItem,
@@ -18,15 +18,13 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from environment import logger
+from logger import logger
 
 
 class Widget(QWidget):
-
     def __init__(self) -> None:
         super().__init__()
         self.kind = "all"
-        self.logger = logger()
 
         q_v_box_layout = QVBoxLayout(self)
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
@@ -53,10 +51,13 @@ class Widget(QWidget):
         self.q_combo_box.addItem("UDP", "udp")
         self.q_combo_box.addItem("UDP over IPv4", "udp4")
         self.q_combo_box.addItem("UDP over IPv6", "udp6")
-        self.q_combo_box.addItem("UNIX socket (both UDP and TCP protocols)", "unix")
+        self.q_combo_box.addItem(
+            "UNIX socket (both UDP and TCP protocols)", "unix")
 
-        self.q_combo_box.currentIndexChanged.connect(lambda index: self.k(index))
-        q_h_box_layout.addWidget(self.q_combo_box, 0, Qt.AlignmentFlag.AlignLeft)
+        self.q_combo_box.currentIndexChanged.connect(
+            lambda index: self.k(index))
+        q_h_box_layout.addWidget(
+            self.q_combo_box, 0, Qt.AlignmentFlag.AlignLeft)
         q_v_box_layout.addWidget(q_widget)
 
         self.q_table_widget = QTableWidget()
@@ -208,7 +209,8 @@ class Widget(QWidget):
         process_pids = {int(process.pid) for process in process_list}
 
         # Create a dictionary to store the unique network connections
-        unique_connections: dict[int, dict[tuple[str, str], psutil._common.sconn]] = {}
+        unique_connections: dict[int,
+                                 dict[tuple[str, str], psutil._common.sconn]] = {}
 
         # Iterate through the network connections and store the unique ones
         for sconn in n:
@@ -265,13 +267,8 @@ class Widget(QWidget):
                     process = psutil.Process(pid)
                     process.kill()
                 except Exception as exception:
-                    msg_box = QMessageBox(self)
-                    msg_box.setIcon(QMessageBox.Warning)
-                    msg_box.setText("Warning!")
-                    msg_box.setInformativeText(f"Unable to kill process (pid={pid})")
-                    msg_box.setStandardButtons(QMessageBox.Ok)
-                    msg_box.show()
-                    self.logger.log(WARNING, f"Unable to kill process (pid={pid})")
+                    logger.log(
+                        ERROR, f"Unable to kill process (pid={pid}):{exception}")
 
     def process_terminate(self) -> None:
         q_table_widget_selected_items = self.q_table_widget.selectedItems()
@@ -288,4 +285,8 @@ class Widget(QWidget):
                     process = psutil.Process(pid)
                     process.terminate()
                 except Exception as exception:
-                    self.logger.log(WARNING, f"Unable to terminate process (pid={pid})")
+                    logger.log(
+                        ERROR,
+                        f"Unable to terminate process (pid={pid}):{
+                            exception}",
+                    )
