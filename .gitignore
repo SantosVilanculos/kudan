@@ -1,15 +1,16 @@
 __pycache__
 
-/.idea/
-/.venv/
+/.idea
+/.venv
 /.vscode/*
 !/.vscode/launch.json
 !/.vscode/settings.json
 !/.vscode/tasks.json
 
-/build/
-/dist/
+/build
+/dist
 
-/*.spec
+*.spec
+*.swap
 
 /TODO.md

@@ -35,7 +35,7 @@ def main():
     q_application.setOrganizationName(APP_ORGANIZATION_NAME)
     q_application.setOrganizationDomain(APP_ORGANIZATION_DOMAIN)
 
-    q_application.setWindowIcon(QIcon(str(contents_path("favicon.ico"))))
+    q_application.setWindowIcon(QIcon(str(contents_path("favicon.png"))))
 
     q_main_window = QMainWindow()
     q_main_window.setMinimumSize(QSize(640, 360))

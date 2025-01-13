@@ -1,152 +1,309 @@
+from socket import AddressFamily
+
 import psutil
 import psutil._common
-from PySide6.QtCore import QTimer
-from PySide6.QtGui import QFont, QHideEvent, QShowEvent, Qt, QTextDocument
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import QColor, QHideEvent, QPainter, QPaintEvent, QShowEvent
 from PySide6.QtWidgets import (
-    QAbstractItemView,
-    QHeaderView,
-    QTableWidget,
-    QTableWidgetItem,
+    QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QScrollArea,
+    QSizePolicy,
+    QStyle,
+    QStyleOption,
     QTabWidget,
-    QTextBrowser,
     QVBoxLayout,
     QWidget,
 )
 
-from environment import logger
+from custom.function import file_size
 
 
-class Tab(QWidget):
-    def __init__(self, nic: str) -> None:
+class SNicStats(QWidget):
+    def __init__(self, name: str) -> None:
         super().__init__()
-        self.nic = nic
+
+        self.name = name
+
+        q_color = QColor(Qt.GlobalColor.lightGray)
+        self.setObjectName("name")
+        self.setStyleSheet(
+            f"#name{{border:1px solid {q_color.name()};background-color:white}}"
+        )
+        q_form_layout = QFormLayout(self)
+        q_form_layout.setSpacing(24)
+        self.isup = QLabel("―")
+        self.isup.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("isup", self.isup)
+        self.duplex = QLabel("―")
+        self.duplex.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("duplex", self.duplex)
+        self.speed = QLabel("―")
+        self.speed.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("speed", self.speed)
+        self.mtu = QLabel("―")
+        self.mtu.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("mtu", self.mtu)
+        self.flags = QLabel("―")
+        self.flags.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("flags", self.flags)
+
+    def update(self) -> None:
+        snicstats = psutil.net_if_stats().get(self.name, None)
+
+        if not snicstats:
+            return
+
+        self.isup.setText(str(snicstats.isup))
+        if snicstats.duplex == psutil.NIC_DUPLEX_FULL:
+            self.duplex.setText("NIC_DUPLEX_FULL")
+        elif snicstats.duplex == psutil.NIC_DUPLEX_HALF:
+            self.duplex.setText("NIC_DUPLEX_HALF")
+        else:
+            self.duplex.setText("NIC_DUPLEX_UNKNOWN")
+
+        self.speed.setText(file_size((snicstats.speed * 1024)))
+        self.mtu.setText(file_size(snicstats.mtu))
+        self.flags.setText(str(snicstats.flags))
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        q_style_option = QStyleOption()
+        q_style_option.initFrom(self)
+        q_painter = QPainter(self)
+
+        self.style().drawPrimitive(
+            QStyle.PrimitiveElement.PE_Widget, q_style_option, q_painter, self
+        )
+
+
+class SNetIO(QWidget):
+    def __init__(self, name: str) -> None:
+        super().__init__()
+
+        self.name = name
+
+        q_color = QColor(Qt.GlobalColor.lightGray)
+        self.setObjectName("name")
+        self.setStyleSheet(
+            f"#name{{border:1px solid {q_color.name()};background-color:white}}"
+        )
+        q_form_layout = QFormLayout(self)
+        q_form_layout.setSpacing(24)
+        self.bytes_sent = QLabel("―")
+        self.bytes_sent.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("bytes_sent", self.bytes_sent)
+        self.bytes_recv = QLabel("―")
+        self.bytes_recv.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("bytes_recv", self.bytes_recv)
+        self.packets_sent = QLabel("―")
+        self.packets_sent.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("packets_sent", self.packets_sent)
+        self.packets_recv = QLabel("―")
+        self.packets_recv.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("packets_recv", self.packets_recv)
+        self.errin = QLabel("―")
+        self.errin.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("errin", self.errin)
+        self.errout = QLabel("―")
+        self.errout.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("errout", self.errout)
+        self.dropin = QLabel("―")
+        self.dropin.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("dropin", self.dropin)
+        self.dropout = QLabel("―")
+        self.dropout.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("dropout", self.dropout)
+
+    def update(self) -> None:
+        snetio = psutil.net_io_counters(pernic=True).get(self.name, None)
+
+        if not snetio:
+            return
+
+        self.bytes_sent.setText(file_size(snetio.bytes_sent))
+        self.bytes_recv.setText(file_size(snetio.bytes_recv))
+        self.packets_sent.setText(str(snetio.packets_sent))
+        self.packets_recv.setText(str(snetio.packets_recv))
+        self.errin.setText(str(snetio.errin))
+        self.errout.setText(str(snetio.errout))
+        self.dropin.setText(str(snetio.dropin))
+        self.dropout.setText(str(snetio.dropout))
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        q_style_option = QStyleOption()
+        q_style_option.initFrom(self)
+        q_painter = QPainter(self)
+
+        self.style().drawPrimitive(
+            QStyle.PrimitiveElement.PE_Widget, q_style_option, q_painter, self
+        )
+
+
+class SNicAddrItem(QWidget):
+    def __init__(self, snicaddr: psutil._common.snicaddr) -> None:
+        super().__init__()
+
+        self.snicaddr = snicaddr
+
+        q_color = QColor(Qt.GlobalColor.lightGray)
+        self.setObjectName("name")
+        self.setStyleSheet(
+            f"#name{{border:1px solid {q_color.name()};background-color:white}}"
+        )
+        q_form_layout = QFormLayout(self)
+        q_form_layout.setSpacing(24)
+        self.family = QLabel(snicaddr.family.name)
+        self.family.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("family", self.family)
+        self.address = QLabel(snicaddr.address)
+        self.address.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("address", self.address)
+        self.netmask = QLabel(snicaddr.netmask or "―")
+        self.netmask.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("netmask", self.netmask)
+        self.broadcast = QLabel(snicaddr.broadcast or "―")
+        self.broadcast.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("broadcast", self.broadcast)
+        self.ptp = QLabel(snicaddr.ptp or "―")
+        self.ptp.setAlignment(Qt.AlignmentFlag.AlignRight)
+        q_form_layout.addRow("ptp", self.ptp)
+
+    def paintEvent(self, event: QPaintEvent) -> None:
+        q_style_option = QStyleOption()
+        q_style_option.initFrom(self)
+        q_painter = QPainter(self)
+
+        self.style().drawPrimitive(
+            QStyle.PrimitiveElement.PE_Widget, q_style_option, q_painter, self
+        )
+
+    def update(self, snicaddr: psutil._common.snicaddr) -> None:
+        self.family.setText(snicaddr.family.name)
+        self.address.setText(snicaddr.address)
+        self.netmask.setText(snicaddr.netmask or "―")
+        self.broadcast.setText(snicaddr.broadcast or "―")
+        self.ptp.setText(snicaddr.ptp or "―")
+
+
+class SNicAddr(QWidget):
+    def __init__(self, name: str) -> None:
+        super().__init__()
+
+        self.name = name
 
         self.q_v_box_layout = QVBoxLayout(self)
         self.q_v_box_layout.setContentsMargins(0, 0, 0, 0)
-        self.q_v_box_layout.setSpacing(0)
-        self.q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        self.q_text_browser = QTextBrowser()
-        self.q_text_browser.setFont(QFont("Inter", int(14 / (96 / 72)), 400))
-        self.q_v_box_layout.addWidget(self.q_text_browser, 0)
 
-        self.q_table_widget = QTableWidget()
-        self.q_table_widget.setColumnCount(5)
-        self.q_table_widget.setHorizontalHeaderLabels(
-            ["family", "address", "netmask", "broadcast", "ptp"]
+        for snicaddr in psutil.net_if_addrs().get(name, list()):
+            self.q_v_box_layout.addWidget(SNicAddrItem(snicaddr))
+
+    def update(self) -> None:
+        _A = psutil.net_if_addrs().get(self.name, list())
+        _B: list[AddressFamily] = [snicaddr.family for snicaddr in _A]
+        _C: list[AddressFamily] = list()
+
+        for index in range(self.q_v_box_layout.count()):
+            q_layout_item = self.q_v_box_layout.itemAt(index)
+
+            if not q_layout_item:
+                continue
+
+            q_widget = q_layout_item.widget()
+
+            if not isinstance(q_widget, SNicAddrItem):
+                continue
+
+            if q_widget.snicaddr.family not in _B:
+                self.q_v_box_layout.removeWidget(q_widget)
+                q_widget.deleteLater()
+            else:
+                _C.append(q_widget.snicaddr.family)
+                snicaddr = next(
+                    (
+                        snicaddr
+                        for snicaddr in _A
+                        if snicaddr.family == q_widget.snicaddr.family
+                    ),
+                    None,
+                )
+                if snicaddr:
+                    q_widget.update(snicaddr)
+
+        for snicaddr in _A:
+            if snicaddr.family not in _C:
+                self.q_v_box_layout.addWidget(SNicAddrItem(snicaddr))
+
+
+class Tab(QWidget):
+    def __init__(self, name: str) -> None:
+        super().__init__()
+
+        q_v_box_layout = QVBoxLayout(self)
+        q_v_box_layout.setContentsMargins(0, 0, 0, 0)
+        q_v_box_layout.setSpacing(0)
+        q_scroll_area = QScrollArea()
+        q_scroll_area.setHorizontalScrollBarPolicy(
+            Qt.ScrollBarPolicy.ScrollBarAlwaysOff
         )
-        q_table_widget_horizontal_header = self.q_table_widget.horizontalHeader()
-        q_table_widget_horizontal_header.setSectionResizeMode(
-            QHeaderView.ResizeMode.Stretch
+        q_scroll_area.setWidgetResizable(True)
+        q_widget = QWidget()
+        q_h_box_layout = QHBoxLayout(q_widget)
+        q_h_box_layout.setContentsMargins(24, 24, 24, 24)
+        q_h_box_layout.setSpacing(0)
+        q_widget_0 = QWidget()
+        q_widget_0.setSizePolicy(
+            QSizePolicy.Policy.Expanding,
+            QSizePolicy.Policy.Preferred,
         )
-        # q_table_widget_horizontal_header.setFixedHeight(44)
-        self.q_table_widget.verticalHeader().setHidden(True)
-        self.q_table_widget.setAutoScroll(True)
-        self.q_table_widget.setVerticalScrollMode(
-            QAbstractItemView.ScrollMode.ScrollPerPixel
-        )
-        self.q_table_widget.setAlternatingRowColors(True)
-        self.q_table_widget.setEditTriggers(QAbstractItemView.NoEditTriggers)
-        self.q_table_widget.setSelectionBehavior(
-            QAbstractItemView.SelectionBehavior.SelectRows
-        )
-        self.q_table_widget.setContextMenuPolicy(
-            Qt.ContextMenuPolicy.ActionsContextMenu
-        )
+        q_widget_0.setMaximumWidth(568)
 
-        self.q_table_widget.setSortingEnabled(True)
-        self.q_table_widget.sortByColumn(0, Qt.SortOrder.AscendingOrder)
-        self.q_v_box_layout.addWidget(self.q_table_widget, 1)
+        q_v_box_layout_0 = QVBoxLayout(q_widget_0)
+        q_v_box_layout_0.setContentsMargins(0, 0, 0, 0)
+        q_v_box_layout_0.addWidget(QLabel("snicstats"))
+        self.s_nic_stats = SNicStats(name)
+        q_v_box_layout_0.addWidget(self.s_nic_stats)
+        q_v_box_layout_0.addWidget(QLabel("snetio"))
+        self.s_net_io = SNetIO(name)
+        q_v_box_layout_0.addWidget(self.s_net_io)
 
-        self.q_timer = QTimer(self)
-        self.q_timer.setInterval(1_000)
-        self.q_timer.timeout.connect(self.q_timer_timeout)
+        q_v_box_layout_0.addWidget(QLabel("snicaddr"))
+        self.s_nic_addr = SNicAddr(name)
+        q_v_box_layout_0.addWidget(self.s_nic_addr)
+        q_h_box_layout.addWidget(q_widget_0, alignment=Qt.AlignmentFlag.AlignTop)
+        q_scroll_area.setWidget(q_widget)
+        q_v_box_layout.addWidget(q_scroll_area)
 
-    def q_timer_timeout(self) -> None:
-        q_text_document = QTextDocument()
-        q_text_document.setPlainText(
-            f"{str(psutil.net_if_stats().get(self.nic))}\n\n{str(psutil.net_io_counters(pernic=True).get(self.nic))}"
-        )
-        self.q_text_browser.setDocument(q_text_document)
+    def update(self) -> None:
+        if self.isHidden():
+            return
 
-        self.q_table_widget.clearContents()
-        self.q_table_widget.setRowCount(0)
-        row_count = self.q_table_widget.rowCount()
-        for index, snicaddr in enumerate(psutil.net_if_addrs().get(self.nic)):
-            self.q_table_widget_insert_row(row=(row_count + index), snicaddr=snicaddr)
-
-    def showEvent(self, event: QShowEvent) -> None:
-        self.q_timer_timeout()
-        self.q_timer.start()
-        return super().showEvent(event)
-
-    def hideEvent(self, event: QHideEvent) -> None:
-        self.q_timer.stop()
-        return super().hideEvent(event)
-
-    def q_table_widget_insert_row(
-        self, row: int, snicaddr: psutil._common.snicaddr
-    ) -> None:
-        self.q_table_widget.setSortingEnabled(False)
-        self.q_table_widget.insertRow(row)
-        self.q_table_widget.setRowHeight(row, 36)
-
-        column = 0
-        family = QTableWidgetItem(str(snicaddr.family.name))
-        self.q_table_widget.setItem(row, column, family)
-
-        column = 1
-        address = QTableWidgetItem(str(snicaddr.address))
-        self.q_table_widget.setItem(row, column, address)
-
-        column = 2
-        netmask = QTableWidgetItem(str(snicaddr.netmask))
-        self.q_table_widget.setItem(row, column, netmask)
-
-        column = 3
-        broadcast = QTableWidgetItem(str(snicaddr.broadcast))
-        self.q_table_widget.setItem(row, column, broadcast)
-
-        column = 4
-        ptp = QTableWidgetItem(str(snicaddr.ptp))
-        self.q_table_widget.setItem(row, column, ptp)
-
-        self.q_table_widget.setSortingEnabled(True)
+        self.s_nic_stats.update()
+        self.s_net_io.update()
+        self.s_nic_addr.update()
 
 
 class Widget(QWidget):
     def __init__(self) -> None:
         super().__init__()
-        self.logger = logger()
 
         q_v_box_layout = QVBoxLayout(self)
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.setSpacing(0)
-
         self.q_tab_widget = QTabWidget()
-        self.q_tab_widget.removeTab
-        for nic in psutil.net_if_stats().keys():
-            widget = Tab(nic)
-            self.q_tab_widget.addTab(widget, nic)
+        # self.q_tab_widget.setCornerWidget(QPushButton("―"), Qt.Corner.TopRightCorner)
+        self.q_tab_bar = self.q_tab_widget.tabBar()
+        self.q_tab_bar.setDocumentMode(True)
+        for name, snicstats in psutil.net_if_stats().items():
+            index = self.q_tab_widget.addTab(
+                Tab(name), f"{name} (isup={snicstats.isup})"
+            )
+            self.q_tab_bar.setTabData(index, name)
         q_v_box_layout.addWidget(self.q_tab_widget)
 
         self.q_timer = QTimer(self)
         self.q_timer.setInterval(1_000)
-        self.q_timer.timeout.connect(self.q_timer_timeout)
-
-    def q_timer_timeout(self) -> None:
-        nic_list = list(psutil.net_if_stats().keys())
-        index = 0
-        while index < self.q_tab_widget.count():
-            nic = self.q_tab_widget.tabText(index)
-            if nic_list.count(nic) == 0:
-                self.q_tab_widget.removeTab(index)
-            else:
-                nic_list.remove(nic)
-            index += 1
-
-        for nic in nic_list:
-            widget = Tab(nic)
-            self.q_tab_widget.addTab(widget, nic)
+        self.q_timer.timeout.connect(self.update)
 
     def showEvent(self, event: QShowEvent) -> None:
         self.q_timer.start()
@@ -155,3 +312,28 @@ class Widget(QWidget):
     def hideEvent(self, event: QHideEvent) -> None:
         self.q_timer.stop()
         return super().hideEvent(event)
+
+    def update(self) -> None:
+        collection = list(psutil.net_if_stats().keys())
+
+        for index in reversed(range(self.q_tab_widget.count())):
+            name = str(self.q_tab_bar.tabData(index))
+
+            if name not in collection:
+                q_widget = self.q_tab_widget.widget(index)
+                self.q_tab_widget.removeTab(index)
+                q_widget.deleteLater()
+            else:
+                collection.remove(name)
+
+                snicstats = psutil.net_if_stats().get(name, None)
+                if snicstats:
+                    self.q_tab_widget.setTabText(
+                        index, f"{name} (isup={snicstats.isup})"
+                    )
+
+                q_widget = self.q_tab_widget.widget(index)
+                q_widget.update()
+
+        for name in collection:
+            self.q_tab_widget.addTab(Tab(name), name)

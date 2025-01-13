@@ -125,11 +125,11 @@ class Widget(QWidget):
         self.q_table_widget.setItem(row, column, name)
 
         column = 2
-        cpu_percent = QTableWidgetItem(str(process.cpu_percent()))
+        cpu_percent = QTableWidgetItem(f"{process.cpu_percent():.2f}")
         self.q_table_widget.setItem(row, column, cpu_percent)
 
         column = 3
-        memory_percent = QTableWidgetItem(str(process.memory_percent()))
+        memory_percent = QTableWidgetItem(f"{process.memory_percent():.2f}")
         self.q_table_widget.setItem(row, column, memory_percent)
 
         column = 4
@@ -147,11 +147,11 @@ class Widget(QWidget):
 
         column = 2
         cpu_percent = self.q_table_widget.item(row, column)
-        cpu_percent.setText(str(process.cpu_percent()))
+        cpu_percent.setText(f"{process.cpu_percent():.2f}")
 
         column = 3
         memory_percent = self.q_table_widget.item(row, column)
-        memory_percent.setText(str(process.memory_percent()))
+        memory_percent.setText(f"{process.memory_percent():.2f}")
 
         column = 4
         username = self.q_table_widget.item(row, column)

@@ -1,125 +1,145 @@
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QHideEvent, QInputDevice, QShowEvent
+from PySide6.QtGui import (
+    QColor,
+    QHideEvent,
+    QInputDevice,
+    QPainter,
+    QPaintEvent,
+    QShowEvent,
+)
 from PySide6.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
     QLabel,
+    QScrollArea,
     QSizePolicy,
-    QStackedLayout,
+    QStyle,
+    QStyleOption,
     QVBoxLayout,
     QWidget,
 )
 
-from components.Page import Page
 
-
-class Card(QWidget):
-    def __init__(self, device: QInputDevice):
+class ListItem(QWidget):
+    def __init__(self, q_input_device: QInputDevice):
         super().__init__()
-        self.device = device
 
-        q_stacked_layout = QStackedLayout(self)
-        q_widget = QWidget()
-        q_widget.setObjectName("form")
-        q_widget.setStyleSheet(
-            "#form{border:1px solid #e0e0e0;background-color:#ffffff}"
+        self.q_input_device = q_input_device
+
+        q_color = QColor(Qt.GlobalColor.lightGray)
+        self.setObjectName("undefined")
+        self.setStyleSheet(
+            f"#undefined{{border: 1px solid {
+                q_color.name()};background-color:white}}"
         )
-        q_v_box_layout = QVBoxLayout(q_widget)
-        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
-        q_v_box_layout.setSpacing(24)
-
-        q_form_layout = QFormLayout()
-        q_form_layout.setVerticalSpacing(12)
-
-        self.system_id = QLabel(str(device.systemId()))
+        q_form_layout = QFormLayout(self)
+        q_form_layout.setVerticalSpacing(24)
+        self.system_id = QLabel(str(q_input_device.systemId()))
         self.system_id.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("system_id", self.system_id)
-
-        self.name = QLabel(device.name())
+        q_form_layout.addRow("systemId", self.system_id)
+        self.name = QLabel(q_input_device.name())
         self.name.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("name", self.name)
-
-        self.type = QLabel(str(device.type().name))
+        self.type = QLabel(str(q_input_device.type().name))
         self.type.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("type", self.type)
-
-        self.capabilities = QLabel(str(device.capabilities().name))
+        self.capabilities = QLabel(str(q_input_device.capabilities().name))
         self.capabilities.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("capabilities", self.capabilities)
 
-        q_v_box_layout.addLayout(q_form_layout)
-        q_stacked_layout.addWidget(q_widget)
+    def paintEvent(self, event: QPaintEvent) -> None:
+        q_style_option = QStyleOption()
+        q_style_option.initFrom(self)
+        q_painter = QPainter(self)
 
-    def systemId(self):
-        return self.device.systemId()
+        self.style().drawPrimitive(
+            QStyle.PrimitiveElement.PE_Widget, q_style_option, q_painter, self
+        )
+
+    def update(self, q_input_device: QInputDevice) -> None:
+        pass
 
 
 class List(QWidget):
     def __init__(self):
         super().__init__()
-        self.cards: list[Card] = list([])
+
         self.q_v_box_layout = QVBoxLayout(self)
         self.q_v_box_layout.setContentsMargins(0, 0, 0, 0)
-        # self.q_v_box_layout.setSpacing(0)
-        for device in QInputDevice.devices():
-            card = Card(device)
-            self.cards.append(card)
-            self.q_v_box_layout.addWidget(card, alignment=Qt.AlignmentFlag.AlignTop)
+        self.q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        for q_input_device in QInputDevice.devices():
+            self.q_v_box_layout.addWidget(ListItem(q_input_device))
 
         self.q_timer = QTimer(self)
         self.q_timer.setInterval(1_000)
         self.q_timer.timeout.connect(self.update)
 
-    def update(self) -> None:
-        devices = QInputDevice.devices()
-
-        # Remove cards for devices that no longer exist
-        for card in list(
-            self.cards
-        ):  # Create a copy of the list to avoid modification during iteration
-            if card.systemId() not in [device.systemId() for device in devices]:
-                self.q_v_box_layout.removeWidget(card)
-                self.cards.remove(card)
-                card.deleteLater()  # Properly clean up the widget
-
-        # Add cards for new devices
-        for device in devices:
-            if device.systemId() not in [card.systemId() for card in self.cards]:
-                new_card = Card(device)
-                self.q_v_box_layout.addWidget(
-                    new_card, alignment=Qt.AlignmentFlag.AlignTop
-                )
-                self.cards.append(new_card)
-
     def showEvent(self, event: QShowEvent) -> None:
-        self.update()
         self.q_timer.start()
-
         return super().showEvent(event)
 
     def hideEvent(self, event: QHideEvent) -> None:
         self.q_timer.stop()
         return super().hideEvent(event)
 
+    def update(self) -> None:
+        _A = QInputDevice.devices()
+        _B: list[int] = [q_input_device.systemId() for q_input_device in _A]
+        _C: list[int] = list()
 
-class Widget(Page):
+        for index in range(self.q_v_box_layout.count()):
+            q_layout_item = self.q_v_box_layout.itemAt(index)
+
+            if not q_layout_item:
+                continue
+
+            q_widget = q_layout_item.widget()
+
+            if not isinstance(q_widget, ListItem):
+                continue
+
+            if q_widget.q_input_device.systemId() not in _B:
+                self.q_v_box_layout.removeWidget(q_widget)
+                q_widget.deleteLater()
+            else:
+                _C.append(q_widget.q_input_device.systemId())
+                q_input_device = next(
+                    (
+                        q_input_device
+                        for q_input_device in _A
+                        if q_input_device.systemId()
+                        == q_widget.q_input_device.systemId()
+                    ),
+                    None,
+                )
+                if q_input_device:
+                    q_widget.update(q_input_device)
+
+        for q_input_device in _A:
+            if q_input_device.systemId() not in _C:
+                self.q_v_box_layout.addWidget(ListItem(q_input_device))
+
+
+class Widget(QScrollArea):
     def __init__(self):
-        super().__init__("input_device")
+        super().__init__()
 
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setWidgetResizable(True)
         q_widget = QWidget()
         q_h_box_layout = QHBoxLayout(q_widget)
-        q_h_box_layout.setContentsMargins(0, 0, 0, 0)
+        q_h_box_layout.setContentsMargins(24, 24, 24, 24)
         q_h_box_layout.setSpacing(0)
-        c = QWidget()
-        c.setSizePolicy(
+        main = QWidget()
+        main.setSizePolicy(
             QSizePolicy.Policy.Expanding,
             QSizePolicy.Policy.Preferred,
         )
-        c.setMaximumWidth(640)
-        q_v_box_layout = QVBoxLayout(c)
+        main.setMaximumWidth(568)
+        q_v_box_layout = QVBoxLayout(main)
         q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
-        q_v_box_layout.setSpacing(24)
+        q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.addWidget(List())
-        q_h_box_layout.addWidget(c)
+        q_h_box_layout.addWidget(main)
         self.setWidget(q_widget)

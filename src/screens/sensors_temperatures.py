@@ -1,7 +1,7 @@
 import psutil
 import psutil._common
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QFont, QHideEvent, QShowEvent
+from PySide6.QtGui import QColor, QFont, QHideEvent, QShowEvent
 from PySide6.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
@@ -14,7 +14,7 @@ from PySide6.QtWidgets import (
 )
 
 
-class SHWTEMP(QWidget):
+class ListItem(QWidget):
     def __init__(self, shwtemp: psutil._common.shwtemp) -> None:
         super().__init__()
 
@@ -22,82 +22,92 @@ class SHWTEMP(QWidget):
 
         q_stacked_layout = QStackedLayout(self)
         q_widget = QWidget()
+        q_color = QColor(Qt.GlobalColor.lightGray)
         q_widget.setObjectName("name")
         q_widget.setStyleSheet(
-            "QWidget#name{border:1px solid rgba(0,0,0,0.12);background-color:#ffffff}"
+            f"#name{{border:1px solid {q_color.name()};background-color:white}}"
         )
         q_form_layout = QFormLayout(q_widget)
-        q_form_layout.setContentsMargins(14, 14, 14, 14)
-        q_form_layout.setSpacing(12)
-        self.label = QLabel(shwtemp.label)
+        q_form_layout.setSpacing(24)
+        self.label = QLabel(shwtemp.label or "―")
         self.label.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("label", self.label)
-        self.current = QLabel(str(shwtemp.current))
+        self.current = QLabel(self.temperature(shwtemp.current))
         self.current.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("current", self.current)
-        self.high = QLabel(str(shwtemp.high))
+        self.high = QLabel(self.temperature(shwtemp.high))
         self.high.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("high", self.high)
-        self.critical = QLabel(str(shwtemp.critical))
+        q_form_layout.addRow("hight", self.high)
+        self.critical = QLabel(self.temperature(shwtemp.critical))
         self.critical.setAlignment(Qt.AlignmentFlag.AlignRight)
         q_form_layout.addRow("critical", self.critical)
+
         q_stacked_layout.addWidget(q_widget)
 
     def update(self, shwtemp: psutil._common.shwtemp) -> None:
-        self.label.setText(shwtemp.label)
-        self.current.setText(str(shwtemp.current))
-        self.high.setText(str(shwtemp.high))
-        self.critical.setText(str(shwtemp.critical))
+        self.label.setText(shwtemp.label or "―")
+        self.current.setText(self.temperature(shwtemp.current))
+        self.high.setText(self.temperature(shwtemp.high))
+        self.current.setText(self.temperature(shwtemp.critical))
+
+    def temperature(self, number: float | None) -> str:
+        if number is None:
+            return "―"
+
+        return f"{number:.2f} ℃"  # ℉
 
 
-class Section(QWidget):
+class List(QWidget):
     def __init__(self, name: str) -> None:
         super().__init__()
 
         self.name = name
-        self.li: list[SHWTEMP] = list()
-
-        q_v_box_layout_0 = QVBoxLayout(self)
-        q_v_box_layout_0.setContentsMargins(0, 0, 0, 0)
-        # q_v_box_layout_0.setSpacing(0)
-
+        self.q_v_box_layout = QVBoxLayout(self)
+        self.q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_label = QLabel(name)
         q_font = q_label.font()
         q_font.setWeight(QFont.Weight.Medium)
         q_label.setFont(q_font)
-        q_v_box_layout_0.addWidget(q_label)
-
-        self.q_v_box_layout = QVBoxLayout()
-        self.q_v_box_layout.setContentsMargins(0, 0, 0, 0)
-        # self.q_v_box_layout.setSpacing(0)
+        self.q_v_box_layout.addWidget(q_label)
 
         for shwtemp in psutil.sensors_temperatures().get(self.name, list()):
-            a = SHWTEMP(shwtemp)
-            self.li.append(a)
-            self.q_v_box_layout.addWidget(a)
-
-        q_v_box_layout_0.addLayout(self.q_v_box_layout)
+            self.q_v_box_layout.addWidget(ListItem(shwtemp))
 
     def update(self) -> None:
-        l = psutil.sensors_temperatures().get(self.name, list())
+        _A = psutil.sensors_temperatures().get(self.name, list())
+        _B: list[str] = [shwtemp.label for shwtemp in _A]
+        _C: list[str] = list()
 
-        for c in self.li:
-            if c.shwtemp.label not in [item.label for item in l]:
-                self.q_v_box_layout.removeWidget(c)
-                self.li.remove(c)
-                c.deleteLater()
+        for index in range(self.q_v_box_layout.count()):
+            q_layout_item = self.q_v_box_layout.itemAt(index)
 
-        for item in l:
-            existing_c = next(
-                (c for c in self.li if c.shwtemp.label == item.label), None
-            )
+            if not q_layout_item:
+                continue
 
-            if existing_c is None:
-                a = SHWTEMP(item)
-                self.li.append(a)
-                self.q_v_box_layout.addWidget(a)
+            q_widget = q_layout_item.widget()
+
+            if not isinstance(q_widget, ListItem):
+                continue
+
+            if q_widget.shwtemp.label not in _B:
+                self.q_v_box_layout.removeWidget(q_widget)
+                q_widget.deleteLater()
             else:
-                existing_c.update(item)
+                _C.append(q_widget.shwtemp.label)
+                shwtemp = next(
+                    (
+                        shwtemp
+                        for shwtemp in _A
+                        if shwtemp.label == q_widget.shwtemp.label
+                    ),
+                    None,
+                )
+                if shwtemp:
+                    q_widget.update(shwtemp)
+
+        for shwtemp in _A:
+            if shwtemp.label not in _C:
+                self.q_v_box_layout.addWidget(ListItem(shwtemp))
 
 
 class Widget(QWidget):
@@ -125,12 +135,12 @@ class Widget(QWidget):
             QSizePolicy.Policy.Preferred,
         )
         q_widget_0.setMaximumWidth(568)
-
         q_v_box_layout_0 = QVBoxLayout(q_widget_0)
         q_v_box_layout_0.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout_0.setSpacing(8)
+
         for name in psutil.sensors_temperatures().keys():
-            section = Section(name)
+            section = List(name)
             self.q_timer.timeout.connect(section.update)
             q_v_box_layout_0.addWidget(section)
 

@@ -1,251 +1,281 @@
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QHideEvent, QShowEvent
-from PySide6.QtMultimedia import QAudioDevice, QMediaDevices
+from PySide6.QtGui import QColor, QFont, QHideEvent, QPainter, QPaintEvent, QShowEvent
+from PySide6.QtMultimedia import QAudioDevice, QAudioFormat, QMediaDevices
 from PySide6.QtWidgets import (
     QFormLayout,
     QHBoxLayout,
     QLabel,
+    QScrollArea,
     QSizePolicy,
-    QStackedLayout,
+    QStyle,
+    QStyleOption,
     QVBoxLayout,
     QWidget,
 )
 
-from components.Page import Page
 
-
-class Card(QWidget):
-    def __init__(self, device: QAudioDevice):
+class PreferredFormat(QWidget):
+    def __init__(self, q_audio_format: QAudioFormat) -> None:
         super().__init__()
-        self.device = device
 
-        q_stacked_layout = QStackedLayout(self)
-        self.q_widget = QWidget()
-        self.q_widget.setObjectName("form")
-        if device.isDefault():
-            self.q_widget.setStyleSheet(
-                "#form{border:2px solid #34a853;background-color:#ffffff}"
+        q_v_box_layout = QVBoxLayout(self)
+        q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        q_v_box_layout.setContentsMargins(0, 0, 0, 0)
+
+        q_widget = QWidget()
+        q_color = QColor(Qt.GlobalColor.lightGray)
+        q_widget.setObjectName("name")
+        q_widget.setStyleSheet(f"#name{{background-color:{q_color.name()}}}")
+        q_form_layout = QFormLayout(q_widget)
+        q_form_layout.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)
+        self.bytes_per_frame = QLabel(str(q_audio_format.bytesPerFrame()))
+        q_form_layout.addRow(self.q_label("bytesPerFrame"), self.bytes_per_frame)
+        self.bytes_per_sample = QLabel(str(q_audio_format.bytesPerSample()))
+        q_form_layout.addRow(self.q_label("bytesPerSample"), self.bytes_per_sample)
+        self.channel_count = QLabel(str(q_audio_format.channelCount()))
+        q_form_layout.addRow(self.q_label("channelCount"), self.channel_count)
+        self.channel_config = QLabel(q_audio_format.channelConfig().name)
+        q_form_layout.addRow(self.q_label("channelConfig"), self.channel_config)
+        self.sample_rate = QLabel(f"{q_audio_format.sampleRate()} Hz")
+        q_form_layout.addRow(self.q_label("sampleRate"), self.sample_rate)
+        self.sample_format = QLabel(q_audio_format.sampleFormat().name)
+        q_form_layout.addRow(self.q_label("sampleFormat"), self.sample_format)
+
+        q_v_box_layout.addWidget(q_widget)
+
+    def q_label(self, text: str) -> QLabel:
+        q_label = QLabel(text)
+        q_font = q_label.font()
+        q_font.setWeight(QFont.Weight.Medium)
+        q_label.setFont(q_font)
+        return q_label
+
+    def update(self, q_audio_format: QAudioFormat) -> None:
+        self.bytes_per_frame.setText(str(q_audio_format.bytesPerFrame()))
+        self.bytes_per_sample.setText(str(q_audio_format.bytesPerSample()))
+        self.channel_count.setText(str(q_audio_format.channelCount()))
+        self.channel_config.setText(q_audio_format.channelConfig().name)
+        self.sample_rate.setText(f"{q_audio_format.sampleRate()} Hz")
+        self.sample_format.setText(q_audio_format.sampleFormat().name)
+
+
+class SupportedSampleFormats(QWidget):
+    def __init__(
+        self, supported_sample_formats: list[QAudioFormat.SampleFormat]
+    ) -> None:
+        super().__init__()
+
+        q_v_box_layout = QVBoxLayout(self)
+        q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        q_v_box_layout.setContentsMargins(0, 0, 0, 0)
+
+        for sample_format in supported_sample_formats:
+            q_label = QLabel(sample_format.name)
+            q_v_box_layout.addWidget(q_label)
+
+
+class ListItem(QWidget):
+    def __init__(self, q_audio_device: QAudioDevice) -> None:
+        super().__init__()
+
+        self.q_audio_device = q_audio_device
+
+        self.setObjectName("undefined")
+
+        if q_audio_device.isDefault():
+            q_color = QColor(Qt.GlobalColor.darkGreen)
+            self.setStyleSheet(
+                f"#undefined{{border: 1px solid {
+                    q_color.name()};background-color:white}}"
             )
         else:
-            self.q_widget.setStyleSheet(
-                "#form{border:1px solid #e0e0e0;background-color:#ffffff}"
+            q_color = QColor(Qt.GlobalColor.lightGray)
+            self.setStyleSheet(
+                f"#undefined{{border: 1px solid {
+                    q_color.name()};background-color:white}}"
             )
-        q_v_box_layout = QVBoxLayout(self.q_widget)
-        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
-        q_v_box_layout.setSpacing(24)
 
-        q_form_layout = QFormLayout()
-        q_form_layout.setVerticalSpacing(12)
+        q_form_layout = QFormLayout(self)
+        q_form_layout.setVerticalSpacing(24)
+        id = QLabel(q_audio_device.id().toStdString())
+        q_form_layout.addRow("id", id)
+        description = QLabel(q_audio_device.description())
+        q_form_layout.addRow("description", description)
+        mode = QLabel(str(q_audio_device.mode().name))
+        q_form_layout.addRow("mode", mode)
+        channel_configuration = QLabel(str(q_audio_device.channelConfiguration().name))
+        q_form_layout.addRow("channelConfiguration", channel_configuration)
+        self.is_default = QLabel(str(q_audio_device.isDefault()))
+        q_form_layout.addRow("isDefault", self.is_default)
+        minimum_channel_count = QLabel(str((q_audio_device.minimumChannelCount())))
+        q_form_layout.addRow("minimumChannelCount", minimum_channel_count)
+        maximum_channel_count = QLabel(str(q_audio_device.maximumChannelCount()))
+        q_form_layout.addRow("maximumChannelCount", maximum_channel_count)
+        minimum_sample_rate = QLabel(f"{q_audio_device.minimumSampleRate()} Hz")
+        q_form_layout.addRow("minimumSampleRate", minimum_sample_rate)
+        maximum_sample_rate = QLabel(f"{q_audio_device.maximumSampleRate()} Hz")
+        q_form_layout.addRow("maximumSampleRate", maximum_sample_rate)
+        q_form_layout.addRow(
+            "supportedSampleFormats",
+            SupportedSampleFormats(q_audio_device.supportedSampleFormats()),
+        )
+        self.preferred_format = PreferredFormat(q_audio_device.preferredFormat())
+        q_form_layout.addRow("preferredFormat", self.preferred_format)
 
-        self.id = QLabel()
-        self.id.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("id", self.id)
+    def paintEvent(self, event: QPaintEvent) -> None:
+        q_style_option = QStyleOption()
+        q_style_option.initFrom(self)
+        q_painter = QPainter(self)
 
-        self.description = QLabel()
-        self.description.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("description", self.description)
+        self.style().drawPrimitive(
+            QStyle.PrimitiveElement.PE_Widget, q_style_option, q_painter, self
+        )
 
-        self.mode = QLabel()
-        self.mode.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("mode", self.mode)
-
-        self.channel_configuration = QLabel()
-        self.channel_configuration.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("channel_configuration", self.channel_configuration)
-
-        self.is_default = QLabel()
-        self.is_default.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("is_default", self.is_default)
-
-        self.minimum_channel_count = QLabel()
-        self.minimum_channel_count.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("minimum_channel_count", self.minimum_channel_count)
-
-        self.maximum_channel_count = QLabel()
-        self.maximum_channel_count.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("maximum_channel_count", self.maximum_channel_count)
-
-        self.minimum_sample_rate = QLabel()
-
-        self.minimum_sample_rate.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("minimum_sample_rate", self.minimum_sample_rate)
-
-        self.maximum_sample_rate = QLabel()
-        self.maximum_sample_rate.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("maximum_sample_rate", self.maximum_sample_rate)
-
-        self.preferred_format = QLabel()
-        self.preferred_format.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("preferred_format", self.preferred_format)
-
-        self.supported_sample_formats = QLabel()
-        self.supported_sample_formats.setAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.addRow("supported_sample_formats", self.supported_sample_formats)
-
-        q_v_box_layout.addLayout(q_form_layout)
-        q_stacked_layout.addWidget(self.q_widget)
-
-    def systemId(self) -> int:
-        return self.device.id()
-
-    def update(self, device: QAudioDevice):
-        if device.isDefault():
-            self.q_widget.setStyleSheet(
-                "#form{border:2px solid #34a853;background-color:#ffffff}"
+    def update(self, q_audio_device: QAudioDevice) -> None:
+        if q_audio_device.isDefault():
+            q_color = QColor(Qt.GlobalColor.darkGreen)
+            self.setStyleSheet(
+                f"#undefined{{border: 1px solid {
+                    q_color.name()};background-color:white}}"
             )
         else:
-            self.q_widget.setStyleSheet(
-                "#form{border:1px solid #e0e0e0;background-color:#ffffff}"
+            q_color = QColor(Qt.GlobalColor.lightGray)
+            self.setStyleSheet(
+                f"#undefined{{border: 1px solid {
+                    q_color.name()};background-color:white}}"
             )
 
-        self.id.setText(str(device.id()))
-
-        self.description.setText(device.description())
-
-        self.mode.setText(device.mode().name)
-
-        self.channel_configuration.setText(device.channelConfiguration().name)
-
-        self.is_default.setText(str(device.isDefault()))
-
-        self.minimum_channel_count.setText(str(device.minimumChannelCount()))
-
-        self.maximum_channel_count.setText(str(device.maximumChannelCount()))
-
-        self.minimum_sample_rate.setText(f"{device.minimumSampleRate()}Hz (Hertz)")
-
-        self.maximum_sample_rate.setText(f"{device.maximumSampleRate()}Hz (Hertz)")
-
-        self.preferred_format.setText(str(device.preferredFormat()))
-
-        self.supported_sample_formats.setText(str(device.supportedSampleFormats()))
+        self.is_default.setText(str(q_audio_device.isDefault()))
+        self.preferred_format.update(q_audio_device.preferredFormat())
 
 
-class ListInput(QWidget):
-    def __init__(self):
+class AudioInputsList(QWidget):
+    def __init__(self) -> None:
         super().__init__()
-        self.cards: list[Card] = list([])
         self.q_v_box_layout = QVBoxLayout(self)
         self.q_v_box_layout.setContentsMargins(0, 0, 0, 0)
-        for device in QMediaDevices.audioInputs():
-            card = Card(device)
-            self.cards.append(card)
-            self.q_v_box_layout.addWidget(card, alignment=Qt.AlignmentFlag.AlignTop)
+        self.q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.q_timer = QTimer(self)
-        self.q_timer.setInterval(1_000)
-        self.q_timer.timeout.connect(self.update)
+        for q_audio_device in QMediaDevices.audioInputs():
+            self.q_v_box_layout.addWidget(ListItem(q_audio_device))
 
     def update(self) -> None:
-        devices = QMediaDevices.audioInputs()
+        _A = QMediaDevices.audioInputs()
+        _B: list[str] = [q_audio_device.id().toStdString() for q_audio_device in _A]
+        _C: list[str] = list()
 
-        for card in list(self.cards):
-            if card.systemId() not in [device.id() for device in devices]:
-                self.q_v_box_layout.removeWidget(card)
-                self.cards.remove(card)
-                card.deleteLater()  # Properly clean up the widget
+        for index in range(self.q_v_box_layout.count()):
+            q_widget = self.q_v_box_layout.itemAt(index).widget()
 
-        for device in devices:
-            existing_card = next(
-                (card for card in self.cards if card.systemId() == device.id()), None
-            )
+            if not isinstance(q_widget, ListItem):
+                continue
 
-            if existing_card is None:
-                # Create a new card if no card exists for this device
-                new_card = Card(device)
-                self.q_v_box_layout.addWidget(
-                    new_card, alignment=Qt.AlignmentFlag.AlignTop
-                )
-                self.cards.append(new_card)
+            if q_widget.q_audio_device.id().toStdString() not in _B:
+                self.q_v_box_layout.removeWidget(q_widget)
+                q_widget.deleteLater()
             else:
-                existing_card.update(device)
+                _C.append(q_widget.q_audio_device.id().toStdString())
+                q_input_device = next(
+                    (
+                        q_input_device
+                        for q_input_device in _A
+                        if q_input_device.id().toStdString()
+                        == q_widget.q_audio_device.id().toStdString()
+                    ),
+                    None,
+                )
+                if q_input_device:
+                    q_widget.update(q_input_device)
 
-    def showEvent(self, event: QShowEvent) -> None:
-        self.update()
-        self.q_timer.start()
-
-        return super().showEvent(event)
-
-    def hideEvent(self, event: QHideEvent) -> None:
-        self.q_timer.stop()
-        return super().hideEvent(event)
+            for q_input_device in _A:
+                if q_input_device.id().toStdString() not in _C:
+                    self.q_v_box_layout.addWidget(ListItem(q_input_device))
 
 
-class ListOutput(QWidget):
-    def __init__(self):
+class AudioOutputsList(QWidget):
+    def __init__(self) -> None:
         super().__init__()
-        self.cards: list[Card] = list([])
+
         self.q_v_box_layout = QVBoxLayout(self)
         self.q_v_box_layout.setContentsMargins(0, 0, 0, 0)
-        for device in QMediaDevices.audioOutputs():
-            card = Card(device)
-            self.cards.append(card)
-            self.q_v_box_layout.addWidget(card, alignment=Qt.AlignmentFlag.AlignTop)
+        self.q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        self.q_timer = QTimer(self)
-        self.q_timer.setInterval(1_000)
-        self.q_timer.timeout.connect(self.update)
+        for q_audio_device in QMediaDevices.audioOutputs():
+            self.q_v_box_layout.addWidget(ListItem(q_audio_device))
 
     def update(self) -> None:
-        devices = QMediaDevices.audioOutputs()
+        _A = QMediaDevices.audioOutputs()
+        _B: list[str] = [q_audio_device.id().toStdString() for q_audio_device in _A]
+        _C: list[str] = list()
 
-        for card in list(self.cards):
-            if card.systemId() not in [device.id() for device in devices]:
-                self.q_v_box_layout.removeWidget(card)
-                self.cards.remove(card)
-                card.deleteLater()  # Properly clean up the widget
+        for index in range(self.q_v_box_layout.count()):
+            q_widget = self.q_v_box_layout.itemAt(index).widget()
 
-        for device in devices:
-            existing_card = next(
-                (card for card in self.cards if card.systemId() == device.id()), None
-            )
+            if not isinstance(q_widget, ListItem):
+                continue
 
-            if existing_card is None:
-                # Create a new card if no card exists for this device
-                new_card = Card(device)
-                self.q_v_box_layout.addWidget(
-                    new_card, alignment=Qt.AlignmentFlag.AlignTop
-                )
-                self.cards.append(new_card)
+            if q_widget.q_audio_device.id().toStdString() not in _B:
+                self.q_v_box_layout.removeWidget(q_widget)
+                q_widget.deleteLater()
             else:
-                existing_card.update(device)
+                _C.append(q_widget.q_audio_device.id().toStdString())
+                q_input_device = next(
+                    (
+                        q_input_device
+                        for q_input_device in _A
+                        if q_input_device.id().toStdString()
+                        == q_widget.q_audio_device.id().toStdString()
+                    ),
+                    None,
+                )
+                if q_input_device:
+                    q_widget.update(q_input_device)
 
-    def showEvent(self, event: QShowEvent) -> None:
-        self.update()
-        self.q_timer.start()
-
-        return super().showEvent(event)
-
-    def hideEvent(self, event: QHideEvent) -> None:
-        self.q_timer.stop()
-        return super().hideEvent(event)
-
-    def hideEvent(self, event: QHideEvent) -> None:
-        self.q_timer.stop()
-        return super().hideEvent(event)
+        for q_input_device in _A:
+            if q_input_device.id().toStdString() not in _C:
+                self.q_v_box_layout.addWidget(ListItem(q_input_device))
 
 
-class Widget(Page):
-    def __init__(self):
-        super().__init__("audio_device")
+class Widget(QScrollArea):
+    def __init__(self) -> None:
+        super().__init__()
 
-        self.q_widget = QWidget()
-        q_h_box_layout = QHBoxLayout(self.q_widget)
-        q_h_box_layout.setContentsMargins(0, 0, 0, 0)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.setWidgetResizable(True)
+        q_widget = QWidget()
+        q_h_box_layout = QHBoxLayout(q_widget)
+        q_h_box_layout.setContentsMargins(24, 24, 24, 24)
         q_h_box_layout.setSpacing(0)
-        c = QWidget()
-        c.setSizePolicy(
+        main = QWidget()
+        main.setSizePolicy(
             QSizePolicy.Policy.Expanding,
             QSizePolicy.Policy.Preferred,
         )
-        c.setMaximumWidth(640)
-        q_v_box_layout = QVBoxLayout(c)
+        main.setMaximumWidth(568)
+        q_v_box_layout = QVBoxLayout(main)
         q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
-        q_v_box_layout.setContentsMargins(24, 24, 24, 24)
-        q_v_box_layout.setSpacing(24)
+        q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.addWidget(QLabel("audioInputs"))
-        q_v_box_layout.addWidget(ListInput())
+        self.audio_inputs = AudioInputsList()
+        q_v_box_layout.addWidget(self.audio_inputs)
         q_v_box_layout.addWidget(QLabel("audioOutputs"))
-        q_v_box_layout.addWidget(ListOutput())
-        q_h_box_layout.addWidget(c)
-        self.setWidget(self.q_widget)
+        self.audio_outputs = AudioOutputsList()
+        q_v_box_layout.addWidget(self.audio_outputs)
+        q_h_box_layout.addWidget(main)
+        self.setWidget(q_widget)
+
+        self.q_timer = QTimer(self)
+        self.q_timer.setInterval(1_000)
+        self.q_timer.timeout.connect(self.update)
+
+    def showEvent(self, event: QShowEvent) -> None:
+        self.q_timer.start()
+        return super().showEvent(event)
+
+    def hideEvent(self, event: QHideEvent) -> None:
+        self.q_timer.stop()
+        return super().hideEvent(event)
+
+    def update(self) -> None:
+        self.audio_inputs.update()
+        self.audio_outputs.update()

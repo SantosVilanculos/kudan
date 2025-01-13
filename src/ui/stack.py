@@ -1,16 +1,23 @@
 from PySide6.QtWidgets import QStackedWidget, QWidget
 
 
-class Navigator(QStackedWidget):
+class Stack(QStackedWidget):
     HISTSIZE = 24
 
-    def __init__(self):
+    def __init__(self, initialRouteName: str | None = None):
         super().__init__()
+
+        self.initialRouteName = initialRouteName
         self._screens: dict[str, int] = dict()
         self._history: list[int] = list()
 
         self.currentChanged.connect(self._current_changed)
         self.widgetRemoved.connect(self._widget_removed)
+
+    def showEvent(self, event):
+        if isinstance(self.initialRouteName, str):
+            self.navigate(self.initialRouteName)
+        return super().showEvent(event)
 
     def addWidget(self, name: str, q_widget: QWidget) -> int:
         index = super().addWidget(q_widget)
