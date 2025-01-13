@@ -1,12 +1,14 @@
 import psutil
 import psutil._common
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QHideEvent, QShowEvent, Qt
+from PySide6.QtGui import QColor, QFont, QHideEvent, QShowEvent, Qt
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QFormLayout,
     QHeaderView,
     QLabel,
+    QSplitter,
+    QSplitterHandle,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
@@ -22,42 +24,20 @@ class Widget(QWidget):
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.setSpacing(0)
 
-        h = QWidget()
-
-        q_form_layout = QFormLayout(h)
-        q_form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignRight)
-        q_form_layout.setFormAlignment(Qt.AlignmentFlag.AlignLeft)
-
-        self.read_count = QLabel("—")
-        q_form_layout.addRow("read_count", self.read_count)
-
-        self.write_count = QLabel("—")
-        q_form_layout.addRow("write_count", self.write_count)
-
-        self.read_bytes = QLabel("—")
-        q_form_layout.addRow("read_bytes", self.read_bytes)
-
-        self.write_bytes = QLabel("—")
-        q_form_layout.addRow("write_bytes", self.write_bytes)
-
-        self.read_time = QLabel("—")
-        q_form_layout.addRow("read_time", self.read_time)
-
-        self.write_time = QLabel("—")
-        q_form_layout.addRow("write_time", self.write_time)
-
-        self.read_merged_count = QLabel("—")
-        q_form_layout.addRow("read_merged_count", self.read_merged_count)
-
-        self.write_merged_count = QLabel("—")
-        q_form_layout.addRow("write_merged_count", self.write_merged_count)
-
-        self.busy_time = QLabel("—")
-        q_form_layout.addRow("busy_time", self.busy_time)
-
-        q_v_box_layout.addWidget(h)
+        q_splitter = QSplitter()
+        q_color = QColor(Qt.GlobalColor.lightGray)
+        q_splitter.setStyleSheet(
+            f"QSplitter:handle{{background-color:{q_color.name()}}}"
+        )
+        q_splitter.setChildrenCollapsible(False)
+        q_splitter.setHandleWidth(1)
+        q_splitter_handle = QSplitterHandle(
+            Qt.Orientation.Vertical, q_splitter)
+        q_splitter_handle.setEnabled(False)
+        q_splitter.createHandle = lambda: q_splitter_handle
 
         self.q_table_widget = QTableWidget()
+        self.q_table_widget.setStyleSheet("QTableWidget{border:0}")
         self.q_table_widget.setColumnCount(10)
         self.q_table_widget.setHorizontalHeaderLabels(
             [
@@ -77,7 +57,6 @@ class Widget(QWidget):
         q_table_widget_horizontal_header.setSectionResizeMode(
             QHeaderView.ResizeMode.Stretch
         )
-        # q_table_widget_horizontal_header.setFixedHeight(44)
         self.q_table_widget.verticalHeader().setHidden(True)
         self.q_table_widget.setAutoScroll(True)
         self.q_table_widget.setVerticalScrollMode(
@@ -91,10 +70,36 @@ class Widget(QWidget):
         self.q_table_widget.setContextMenuPolicy(
             Qt.ContextMenuPolicy.ActionsContextMenu
         )
-
         self.q_table_widget.setSortingEnabled(True)
         self.q_table_widget.sortByColumn(0, Qt.SortOrder.AscendingOrder)
-        q_v_box_layout.addWidget(self.q_table_widget)
+        q_splitter.addWidget(self.q_table_widget)
+
+        h = QWidget()
+        h.setFixedWidth(240)
+        q_form_layout = QFormLayout(h)
+        q_form_layout.setRowWrapPolicy(QFormLayout.RowWrapPolicy.WrapAllRows)
+        q_form_layout.setLabelAlignment(Qt.AlignmentFlag.AlignLeft)
+        q_form_layout.setFormAlignment(Qt.AlignmentFlag.AlignRight)
+        self.read_count = QLabel("—")
+        q_form_layout.addRow("read_count", self.read_count)
+        self.write_count = QLabel("—")
+        q_form_layout.addRow("write_count", self.write_count)
+        self.read_bytes = QLabel("—")
+        q_form_layout.addRow("read_bytes", self.read_bytes)
+        self.write_bytes = QLabel("—")
+        q_form_layout.addRow("write_bytes", self.write_bytes)
+        self.read_time = QLabel("—")
+        q_form_layout.addRow("read_time", self.read_time)
+        self.write_time = QLabel("—")
+        q_form_layout.addRow("write_time", self.write_time)
+        self.read_merged_count = QLabel("—")
+        q_form_layout.addRow("read_merged_count", self.read_merged_count)
+        self.write_merged_count = QLabel("—")
+        q_form_layout.addRow("write_merged_count", self.write_merged_count)
+        self.busy_time = QLabel("—")
+        q_form_layout.addRow("busy_time", self.busy_time)
+        q_splitter.addWidget(h)
+        q_v_box_layout.addWidget(q_splitter)
 
         self.q_timer = QTimer(self)
         self.q_timer.setInterval(1_000)
@@ -162,7 +167,6 @@ class Widget(QWidget):
         return super().hideEvent(event)
 
     def q_table_widget_insert_row(self, row: int, device: str, sdiskio) -> None:
-
         self.q_table_widget.setSortingEnabled(False)
         self.q_table_widget.insertRow(row)
         self.q_table_widget.setRowHeight(row, 36)
@@ -204,14 +208,16 @@ class Widget(QWidget):
 
         column = 8
         if psutil.LINUX:
-            read_merged_count = QTableWidgetItem(str(sdiskio.read_merged_count))
+            read_merged_count = QTableWidgetItem(
+                str(sdiskio.read_merged_count))
         else:
             read_merged_count = QTableWidgetItem("—")
         self.q_table_widget.setItem(row, column, read_merged_count)
 
         column = 9
         if psutil.LINUX:
-            write_merged_count = QTableWidgetItem(str(sdiskio.write_merged_count))
+            write_merged_count = QTableWidgetItem(
+                str(sdiskio.write_merged_count))
         else:
             write_merged_count = QTableWidgetItem("—")
         self.q_table_widget.setItem(row, column, write_merged_count)
