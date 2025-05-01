@@ -45,7 +45,8 @@ class Widget(QWidget):
         q_push_button = QPushButton("Homepage")
         q_push_button.setFixedHeight(36)
         q_push_button.pressed.connect(
-            partial(QDesktopServices.openUrl, QUrl(APP_URL)))
+            partial(QDesktopServices.openUrl, QUrl(APP_URL))
+        )
         q_v_box_layout.addWidget(q_push_button)
         # Project Website
         # Report an issue

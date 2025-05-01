@@ -1,24 +1,9 @@
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import (
-    QColor,
-    QGuiApplication,
-    QHideEvent,
-    QPainter,
-    QPaintEvent,
-    QScreen,
-    QShowEvent,
-)
-from PySide6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QScrollArea,
-    QSizePolicy,
-    QStyle,
-    QStyleOption,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtGui import (QColor, QGuiApplication, QHideEvent, QPainter,
+                           QPaintEvent, QScreen, QShowEvent)
+from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QScrollArea,
+                               QSizePolicy, QStyle, QStyleOption, QVBoxLayout,
+                               QWidget)
 
 
 class ListItem(QWidget):

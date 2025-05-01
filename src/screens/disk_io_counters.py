@@ -2,18 +2,10 @@ import psutil
 import psutil._common
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor, QFont, QHideEvent, QShowEvent, Qt
-from PySide6.QtWidgets import (
-    QAbstractItemView,
-    QFormLayout,
-    QHeaderView,
-    QLabel,
-    QSplitter,
-    QSplitterHandle,
-    QTableWidget,
-    QTableWidgetItem,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import (QAbstractItemView, QFormLayout, QHeaderView,
+                               QLabel, QSplitter, QSplitterHandle,
+                               QTableWidget, QTableWidgetItem, QVBoxLayout,
+                               QWidget)
 
 
 class Widget(QWidget):

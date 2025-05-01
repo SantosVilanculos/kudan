@@ -1,18 +1,9 @@
 import psutil
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor, QHideEvent, QPainter, QPaintEvent, QShowEvent
-from PySide6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QProgressBar,
-    QScrollArea,
-    QSizePolicy,
-    QStyle,
-    QStyleOption,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QProgressBar,
+                               QScrollArea, QSizePolicy, QStyle, QStyleOption,
+                               QVBoxLayout, QWidget)
 
 
 class Item(QWidget):

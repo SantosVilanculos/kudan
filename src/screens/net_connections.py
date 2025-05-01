@@ -4,21 +4,12 @@ from sys import exec_prefix
 
 import psutil
 import psutil._common
+from logger import logger
 from PySide6.QtCore import QTimer, QUrl
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
-from PySide6.QtWidgets import (
-    QAbstractItemView,
-    QComboBox,
-    QHBoxLayout,
-    QHeaderView,
-    QSizePolicy,
-    QTableWidget,
-    QTableWidgetItem,
-    QVBoxLayout,
-    QWidget,
-)
-
-from logger import logger
+from PySide6.QtWidgets import (QAbstractItemView, QComboBox, QHBoxLayout,
+                               QHeaderView, QSizePolicy, QTableWidget,
+                               QTableWidgetItem, QVBoxLayout, QWidget)
 
 
 class Widget(QWidget):

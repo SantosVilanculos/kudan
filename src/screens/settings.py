@@ -1,18 +1,8 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPainter, QPaintEvent
-from PySide6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QScrollArea,
-    QSizePolicy,
-    QStyle,
-    QStyleOption,
-    QTabWidget,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QLineEdit,
+                               QScrollArea, QSizePolicy, QStyle, QStyleOption,
+                               QTabWidget, QVBoxLayout, QWidget)
 
 
 class P(QWidget):

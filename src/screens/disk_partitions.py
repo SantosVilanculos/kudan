@@ -1,16 +1,9 @@
 import psutil
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QHideEvent, QShowEvent, Qt
-from PySide6.QtWidgets import (
-    QAbstractItemView,
-    QCheckBox,
-    QHBoxLayout,
-    QHeaderView,
-    QTableWidget,
-    QTableWidgetItem,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import (QAbstractItemView, QCheckBox, QHBoxLayout,
+                               QHeaderView, QTableWidget, QTableWidgetItem,
+                               QVBoxLayout, QWidget)
 
 
 class Widget(QWidget):

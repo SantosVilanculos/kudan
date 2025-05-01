@@ -3,18 +3,11 @@ import platform
 from datetime import datetime
 
 import psutil
+from custom.function import file_size
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor
-from PySide6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QScrollArea,
-    QSizePolicy,
-    QWidget,
-)
-
-from custom.function import file_size
+from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QScrollArea,
+                               QSizePolicy, QWidget)
 
 
 class Field(QLabel):

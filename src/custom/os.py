@@ -1,7 +1,7 @@
-from platform import uname
 from datetime import datetime, timedelta
 from locale import getencoding, getlocale
 from pathlib import Path
+from platform import uname
 
 import psutil
 from PySide6.QtCore import QObject, QStandardPaths, QUrl

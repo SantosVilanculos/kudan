@@ -76,7 +76,7 @@ class Menu(QListWidget):
 
         self.setItemWidget(q_list_widget_item, q_label)
 
-    def find(self, q_string: str) -> None:
+    def find_(self, q_string: str) -> None:
         for index in range(self.count()):
             q_list_widget_item = self.item(index)
 
@@ -105,7 +105,8 @@ class Menu(QListWidget):
             if user_role == q_string:
                 q_list_widget_item.setSelected(True)
                 self.scrollToItem(
-                    q_list_widget_item, QAbstractItemView.ScrollHint.EnsureVisible
+                    q_list_widget_item,
+                    QAbstractItemView.ScrollHint.EnsureVisible,
                 )
 
 
@@ -126,12 +127,16 @@ class Navigation(QWidget):
         q_line_edit.setFixedHeight(40)
         q_line_edit.setTextMargins(14, 0, 14, 0)
         self.focusQLineEdit.connect(q_line_edit.setFocus)
-        q_v_box_layout.addWidget(q_line_edit, alignment=Qt.AlignmentFlag.AlignTop)
+        q_v_box_layout.addWidget(
+            q_line_edit, alignment=Qt.AlignmentFlag.AlignTop
+        )
 
         menu = Menu()
-        q_line_edit.textChanged.connect(menu.find)
+        q_line_edit.textChanged.connect(menu.find_)
         self.redirectedTo.connect(menu.setSelected)
-        menu.itemSelected.connect(lambda user_role: self.toRoute.emit(user_role))
+        menu.itemSelected.connect(
+            lambda user_role: self.toRoute.emit(user_role)
+        )
         menu.add("cpu", "cpu")
         menu.add("memory", "memory")
         menu.add("disk_partitions", "Disk Partition")
@@ -182,7 +187,9 @@ class CentralWidget(QWidget):
         q_splitter = QSplitter()
         q_splitter.setHandleWidth(1)
         q_splitter.setChildrenCollapsible(False)
-        q_splitter_handle = QSplitterHandle(q_splitter.orientation(), q_splitter)
+        q_splitter_handle = QSplitterHandle(
+            q_splitter.orientation(), q_splitter
+        )
         q_splitter_handle.setEnabled(False)
         q_splitter.createHandle = lambda: q_splitter_handle
 
@@ -191,9 +198,13 @@ class CentralWidget(QWidget):
 
         self.stack = Stack(initialRouteName="initial")
         self.stack.currentChanged.connect(
-            lambda _: self.navigation.redirectedTo.emit(self.stack.currentName())
+            lambda _: self.navigation.redirectedTo.emit(
+                self.stack.currentName()
+            )
         )
-        self.navigation.toRoute.connect(lambda q_string: self.stack.navigate(q_string))
+        self.navigation.toRoute.connect(
+            lambda q_string: self.stack.navigate(q_string)
+        )
 
         self.stack.addWidget("initial", initial.Widget())
 
@@ -223,7 +234,9 @@ class CentralWidget(QWidget):
         # --- sensors
         # =====================================================================
         if psutil.LINUX or psutil.FREEBSD:
-            self.stack.addWidget("sensors_temperatures", sensors_temperatures.Widget())
+            self.stack.addWidget(
+                "sensors_temperatures", sensors_temperatures.Widget()
+            )
 
         if psutil.LINUX:
             self.stack.addWidget("sensors_fans", sensors_fans.Widget())
@@ -270,14 +283,16 @@ class CentralWidget(QWidget):
 
         #
         q_shortcut_0 = QShortcut(
-            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_B), self
+            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_B),
+            self,
         )
         q_shortcut_0.activated.connect(
             lambda: self.navigation.setVisible(not self.navigation.isVisible())
         )
         q_shortcut_1 = QShortcut(
             QKeyCombination(
-                Qt.KeyboardModifier.ControlModifier | Qt.KeyboardModifier.ShiftModifier,
+                Qt.KeyboardModifier.ControlModifier
+                | Qt.KeyboardModifier.ShiftModifier,
                 Qt.Key.Key_F,
             ),
             self,
@@ -286,11 +301,15 @@ class CentralWidget(QWidget):
             partial(self.focus, Qt.FocusReason.ShortcutFocusReason)
         )
         q_shortcut_2 = QShortcut(
-            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Q), self
+            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Q),
+            self,
         )
         q_shortcut_2.activated.connect(QApplication.quit)
         q_shortcut_3 = QShortcut(
-            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Comma), self
+            QKeyCombination(
+                Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Comma
+            ),
+            self,
         )
         q_shortcut_3.activated.connect(lambda: self.stack.navigate("settings"))
 

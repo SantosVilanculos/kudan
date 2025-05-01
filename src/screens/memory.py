@@ -1,22 +1,13 @@
 import psutil
 import psutil._common
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QFont, QHideEvent, QPainter, QPaintEvent, QShowEvent
-from PySide6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QProgressBar,
-    QScrollArea,
-    QSizePolicy,
-    QStyle,
-    QStyleOption,
-    QVBoxLayout,
-    QWidget,
-)
-
 from custom.function import file_size
 from custom.os import OS
+from PySide6.QtCore import Qt, QTimer
+from PySide6.QtGui import (QColor, QFont, QHideEvent, QPainter, QPaintEvent,
+                           QShowEvent)
+from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QProgressBar,
+                               QScrollArea, QSizePolicy, QStyle, QStyleOption,
+                               QVBoxLayout, QWidget)
 from ui.divider import Divider
 
 

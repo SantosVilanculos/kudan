@@ -1,17 +1,10 @@
 from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QColor, QFont, QHideEvent, QPainter, QPaintEvent, QShowEvent
+from PySide6.QtGui import (QColor, QFont, QHideEvent, QPainter, QPaintEvent,
+                           QShowEvent)
 from PySide6.QtMultimedia import QAudioDevice, QAudioFormat, QMediaDevices
-from PySide6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QScrollArea,
-    QSizePolicy,
-    QStyle,
-    QStyleOption,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QScrollArea,
+                               QSizePolicy, QStyle, QStyleOption, QVBoxLayout,
+                               QWidget)
 
 
 class PreferredFormat(QWidget):

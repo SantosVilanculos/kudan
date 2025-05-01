@@ -2,22 +2,12 @@ from socket import AddressFamily
 
 import psutil
 import psutil._common
+from custom.function import file_size
 from PySide6.QtCore import Qt, QTimer
 from PySide6.QtGui import QColor, QHideEvent, QPainter, QPaintEvent, QShowEvent
-from PySide6.QtWidgets import (
-    QFormLayout,
-    QHBoxLayout,
-    QLabel,
-    QScrollArea,
-    QSizePolicy,
-    QStyle,
-    QStyleOption,
-    QTabWidget,
-    QVBoxLayout,
-    QWidget,
-)
-
-from custom.function import file_size
+from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QScrollArea,
+                               QSizePolicy, QStyle, QStyleOption, QTabWidget,
+                               QVBoxLayout, QWidget)
 
 
 class SNicStats(QWidget):
