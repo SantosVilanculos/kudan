@@ -1,8 +1,20 @@
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QPainter, QPaintEvent
-from PySide6.QtWidgets import (QFormLayout, QHBoxLayout, QLabel, QLineEdit,
-                               QScrollArea, QSizePolicy, QStyle, QStyleOption,
-                               QTabWidget, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (
+    QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QScrollArea,
+    QSizePolicy,
+    QStyle,
+    QStyleOption,
+    QTabWidget,
+    QVBoxLayout,
+    QWidget,
+)
+
+from screens.about import Widget as About
 
 
 class P(QWidget):
@@ -67,7 +79,9 @@ class P(QWidget):
                 row, QFormLayout.ItemRole.FieldRole
             ).widget()
 
-            if (not isinstance(keybind, QLabel)) or (not isinstance(command, QLabel)):
+            if (not isinstance(keybind, QLabel)) or (
+                not isinstance(command, QLabel)
+            ):
                 continue
 
             if (
@@ -105,7 +119,9 @@ class Tab1(QWidget):
         q_v_box_layout_0.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout_0.setSpacing(0)
         q_v_box_layout_0.addWidget(P())
-        q_h_box_layout.addWidget(q_widget_0, alignment=Qt.AlignmentFlag.AlignTop)
+        q_h_box_layout.addWidget(
+            q_widget_0, alignment=Qt.AlignmentFlag.AlignTop
+        )
         q_scroll_area.setWidget(q_widget)
         q_v_box_layout.addWidget(q_scroll_area)
 
@@ -153,7 +169,9 @@ class Tab2(QWidget):
         q_form_layout.addRow("Lorem", q_line_edit_2)
 
         q_v_box_layout_0.addLayout(q_form_layout)
-        q_h_box_layout.addWidget(q_widget_0, alignment=Qt.AlignmentFlag.AlignTop)
+        q_h_box_layout.addWidget(
+            q_widget_0, alignment=Qt.AlignmentFlag.AlignTop
+        )
         q_scroll_area.setWidget(q_widget)
         q_v_box_layout.addWidget(q_scroll_area)
 
@@ -170,4 +188,5 @@ class Widget(QWidget):
         self.q_tab_bar.setDocumentMode(True)
         self.q_tab_widget.addTab(Tab1(), "keyboard shortcut")
         self.q_tab_widget.addTab(Tab2(), "Lorem")
+        self.q_tab_widget.addTab(About(), "About")
         q_v_box_layout.addWidget(self.q_tab_widget)

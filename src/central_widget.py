@@ -6,7 +6,7 @@ from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
-    QGridLayout,
+    QHBoxLayout,
     QLabel,
     QLineEdit,
     QListWidget,
@@ -123,13 +123,17 @@ class Navigation(QWidget):
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
         q_v_box_layout.setSpacing(0)
 
+        q_h_box_layout = QHBoxLayout()
         q_line_edit = QLineEdit()
         q_line_edit.setFixedHeight(40)
         q_line_edit.setTextMargins(14, 0, 14, 0)
         self.focusQLineEdit.connect(q_line_edit.setFocus)
-        q_v_box_layout.addWidget(
-            q_line_edit, alignment=Qt.AlignmentFlag.AlignTop
-        )
+        q_h_box_layout.addWidget(q_line_edit, stretch=1)
+        q_push_button = QPushButton()
+        q_push_button.clicked.connect(partial(self.toRoute.emit, "settings"))
+        q_push_button.setFixedSize(40, 40)
+        q_h_box_layout.addWidget(q_push_button, stretch=0)
+        q_v_box_layout.addLayout(q_h_box_layout, stretch=0)
 
         menu = Menu()
         q_line_edit.textChanged.connect(menu.find_)
@@ -137,6 +141,7 @@ class Navigation(QWidget):
         menu.itemSelected.connect(
             lambda user_role: self.toRoute.emit(user_role)
         )
+        menu.add("initial", "dashboard")
         menu.add("cpu", "cpu")
         menu.add("memory", "memory")
         menu.add("disk_partitions", "Disk Partition")
@@ -158,21 +163,6 @@ class Navigation(QWidget):
         menu.add("audio_device", "Audio device")
         menu.add("input_device", "Input device")
         q_v_box_layout.addWidget(menu)
-
-        q_grid_layout = QGridLayout()
-        q_push_button_0 = QPushButton()
-        q_push_button_0.clicked.connect(partial(self.toRoute.emit, "initial"))
-        q_push_button_0.setFixedHeight(40)
-        q_grid_layout.addWidget(q_push_button_0, 0, 0)
-        q_push_button_1 = QPushButton()
-        q_push_button_1.clicked.connect(partial(self.toRoute.emit, "settings"))
-        q_push_button_1.setFixedHeight(40)
-        q_grid_layout.addWidget(q_push_button_1, 0, 1)
-        q_push_button_2 = QPushButton()
-        q_push_button_2.clicked.connect(partial(self.toRoute.emit, "about"))
-        q_push_button_2.setFixedHeight(40)
-        q_grid_layout.addWidget(q_push_button_2, 0, 2)
-        q_v_box_layout.addLayout(q_grid_layout)
 
 
 class CentralWidget(QWidget):
