@@ -2,7 +2,7 @@ from functools import partial
 
 import psutil
 from PySide6.QtCore import QKeyCombination, QSize, Qt, Signal
-from PySide6.QtGui import QShortcut
+from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (
     QAbstractItemView,
     QApplication,
@@ -283,17 +283,23 @@ class CentralWidget(QWidget):
 
         #
         q_shortcut_0 = QShortcut(
-            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_B),
+            QKeySequence(
+                QKeyCombination(
+                    Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_B
+                )
+            ),
             self,
         )
         q_shortcut_0.activated.connect(
             lambda: self.navigation.setVisible(not self.navigation.isVisible())
         )
         q_shortcut_1 = QShortcut(
-            QKeyCombination(
-                Qt.KeyboardModifier.ControlModifier
-                | Qt.KeyboardModifier.ShiftModifier,
-                Qt.Key.Key_F,
+            QKeySequence(
+                QKeyCombination(
+                    Qt.KeyboardModifier.ControlModifier
+                    | Qt.KeyboardModifier.ShiftModifier,
+                    Qt.Key.Key_F,
+                )
             ),
             self,
         )
@@ -301,13 +307,19 @@ class CentralWidget(QWidget):
             partial(self.focus, Qt.FocusReason.ShortcutFocusReason)
         )
         q_shortcut_2 = QShortcut(
-            QKeyCombination(Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Q),
+            QKeySequence(
+                QKeyCombination(
+                    Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Q
+                )
+            ),
             self,
         )
         q_shortcut_2.activated.connect(QApplication.quit)
         q_shortcut_3 = QShortcut(
-            QKeyCombination(
-                Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Comma
+            QKeySequence(
+                QKeyCombination(
+                    Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Comma
+                )
             ),
             self,
         )
