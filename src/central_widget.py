@@ -271,8 +271,11 @@ class CentralWidget(QWidget):
 
         q_v_box_layout.addWidget(q_splitter)
 
-        #
-        q_shortcut_0 = QShortcut(
+        # =====================================================================
+        # --- shortcuts
+        # =====================================================================
+
+        ctrl_b = QShortcut(
             QKeySequence(
                 QKeyCombination(
                     Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_B
@@ -280,10 +283,11 @@ class CentralWidget(QWidget):
             ),
             self,
         )
-        q_shortcut_0.activated.connect(
+        ctrl_b.activated.connect(
             lambda: self.navigation.setVisible(not self.navigation.isVisible())
         )
-        q_shortcut_1 = QShortcut(
+
+        ctrl_shift_f = QShortcut(
             QKeySequence(
                 QKeyCombination(
                     Qt.KeyboardModifier.ControlModifier
@@ -293,10 +297,11 @@ class CentralWidget(QWidget):
             ),
             self,
         )
-        q_shortcut_1.activated.connect(
+        ctrl_shift_f.activated.connect(
             partial(self.focus, Qt.FocusReason.ShortcutFocusReason)
         )
-        q_shortcut_2 = QShortcut(
+
+        ctrl_q = QShortcut(
             QKeySequence(
                 QKeyCombination(
                     Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Q
@@ -304,8 +309,9 @@ class CentralWidget(QWidget):
             ),
             self,
         )
-        q_shortcut_2.activated.connect(QApplication.quit)
-        q_shortcut_3 = QShortcut(
+        ctrl_q.activated.connect(QApplication.quit)
+
+        ctrl_comma = QShortcut(
             QKeySequence(
                 QKeyCombination(
                     Qt.KeyboardModifier.ControlModifier, Qt.Key.Key_Comma
@@ -313,7 +319,7 @@ class CentralWidget(QWidget):
             ),
             self,
         )
-        q_shortcut_3.activated.connect(lambda: self.stack.navigate("settings"))
+        ctrl_comma.activated.connect(lambda: self.stack.navigate("settings"))
 
     def focus(self, focus_reason: Qt.FocusReason):
         if self.navigation.isHidden():
