@@ -1,8 +1,7 @@
 from functools import partial
 
 from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QDesktopServices, QFont
-from PySide6.QtSvgWidgets import QSvgWidget
+from PySide6.QtGui import QDesktopServices, QFont, QImage, QPixmap
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -24,13 +23,14 @@ class Widget(QWidget):
         q_widget.setStyleSheet("background-color:#f6f6f6")
         q_v_box_layout = QVBoxLayout(q_widget)
         q_v_box_layout.setContentsMargins(0, 0, 0, 0)
-        # q_v_box_layout.setSpacing(0)
         q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         q_h_box_layout = QHBoxLayout()
         q_h_box_layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        q_svg_widget = QSvgWidget()
+        q_svg_widget = QLabel()
         q_svg_widget.setFixedSize(96, 96)
-        q_svg_widget.load(str(contents_path("favicon.svg")))
+        q_image = QImage(96, 96, QImage.Format.Format_RGB32)
+        q_image.load(str(contents_path("icon.png")))
+        q_svg_widget.setPixmap(QPixmap(q_image))
         q_h_box_layout.addWidget(q_svg_widget)
         q_v_box_layout.addLayout(q_h_box_layout)
         q_label_0 = QLabel(APP_NAME)
