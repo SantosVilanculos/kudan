@@ -1,6 +1,10 @@
-black==24.10.0
+black==25.1.0
+isort==6.0.0
 pendulum==3.0.0
-pillow==10.4.0
-psutil==6.0.0
-pyinstaller==6.10.0
-PySide6==6.7.2
+pillow==11.1.0
+psutil==7.0.0
+py-mon==2.0.5
+pyinstaller==6.12.0
+pyinstaller_versionfile==3.0.0
+PySide6==6.8.2.1
+SQLAlchemy==2.0.38
