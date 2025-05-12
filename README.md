@@ -64,8 +64,23 @@ A sleek desktop OS monitor providing real-time insights into CPU, memory, disk, 
 pip install -r requirements.txt
 ```
 
+## Development
+
+```sh
+pymon -p "*.css" -p "*.png" src/main.py
+```
+
 ## Building a release
 
 ```sh
-pyinstaller "./src/main.py" --noconfirm --clean --onefile --name="Kudan" --icon="./favicon.ico" --add-data="./favicon.ico:./" --add-data="./res:./res" --windowed
+pyinstaller \
+  --noconfirm \
+  --clean \
+  --onefile \
+  --name="test" \
+  --icon="icon.png" \
+  --add-data="icon.png:." \
+  --add-data="font:font" \
+  --windowed \
+  src/main.py
 ```
