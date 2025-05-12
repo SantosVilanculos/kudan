@@ -1,0 +1,13 @@
+[tool.autoflake]
+remove-all-unused-imports = true
+recursive = true
+expand-star-imports = true
+in-place = true
+remove-duplicate-keys = true
+
+[tool.black]
+line-length = 79
+
+[tool.isort]
+profile = "black"
+remove_redundant_aliases = true
