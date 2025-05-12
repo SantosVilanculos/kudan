@@ -10,6 +10,7 @@ from environment import (
     APP_NAME,
     APP_ORGANIZATION_DOMAIN,
     APP_ORGANIZATION_NAME,
+    APP_PRODUCT_NAME,
     APP_VERSION,
 )
 
@@ -52,7 +53,7 @@ def main():
     q_application.setFont(q_font)
 
     q_application.setApplicationName(APP_NAME)
-    q_application.setApplicationDisplayName(APP_NAME)
+    q_application.setApplicationDisplayName(APP_PRODUCT_NAME)
     q_application.setApplicationVersion(APP_VERSION)
 
     q_application.setOrganizationName(APP_ORGANIZATION_NAME)

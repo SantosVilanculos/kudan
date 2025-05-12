@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (
 )
 
 from custom.contents_path import contents_path
-from environment import APP_NAME, APP_URL, APP_VERSION
+from environment import APP_PRODUCT_NAME, APP_URL, APP_VERSION
 
 
 class Widget(QWidget):
@@ -33,7 +33,7 @@ class Widget(QWidget):
         q_svg_widget.setPixmap(QPixmap(q_image))
         q_h_box_layout.addWidget(q_svg_widget)
         q_v_box_layout.addLayout(q_h_box_layout)
-        q_label_0 = QLabel(APP_NAME)
+        q_label_0 = QLabel(APP_PRODUCT_NAME)
         q_font = q_label_0.font()
         q_font.setWeight(QFont.Weight.Medium)
         q_label_0.setFont(q_font)
