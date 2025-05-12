@@ -15,7 +15,7 @@ from custom.contents_path import contents_path
 from environment import APP_PRODUCT_NAME, APP_URL, APP_VERSION
 
 
-class Widget(QWidget):
+class Tab3(QWidget):
     def __init__(self):
         super().__init__()
         q_stacked_layout = QStackedLayout(self)

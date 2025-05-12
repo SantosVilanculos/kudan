@@ -19,7 +19,6 @@ from PySide6.QtWidgets import (
 )
 
 from screens import (
-    about,
     cpu,
     disk_io_counters,
     disk_partitions,
@@ -264,7 +263,6 @@ class CentralWidget(QWidget):
         # --- others
         # =====================================================================
 
-        self.stack.addWidget("about", about.Widget())
         self.stack.addWidget("settings", settings.Widget())
 
         q_splitter.addWidget(self.stack)
