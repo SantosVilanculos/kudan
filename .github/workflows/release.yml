@@ -33,17 +33,29 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Build with pyinstaller for ${{ matrix.os }}
-        run: pyinstaller --noconfirm --clean --onefile --name="kudan" --icon="icon.png" --add-data="icon.png:." --add-data="font:font" --windowed src/main.py
+      - name: Create version file ${{ matrix.config.os }}
+        if: ${{ runner.os == 'Windows' }}
+        run: pyivf-make_version --source-format="yaml" --metadata-source="version.yml" --outfile="version.rc"
 
-      - name: Rename builded app
-        run: mv ./dist ./dist-${{ matrix.os }}
+      - name: Build with pyinstaller for Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: pyinstaller --distpath="dist/$RUNNER_OS" --noconfirm --clean --onefile --name="kudan" --icon="icon.png" --add-data="icon.png:." --add-data="font:font" --windowed --disable-windowed-traceback --version-file="version.rc" --uac-admin src/main.py
+
+      - name: Build with pyinstaller for macOS
+        if: ${{ runner.os == 'macOS' }}
+        run: pyinstaller --distpath="dist/$RUNNER_OS" --noconfirm --clean --onefile --name="kudan" --icon="icon.png" --add-data="icon.png:." --add-data="font:font" --windowed --disable-windowed-traceback src/main.py
+
+      - name: Build with pyinstaller for Linux
+        if: ${{ runner.os == 'Linux' }}
+        run: pyinstaller --distpath="dist/$RUNNER_OS" --noconfirm --clean --onefile --name="kudan" --icon="icon.png" --add-data="icon.png:." --add-data="font:font" --windowed src/main.py
 
       - name: Upload result job ${{ matrix.os }}
         uses: actions/upload-artifact@v4
         with:
-          name: kudan-pyinstaller-artifact
-          path: ./dist*
+          name: ${{ runner.os }}
+          path: dist/${{ runner.os }}
+          compression-level: 0
+          overwrite: false
 
   upload:
     runs-on: ubuntu-latest
@@ -55,16 +67,16 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: kudan-pyinstaller-artifact
+          path: dist
 
-      - name: Zip file windows
-        run: zip -r kudan_windows.zip dist-windows-*
+      - name: Zip file Windows
+        run: (cd ./dist/Windows && zip -r ./../../Kudan-windows.zip ./*)
 
-      - name: Zip file ubuntu
-        run: zip -r kudan_linux.zip dist-ubuntu-*
+      - name: Zip file Linux
+        run: (cd ./dist/Linux && zip -r ./../../Kudan-linux.zip ./*)
 
-      - name: Zip file macos
-        run: zip -r kudan_macos.zip dist-macos-*
+      - name: Zip file macOS
+        run: (cd ./dist/macOS && zip -r ./../../Kudan-macos.zip ./*)
 
       - name: Create Release
         id: create_release
@@ -75,7 +87,4 @@ jobs:
           tag_name: ${{ github.ref_name }}
           draft: false
           prerelease: false
-          files: |
-            kudan_windows.zip
-            kudan_linux.zip
-            kudan_macos.zip
+          files: ./*.zip

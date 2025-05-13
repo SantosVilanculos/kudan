@@ -1,0 +1,10 @@
+Version: 0.1.0
+CompanyName: Santos Vilanculos
+FileDescription: A sleek desktop OS monitor providing real-time insights into CPU, memory, disk, network, sensor data, and system uptime.
+InternalName: kudan
+LegalCopyright: Copyright (c) 2025 Santos Vilanculos
+OriginalFilename: kudan.exe
+ProductName: Kudan
+Translation:
+  - langID: 0x0409
+    charsetID: 1200
