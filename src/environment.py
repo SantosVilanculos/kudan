@@ -1,6 +1,6 @@
 APP_NAME = "kudan"
 APP_PRODUCT_NAME = "Kudan"
-APP_VERSION = "0.0.3"
+APP_VERSION = "0.1.0"
 APP_URL = "http://github.com/santosvilanculos/kudan"
 APP_ORGANIZATION_NAME = "SantosVilanculos"
 APP_ORGANIZATION_DOMAIN = "santosvilanculos.github.io"
