@@ -1,7 +1,7 @@
 from functools import partial
 
 from PySide6.QtCore import Qt, QUrl
-from PySide6.QtGui import QDesktopServices, QFont, QImage, QPixmap
+from PySide6.QtGui import QDesktopServices, QFont
 from PySide6.QtWidgets import (
     QHBoxLayout,
     QLabel,
@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 
 from custom.contents_path import contents_path
 from environment import APP_PRODUCT_NAME, APP_URL, APP_VERSION
+from ui.image_background import ImageBackground
 
 
 class Tab3(QWidget):
@@ -26,12 +27,9 @@ class Tab3(QWidget):
         q_v_box_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         q_h_box_layout = QHBoxLayout()
         q_h_box_layout.setAlignment(Qt.AlignmentFlag.AlignHCenter)
-        q_svg_widget = QLabel()
-        q_svg_widget.setFixedSize(96, 96)
-        q_image = QImage(96, 96, QImage.Format.Format_RGB32)
-        q_image.load(str(contents_path("icon.png")))
-        q_svg_widget.setPixmap(QPixmap(q_image))
-        q_h_box_layout.addWidget(q_svg_widget)
+        image = ImageBackground(str(contents_path("icon.png")))
+        image.setFixedSize(128, 128)
+        q_h_box_layout.addWidget(image)
         q_v_box_layout.addLayout(q_h_box_layout)
         q_label_0 = QLabel(APP_PRODUCT_NAME)
         q_font = q_label_0.font()
